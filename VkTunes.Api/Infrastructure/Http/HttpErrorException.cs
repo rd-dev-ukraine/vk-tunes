@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VkTunes.Api.Network
+namespace VkTunes.Api.Infrastructure.Http
 {
     public class HttpErrorException: Exception
     {

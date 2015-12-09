@@ -83,10 +83,10 @@
       <DependentUpon>AudioListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioList\AudioListViewModel.cs" />
-    <Compile Include="AudioList\AudioRecordView.xaml.cs">
+    <Compile Include="AudioRecord\AudioRecordView.xaml.cs">
       <DependentUpon>AudioRecordView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AudioList\AudioRecordViewModel.cs" />
+    <Compile Include="AudioRecord\AudioRecordViewModel.cs" />
     <Compile Include="Authorization\AuthorizationView.xaml.cs">
       <DependentUpon>AuthorizationView.xaml</DependentUpon>
     </Compile>
@@ -147,7 +147,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AudioList\AudioRecordView.xaml">
+    <Page Include="AudioRecord\AudioRecordView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,6 +4,7 @@ using System.Linq;
 using Caliburn.Micro;
 
 using VkTunes.Api.Client;
+using VkTunes.AudioRecord;
 using VkTunes.Infrastructure.Async;
 
 namespace VkTunes.AudioList

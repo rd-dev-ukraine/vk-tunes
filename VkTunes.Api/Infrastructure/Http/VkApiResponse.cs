@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace VkTunes.Api.Network
+namespace VkTunes.Api.Infrastructure.Http
 {
     public class VkApiResponse<TResponse>
         where TResponse : class

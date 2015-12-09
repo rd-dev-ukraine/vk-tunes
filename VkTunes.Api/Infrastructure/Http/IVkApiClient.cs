@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace VkTunes.Api.Network
+namespace VkTunes.Api.Infrastructure.Http
 {
     /// <summary>
     /// Untyped access to vk.com API

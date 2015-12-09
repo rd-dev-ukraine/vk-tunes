@@ -58,13 +58,13 @@
     <Compile Include="Client\UserAudioResponse.cs" />
     <Compile Include="Client\Vk.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="Network\VkApiError.cs" />
-    <Compile Include="Network\VkApiErrorResponseException.cs" />
-    <Compile Include="Network\VkApiRequestParameters.cs" />
-    <Compile Include="Network\VkApiResponse.cs" />
-    <Compile Include="Network\HttpErrorException.cs" />
-    <Compile Include="Network\VkApiHttpClient.cs" />
-    <Compile Include="Network\IVkApiClient.cs" />
+    <Compile Include="Infrastructure\Http\VkApiError.cs" />
+    <Compile Include="Infrastructure\Http\VkApiErrorResponseException.cs" />
+    <Compile Include="Infrastructure\Http\VkApiRequestParameters.cs" />
+    <Compile Include="Infrastructure\Http\VkApiResponse.cs" />
+    <Compile Include="Infrastructure\Http\HttpErrorException.cs" />
+    <Compile Include="Infrastructure\Http\VkApiHttpClient.cs" />
+    <Compile Include="Infrastructure\Http\IVkApiClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Authorization\InMemoryAuthorizationInfo.cs" />
     <Compile Include="Authorization\IAuthorizationInfo.cs" />
@@ -73,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastructure\Queue\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

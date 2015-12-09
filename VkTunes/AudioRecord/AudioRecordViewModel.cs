@@ -1,10 +1,11 @@
 ﻿using Caliburn.Micro;
 
-namespace VkTunes.AudioList
+namespace VkTunes.AudioRecord
 {
     public class AudioRecordViewModel : PropertyChangedBase
     {
         private string title;
+        private string duration;
 
         public int Id { get; set; }
 
@@ -18,6 +19,14 @@ namespace VkTunes.AudioList
             }
         }
 
-        public string Duration { get; set; }
+        public string Duration
+        {
+            get { return duration; }
+            set
+            {
+                duration = value;
+                NotifyOfPropertyChange(() => Duration);
+            }
+        }
     }
 }

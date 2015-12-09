@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ using Newtonsoft.Json;
 using VkTunes.Api.Authorization;
 using VkTunes.Api.Url;
 
-namespace VkTunes.Api.Network
+namespace VkTunes.Api.Infrastructure.Http
 {
     public class VkApiHttpClient : IVkApiClient
     {
@@ -51,6 +52,13 @@ namespace VkTunes.Api.Network
                     throw new HttpErrorException($"HTTP API call error: {httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
 
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+
+                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                Debug.WriteLine(url);
+                Debug.WriteLine(requestBody);
+                Debug.WriteLine(responseBody);
+                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
                 var error = JsonConvert.DeserializeObject<VkApiError>(responseBody);
                 if (error.Error != null)

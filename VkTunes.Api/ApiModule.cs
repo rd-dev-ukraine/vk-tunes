@@ -2,7 +2,7 @@
 
 using VkTunes.Api.Authorization;
 using VkTunes.Api.Client;
-using VkTunes.Api.Network;
+using VkTunes.Api.Infrastructure.Http;
 
 namespace VkTunes.Api
 {
