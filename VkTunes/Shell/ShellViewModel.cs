@@ -4,6 +4,7 @@ using Caliburn.Micro;
 
 using Ninject;
 
+using VkTunes.Authorization;
 using VkTunes.Infrastructure;
 
 namespace VkTunes.Shell
@@ -34,7 +35,7 @@ namespace VkTunes.Shell
         protected override void OnActivate()
         {
             base.OnActivate();
-            //navigator.GoTo<ConnectToMetastormViewModel>();
+            navigator.GoTo<AuthorizationViewModel>();
             DisplayName = "VK-Tunes";
         }
 

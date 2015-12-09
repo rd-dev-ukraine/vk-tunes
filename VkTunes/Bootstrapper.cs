@@ -7,8 +7,10 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Api;
+using VkTunes.Configuration;
 using VkTunes.Infrastructure;
 using VkTunes.Shell;
+using VkTunes.Utils;
 
 namespace VkTunes
 {
@@ -19,6 +21,14 @@ namespace VkTunes
         public Bootstrapper()
         {
             Initialize();
+
+            kernel.Bind<ConfigurationReader>().ToSelf().InSingletonScope();
+            kernel.Bind<ApplicationConfiguration>()
+                  .ToFactoryMethod((ConfigurationReader reader) => reader.Read())
+                  .InSingletonScope();
+            kernel.Bind<Api.Configuration>()
+                .ToFactoryMethod((ApplicationConfiguration appConfig) => appConfig.VkApi)
+                .InSingletonScope();
 
             kernel.Load(new ApiModule());
 
