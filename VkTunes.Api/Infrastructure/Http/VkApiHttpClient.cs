@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -75,29 +76,27 @@ namespace VkTunes.Api.Infrastructure.Http
             return CallApi<string, TResponse>(apiMethod, String.Empty);
         }
 
-        public async Task<int> GetSizeOfFileAtUrl(string url)
+        public async Task<long?> FileSize(string url)
         {
             using (var http = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Head, url))
-            using (var response = await http.SendAsync(request))
             {
-                if (!response.IsSuccessStatusCode)
-                    throw new HttpErrorException($"Getting file size error: {response.StatusCode} {response.ReasonPhrase}");
+                request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36");
+                request.Headers.Accept.ParseAdd("*/*");
+                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
 
-                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
-                Debug.WriteLine(url);
-                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                using (var response = await http.SendAsync(request))
+                {
+                    if (!response.IsSuccessStatusCode)
+                        return null;
 
-                const string ContentLengthHeader = "Content-Length";
-                if (!response.Headers.Any(h => h.Key == ContentLengthHeader))
-                    return 0;
+                    Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
+                    Debug.WriteLine(url);
+                    Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
-                var contentLength = response.Headers.GetValues(ContentLengthHeader).FirstOrDefault();
-                if (contentLength == null)
-                    return 0;
-
-                return Int32.Parse(contentLength);
+                    return response.Content.Headers.ContentLength;
+                }
             }
         }
     }

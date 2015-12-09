@@ -6,6 +6,6 @@ namespace VkTunes.Api.Client
     {
         Task<UserAudioResponse> MyAudio();
 
-        Task<int> FileSize(string url);
+        Task<long?> FileSize(string url);
     }
 }

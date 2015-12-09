@@ -24,9 +24,9 @@ namespace VkTunes.Api.Client
             return CallApi<UserAudioResponse>("audio.get");
         }
 
-        public Task<int> FileSize(string url)
+        public Task<long?> FileSize(string url)
         {
-            return queue.Enqueue(() => apiClient.GetSizeOfFileAtUrl(url));
+            return queue.Enqueue(() => apiClient.FileSize(url));
         }
 
         private Task<TResponse> CallApi<TResponse>(string method)

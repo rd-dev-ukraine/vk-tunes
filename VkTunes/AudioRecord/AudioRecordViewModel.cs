@@ -8,7 +8,7 @@ namespace VkTunes.AudioRecord
     {
         private string title;
         private TimeSpan duration;
-        private int? fileSize;
+        private long? fileSize;
 
         public int Id { get; set; }
 
@@ -32,7 +32,7 @@ namespace VkTunes.AudioRecord
             }
         }
 
-        public int? FileSize
+        public long? FileSize
         {
             get { return fileSize; }
             set
