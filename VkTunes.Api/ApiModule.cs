@@ -9,6 +9,7 @@ namespace VkTunes.Api
         public override void Load()
         {
             Bind<IAuthorization>().To<InAppBrowserAuthorization>();
+            Bind<IAuthorizationInfo>().To<InMemoryAuthorizationInfo>().InSingletonScope();
         }
     }
 }

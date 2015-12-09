@@ -3,5 +3,7 @@
     public interface IAuthorization
     {
         string AuthorizationUrl();
+
+        bool ExtractTokenFromUrl(string url);
     }
 }

@@ -49,12 +49,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
+    <Compile Include="Authorization\AuthorizationRequiredException.cs" />
     <Compile Include="Authorization\AuthorizationUrlParameters.cs" />
     <Compile Include="Authorization\IAuthorization.cs" />
     <Compile Include="Authorization\InAppBrowserAuthorization.cs" />
-    <Compile Include="Authorization\Urls.cs" />
+    <Compile Include="Client\AudioRecord.cs" />
+    <Compile Include="Client\IVk.cs" />
+    <Compile Include="Client\UserAudioResponse.cs" />
+    <Compile Include="Client\Vk.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Network\VkApiError.cs" />
+    <Compile Include="Network\VkApiErrorResponseException.cs" />
+    <Compile Include="Network\VkApiRequestParameters.cs" />
+    <Compile Include="Network\VkApiResponse.cs" />
+    <Compile Include="Network\HttpErrorException.cs" />
+    <Compile Include="Network\VkApiHttpClient.cs" />
+    <Compile Include="Network\IVkApiClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Authorization\InMemoryAuthorizationInfo.cs" />
+    <Compile Include="Authorization\IAuthorizationInfo.cs" />
     <Compile Include="Url\QueryStringNameAttribute.cs" />
     <Compile Include="Url\UrlBuilder.cs" />
   </ItemGroup>

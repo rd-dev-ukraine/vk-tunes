@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using Caliburn.Micro;
 
 using VkTunes.Api.Authorization;
+using VkTunes.AudioList;
 using VkTunes.Infrastructure;
 
 namespace VkTunes.Authorization
@@ -31,13 +32,16 @@ namespace VkTunes.Authorization
 
             var frameworkElement = view as FrameworkElement;
 
-            if (frameworkElement != null)
+            var browser = (WebBrowser)frameworkElement?.FindName("Browser");
+            if (browser != null)
             {
-                var browser = (WebBrowser)frameworkElement.FindName("Browser");
-                if (browser != null)
+                browser.Source = new Uri(authorizationService.AuthorizationUrl());
+
+                browser.Navigated += (_, e) =>
                 {
-                    browser.Source = new Uri(authorizationService.AuthorizationUrl());
-                }
+                    if (authorizationService.ExtractTokenFromUrl(e.Uri.ToString()))
+                        navigator.GoTo<AudioListViewModel>();
+                };
             }
         }
 
