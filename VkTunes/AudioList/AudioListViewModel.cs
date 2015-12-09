@@ -24,7 +24,7 @@ namespace VkTunes.AudioList
             this.async = async;
         }
 
-        public BindableCollection<AudioRecord> Audio { get; set; } = new BindableCollection<AudioRecord>();
+        public BindableCollection<AudioRecordViewModel> Audio { get; set; } = new BindableCollection<AudioRecordViewModel>();
 
         protected override void OnActivate()
         {
@@ -41,9 +41,9 @@ namespace VkTunes.AudioList
             });
         }
 
-        private AudioRecord Map(Api.Client.AudioRecord record)
+        private AudioRecordViewModel Map(Api.Client.AudioRecord record)
         {
-            return new AudioRecord
+            return new AudioRecordViewModel
             {
                 Id = record.Id,
                 Duration = TimeSpan.FromSeconds(record.DurationInSeconds).ToString(),
