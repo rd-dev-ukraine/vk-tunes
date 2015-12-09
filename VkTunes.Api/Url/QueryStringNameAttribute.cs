@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VkTunes.Api.UrlBuilder
+namespace VkTunes.Api.Url
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class QueryStringNameAttribute : Attribute

@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:VkTunes.Authorization"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock>
-            AUTHORIZATION</TextBlock>
-    </Grid>
+    <DockPanel>
+        <WebBrowser x:Name="Browser">
+            
+        </WebBrowser>
+    </DockPanel>
 </UserControl>

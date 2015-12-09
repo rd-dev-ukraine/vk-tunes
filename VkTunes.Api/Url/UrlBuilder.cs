@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace VkTunes.Api.UrlBuilder
+namespace VkTunes.Api.Url
 {
     public static class UrlBuilder
     {
@@ -28,14 +28,23 @@ namespace VkTunes.Api.UrlBuilder
         }
 
         public static string Build<T>(string path, T query)
-            where T: class
+            where T : class
         {
             if (String.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException(nameof(path));
-            if(query == null)
+            if (query == null)
                 throw new ArgumentNullException(nameof(query));
 
-            return  path.TrimEnd("")
+            var queryString = SerializeToQueryString(query);
+            path = path.TrimEnd('?');
+
+
+            return path.Contains("?") ? path + "&" + queryString : path + "?" + queryString;
+        }
+
+        public static string EncodeUrl(string url)
+        {
+            return Uri.EscapeUriString(url);
         }
     }
 }

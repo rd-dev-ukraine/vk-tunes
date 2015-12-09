@@ -2,6 +2,6 @@
 {
     public interface IAuthorization
     {
-        string AuthorizationUrl { get; } 
+        string AuthorizationUrl();
     }
 }

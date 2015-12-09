@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 using Caliburn.Micro;
 
@@ -22,5 +24,23 @@ namespace VkTunes.Authorization
             this.navigator = navigator;
             this.authorizationService = authorizationService;
         }
+
+        protected override void OnViewLoaded(Object view)
+        {
+            base.OnViewLoaded(view);
+
+            var frameworkElement = view as FrameworkElement;
+
+            if (frameworkElement != null)
+            {
+                var browser = (WebBrowser)frameworkElement.FindName("Browser");
+                if (browser != null)
+                {
+                    browser.Source = new Uri(authorizationService.AuthorizationUrl());
+                }
+            }
+        }
+
+        public string AuthorizationUrl { get; set; }
     }
 }

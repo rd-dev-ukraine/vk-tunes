@@ -1,5 +1,7 @@
 ﻿using System;
 
+using VkTunes.Api.Url;
+
 namespace VkTunes.Api.Authorization
 {
     public class InAppBrowserAuthorization : IAuthorization
@@ -14,12 +16,18 @@ namespace VkTunes.Api.Authorization
             this.configuration = configuration;
         }
 
-        public string AuthorizationUrl
+        public string AuthorizationUrl()
         {
-            get
+            var parameters = new AuthorizationUrlParameters
             {
-                throw new NotImplementedException();
-            }
+                AppId = configuration.AppId,
+                Display = "touch",
+                RedirectUri = UrlBuilder.EncodeUrl(Urls.ValidReturnUrl),
+                ResponseType = "token",
+                Scope = "audio"
+            };
+
+            return UrlBuilder.Build(Urls.AuthorizationUrl, parameters);
         }
     }
 }

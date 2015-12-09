@@ -49,13 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
+    <Compile Include="Authorization\AuthorizationUrlParameters.cs" />
     <Compile Include="Authorization\IAuthorization.cs" />
     <Compile Include="Authorization\InAppBrowserAuthorization.cs" />
     <Compile Include="Authorization\Urls.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UrlBuilder\QueryStringNameAttribute.cs" />
-    <Compile Include="UrlBuilder\UrlBuilder.cs" />
+    <Compile Include="Url\QueryStringNameAttribute.cs" />
+    <Compile Include="Url\UrlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
