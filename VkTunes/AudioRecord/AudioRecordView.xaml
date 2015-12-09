@@ -11,5 +11,8 @@
             <TextBlock Text="{Binding Duration}" DockPanel.Dock="Right"></TextBlock>
             <TextBlock Text="{Binding Title}"></TextBlock>
         </DockPanel>
+        <DockPanel>
+            <TextBlock Text="{Binding FileSize}" DockPanel.Dock="Left"></TextBlock>
+        </DockPanel>
     </StackPanel>
 </UserControl>

@@ -38,13 +38,13 @@ namespace VkTunes.Api.Infrastructure.Queue
             isRunning = true;
 
             IQueueItem item;
-            if (requestQueue.TryDequeue(out item))
+            while (requestQueue.TryDequeue(out item))
             {
                 Delay();
                 item.Run();
             }
-            else
-                isRunning = false;
+
+            isRunning = false;
         }
 
         private void Delay()

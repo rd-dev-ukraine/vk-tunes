@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -53,8 +54,8 @@ namespace VkTunes.Api.Infrastructure.Http
 
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-
                 Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                Debug.WriteLine(DateTime.Now);
                 Debug.WriteLine(url);
                 Debug.WriteLine(requestBody);
                 Debug.WriteLine(responseBody);
@@ -72,6 +73,24 @@ namespace VkTunes.Api.Infrastructure.Http
         public Task<TResponse> CallApi<TResponse>(string apiMethod) where TResponse : class
         {
             return CallApi<string, TResponse>(apiMethod, String.Empty);
+        }
+
+        public async Task<int> GetSizeOfFileAtUrl(string url)
+        {
+            using (var http = new HttpClient())
+            {
+                var request = new HttpRequestMessage(HttpMethod.Head, url);
+
+                var response = await http.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpErrorException($"Getting file size error: {response.StatusCode} {response.ReasonPhrase}");
+
+                var contentLength = response.Headers.GetValues("Content-Length").FirstOrDefault();
+                if (contentLength == null)
+                    return 0;
+
+                return Int32.Parse(contentLength);
+            }
         }
     }
 }

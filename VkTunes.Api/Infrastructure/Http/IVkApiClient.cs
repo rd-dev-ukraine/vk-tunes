@@ -13,5 +13,7 @@ namespace VkTunes.Api.Infrastructure.Http
 
         Task<TResponse> CallApi<TResponse>(string apiMethod)
             where TResponse : class;
+
+        Task<int> GetSizeOfFileAtUrl(string url);
     }
 }

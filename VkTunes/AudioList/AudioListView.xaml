@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button x:Name="Reload">Reload</Button>
+        </StackPanel>
         <ListBox x:Name="Audio" HorizontalContentAlignment="Stretch">
             
         </ListBox>

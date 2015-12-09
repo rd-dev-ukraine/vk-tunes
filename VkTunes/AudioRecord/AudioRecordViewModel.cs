@@ -1,11 +1,14 @@
-﻿using Caliburn.Micro;
+﻿using System;
+
+using Caliburn.Micro;
 
 namespace VkTunes.AudioRecord
 {
     public class AudioRecordViewModel : PropertyChangedBase
     {
         private string title;
-        private string duration;
+        private TimeSpan duration;
+        private int? fileSize;
 
         public int Id { get; set; }
 
@@ -19,13 +22,23 @@ namespace VkTunes.AudioRecord
             }
         }
 
-        public string Duration
+        public TimeSpan Duration
         {
             get { return duration; }
             set
             {
                 duration = value;
                 NotifyOfPropertyChange(() => Duration);
+            }
+        }
+
+        public int? FileSize
+        {
+            get { return fileSize; }
+            set
+            {
+                fileSize = value;
+                NotifyOfPropertyChange(() => FileSize);
             }
         }
     }

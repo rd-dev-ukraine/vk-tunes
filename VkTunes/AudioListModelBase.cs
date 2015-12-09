@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
 using VkTunes.Api.Client;
+using VkTunes.AudioList;
 using VkTunes.AudioRecord;
 using VkTunes.Infrastructure.Async;
 
@@ -36,7 +38,11 @@ namespace VkTunes
             Async.Execute(LoadAudio, r =>
             {
                 Audio.Clear();
-                Audio.AddRange(r.Audio.Select(Map));
+                foreach (var record in r.Audio)
+                {
+                    var model = Map(record);
+                    Audio.Add(model);
+                }
             });
         }
 
@@ -45,7 +51,7 @@ namespace VkTunes
             return new AudioRecordViewModel
             {
                 Id = record.Id,
-                Duration = TimeSpan.FromSeconds(record.DurationInSeconds).ToString(),
+                Duration = TimeSpan.FromSeconds(record.DurationInSeconds),
                 Title = $"{record.Artist} - {record.Title}"
             };
         }
