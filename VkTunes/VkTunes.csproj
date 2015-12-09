@@ -79,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AudioListModelBase.cs" />
     <Compile Include="AudioList\AudioListView.xaml.cs">
       <DependentUpon>AudioListView.xaml</DependentUpon>
     </Compile>
