@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VkTunes.Infrastructure
+namespace VkTunes.Infrastructure.Navigation
 {
     public class GoToViewModelEvent
     {

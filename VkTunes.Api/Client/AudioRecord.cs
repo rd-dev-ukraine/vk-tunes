@@ -17,7 +17,7 @@ namespace VkTunes.Api.Client
         public string Title { get; set; }
 
         [JsonProperty("duration")]
-        public int Duration { get; set; }
+        public int DurationInSeconds { get; set; }
 
         [JsonProperty("url")]
         public string FileUrl { get; set; }

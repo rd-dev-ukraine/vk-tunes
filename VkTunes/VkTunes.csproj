@@ -83,12 +83,17 @@
       <DependentUpon>AudioListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioList\AudioListViewModel.cs" />
+    <Compile Include="AudioList\AudioRecord.cs" />
     <Compile Include="Authorization\AuthorizationView.xaml.cs">
       <DependentUpon>AuthorizationView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Authorization\AuthorizationViewModel.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
+    <Compile Include="Infrastructure\Async\AsyncOperationCompletedEvent.cs" />
+    <Compile Include="Infrastructure\Async\AsyncOperationStartedEvent.cs" />
+    <Compile Include="Infrastructure\Async\AsyncRunner.cs" />
+    <Compile Include="Infrastructure\Async\IAsync.cs" />
     <Compile Include="Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -98,9 +103,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Infrastructure\GoToViewModelEvent.cs" />
-    <Compile Include="Infrastructure\INavigator.cs" />
-    <Compile Include="Infrastructure\Navigator.cs" />
+    <Compile Include="Infrastructure\Navigation\GoToViewModelEvent.cs" />
+    <Compile Include="Infrastructure\Navigation\INavigator.cs" />
+    <Compile Include="Infrastructure\Navigation\Navigator.cs" />
     <Compile Include="Utils\NinjectUtils.cs" />
   </ItemGroup>
   <ItemGroup>

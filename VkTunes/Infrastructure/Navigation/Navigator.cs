@@ -2,7 +2,7 @@
 
 using Caliburn.Micro;
 
-namespace VkTunes.Infrastructure
+namespace VkTunes.Infrastructure.Navigation
 {
     public class Navigator: INavigator
     {

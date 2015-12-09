@@ -8,7 +8,8 @@ using Ninject;
 
 using VkTunes.Api;
 using VkTunes.Configuration;
-using VkTunes.Infrastructure;
+using VkTunes.Infrastructure.Async;
+using VkTunes.Infrastructure.Navigation;
 using VkTunes.Shell;
 using VkTunes.Utils;
 
@@ -32,6 +33,7 @@ namespace VkTunes
 
             kernel.Load(new ApiModule());
 
+            kernel.Bind<IAsync>().To<AsyncRunner>().InSingletonScope();
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();

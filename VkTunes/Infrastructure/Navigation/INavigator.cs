@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 
-namespace VkTunes.Infrastructure
+namespace VkTunes.Infrastructure.Navigation
 {
     public interface INavigator
     {
