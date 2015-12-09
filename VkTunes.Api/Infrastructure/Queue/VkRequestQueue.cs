@@ -25,6 +25,17 @@ namespace VkTunes.Api.Infrastructure.Queue
             return queueTask.TaskCompletionSource.Task;
         }
 
+        public void Clear()
+        {
+            while (requestQueue.Count > 0)
+            {
+                IQueueItem _;
+                requestQueue.TryDequeue(out _);
+            }
+
+            isRunning = false;
+        }
+
         private void Run()
         {
             if (isRunning)
@@ -37,11 +48,12 @@ namespace VkTunes.Api.Infrastructure.Queue
         {
             isRunning = true;
 
-            IQueueItem item;
-            while (requestQueue.TryDequeue(out item))
+            while (requestQueue.Count > 0)
             {
                 Delay();
-                item.Run();
+                IQueueItem item;
+                requestQueue.TryDequeue(out item);
+                item?.Run();
             }
 
             isRunning = false;

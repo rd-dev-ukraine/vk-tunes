@@ -12,7 +12,7 @@ using VkTunes.Infrastructure.Async;
 
 namespace VkTunes
 {
-    public abstract class AudioListModelBase: Screen
+    public abstract class AudioListModelBase : Screen
     {
         protected AudioListModelBase(IVk vk, IAsync @async)
         {
@@ -42,6 +42,8 @@ namespace VkTunes
                 {
                     var model = Map(record);
                     Audio.Add(model);
+
+                    Async.Execute(() => Vk.FileSize(record.FileUrl), size => model.FileSize = size);
                 }
             });
         }

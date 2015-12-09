@@ -32,6 +32,7 @@ namespace VkTunes.Api.Client
         private Task<TResponse> CallApi<TResponse>(string method)
             where TResponse : class
         {
+            queue.Clear();
             return queue.Enqueue(() => apiClient.CallApi<TResponse>(method));
         }
     }

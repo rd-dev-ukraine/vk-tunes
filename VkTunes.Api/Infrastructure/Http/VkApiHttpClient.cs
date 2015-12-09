@@ -47,15 +47,15 @@ namespace VkTunes.Api.Infrastructure.Http
             var requestBody = JsonConvert.SerializeObject(request);
 
             using (var httpClient = new HttpClient())
+            using (var httpResponse = await httpClient.PostAsync(new Uri(url), new StringContent(requestBody)))
             {
-                var httpResponse = await httpClient.PostAsync(new Uri(url), new StringContent(requestBody));
                 if (!httpResponse.IsSuccessStatusCode)
                     throw new HttpErrorException($"HTTP API call error: {httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
 
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
                 Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                Debug.WriteLine(DateTime.Now);
+                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
                 Debug.WriteLine(url);
                 Debug.WriteLine(requestBody);
                 Debug.WriteLine(responseBody);
@@ -78,14 +78,22 @@ namespace VkTunes.Api.Infrastructure.Http
         public async Task<int> GetSizeOfFileAtUrl(string url)
         {
             using (var http = new HttpClient())
+            using (var request = new HttpRequestMessage(HttpMethod.Head, url))
+            using (var response = await http.SendAsync(request))
             {
-                var request = new HttpRequestMessage(HttpMethod.Head, url);
-
-                var response = await http.SendAsync(request);
                 if (!response.IsSuccessStatusCode)
                     throw new HttpErrorException($"Getting file size error: {response.StatusCode} {response.ReasonPhrase}");
 
-                var contentLength = response.Headers.GetValues("Content-Length").FirstOrDefault();
+                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
+                Debug.WriteLine(url);
+                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+                const string ContentLengthHeader = "Content-Length";
+                if (!response.Headers.Any(h => h.Key == ContentLengthHeader))
+                    return 0;
+
+                var contentLength = response.Headers.GetValues(ContentLengthHeader).FirstOrDefault();
                 if (contentLength == null)
                     return 0;
 
