@@ -54,6 +54,8 @@
     <Compile Include="Authorization\Urls.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrlBuilder\QueryStringNameAttribute.cs" />
+    <Compile Include="UrlBuilder\UrlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

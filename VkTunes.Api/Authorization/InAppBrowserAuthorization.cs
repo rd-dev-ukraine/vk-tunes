@@ -14,6 +14,12 @@ namespace VkTunes.Api.Authorization
             this.configuration = configuration;
         }
 
-        public string AuthorizationUrl { get; }
+        public string AuthorizationUrl
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }
