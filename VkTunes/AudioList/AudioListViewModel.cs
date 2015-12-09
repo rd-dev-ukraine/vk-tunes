@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 
+using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
 using VkTunes.Infrastructure.Async;
 
@@ -7,7 +8,8 @@ namespace VkTunes.AudioList
 {
     public class AudioListViewModel : AudioListModelBase
     {
-        public AudioListViewModel(IVk vk, IAsync async) : base(vk, async)
+        public AudioListViewModel(IVk vk, IVkAudioFileStorage storage, IAsync async) 
+            : base(vk, storage, async)
         {
         }
 

@@ -10,7 +10,8 @@ namespace VkTunes.AudioRecord
         private TimeSpan duration;
         private long? fileSize;
         private bool isInStorage;
-        private string filePath;
+        private bool isInVk;
+        private string localFilePath;
 
         public int Id { get; set; }
 
@@ -54,13 +55,23 @@ namespace VkTunes.AudioRecord
             }
         }
 
-        public string FilePath
+        public string LocalFilePath
         {
-            get { return filePath; }
+            get { return localFilePath; }
             set
             {
-                filePath = value;
-                NotifyOfPropertyChange(() => FilePath);
+                localFilePath = value;
+                NotifyOfPropertyChange(() => LocalFilePath);
+            }
+        }
+
+        public bool IsInVk
+        {
+            get { return isInVk; }
+            set
+            {
+                isInVk = value;
+                NotifyOfPropertyChange(() => IsInVk);
             }
         }
     }

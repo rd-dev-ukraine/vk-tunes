@@ -19,6 +19,6 @@
             <TextBlock Text="{Binding FileSize, Converter={local:BytesToSizeConverter}}" ></TextBlock>
             
         </StackPanel>
-        <TextBlock Text="{Binding FilePath}"></TextBlock>
+        <TextBlock Text="{Binding LocalFilePath}"></TextBlock>
     </StackPanel>
 </UserControl>

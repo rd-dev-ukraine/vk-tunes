@@ -1,5 +1,6 @@
 ﻿using Ninject.Modules;
 
+using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Authorization;
 using VkTunes.Api.Client;
 using VkTunes.Api.Infrastructure.Http;
@@ -15,6 +16,7 @@ namespace VkTunes.Api
 
             Bind<IVkApiClient>().To<VkApiHttpClient>().InSingletonScope();
             Bind<IVk>().To<Vk>().InSingletonScope();
+            Bind<IVkAudioFileStorage>().To<FileSystemAudioStorage>().InSingletonScope();
         }
     }
 }
