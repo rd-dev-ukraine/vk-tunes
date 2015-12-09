@@ -84,6 +84,7 @@
       <DependentUpon>AudioListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioList\AudioListViewModel.cs" />
+    <Compile Include="AudioRecord\BytesToSizeConverter.cs" />
     <Compile Include="AudioRecord\AudioRecordView.xaml.cs">
       <DependentUpon>AudioRecordView.xaml</DependentUpon>
     </Compile>

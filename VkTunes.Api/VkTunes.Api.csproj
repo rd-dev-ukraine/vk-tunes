@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
+    <Compile Include="AudioStorage\FileSystemAudioStorage.cs" />
     <Compile Include="Authorization\AuthorizationRequiredException.cs" />
     <Compile Include="Authorization\AuthorizationUrlParameters.cs" />
     <Compile Include="Authorization\IAuthorization.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Client\UserAudioResponse.cs" />
     <Compile Include="Client\Vk.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="AudioStorage\IVkAudioFileStorage.cs" />
+    <Compile Include="AudioStorage\StoredAudioRecord.cs" />
     <Compile Include="Infrastructure\Http\VkApiError.cs" />
     <Compile Include="Infrastructure\Http\VkApiErrorResponseException.cs" />
     <Compile Include="Infrastructure\Http\VkApiRequestParameters.cs" />
