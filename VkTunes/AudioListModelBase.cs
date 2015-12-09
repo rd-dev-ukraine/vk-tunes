@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,7 +7,6 @@ using Caliburn.Micro;
 
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
-using VkTunes.AudioList;
 using VkTunes.AudioRecord;
 using VkTunes.Infrastructure.Async;
 using VkTunes.Utils;

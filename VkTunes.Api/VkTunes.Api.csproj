@@ -54,6 +54,7 @@
     <Compile Include="Authorization\AuthorizationUrlParameters.cs" />
     <Compile Include="Authorization\IAuthorization.cs" />
     <Compile Include="Authorization\InAppBrowserAuthorization.cs" />
+    <Compile Include="Client\AudioDownloadProgress.cs" />
     <Compile Include="Client\AudioRecord.cs" />
     <Compile Include="Client\IVk.cs" />
     <Compile Include="Client\UserAudioResponse.cs" />

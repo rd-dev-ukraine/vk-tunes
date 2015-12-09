@@ -5,7 +5,6 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Authorization;
-using VkTunes.Infrastructure;
 using VkTunes.Infrastructure.Navigation;
 
 namespace VkTunes.Shell

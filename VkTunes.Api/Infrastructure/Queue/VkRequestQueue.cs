@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +8,10 @@ namespace VkTunes.Api.Infrastructure.Queue
     public class VkRequestQueue
     {
         private const int RequestIntervalMs = 300;
-        private readonly ConcurrentQueue<IQueueItem> requestQueue = new ConcurrentQueue<IQueueItem>();
+
+        private readonly LinkedList<IQueueItem> requestQueue = new LinkedList<IQueueItem>();
+        private readonly object syncRoot = new object();
+
         private volatile bool isRunning;
         private long lastTicks;
 
@@ -18,7 +21,11 @@ namespace VkTunes.Api.Infrastructure.Queue
                 throw new ArgumentNullException(nameof(workload));
 
             var queueTask = new TaskQueueItem<TResult>(workload);
-            requestQueue.Enqueue(queueTask);
+
+            lock (syncRoot)
+            {
+                requestQueue.AddLast(queueTask);
+            }
 
             Run();
 
@@ -27,10 +34,9 @@ namespace VkTunes.Api.Infrastructure.Queue
 
         public void Clear()
         {
-            while (requestQueue.Count > 0)
+            lock (syncRoot)
             {
-                IQueueItem _;
-                requestQueue.TryDequeue(out _);
+                requestQueue.Clear();
             }
 
             isRunning = false;
@@ -51,8 +57,18 @@ namespace VkTunes.Api.Infrastructure.Queue
             while (requestQueue.Count > 0)
             {
                 Delay();
-                IQueueItem item;
-                requestQueue.TryDequeue(out item);
+
+                IQueueItem item = null;
+
+                lock (syncRoot)
+                {
+                    if (requestQueue.Count > 0)
+                    {
+                        item = requestQueue.First.Value;
+                        requestQueue.RemoveFirst();
+                    }
+                }
+                
                 item?.Run();
             }
 
