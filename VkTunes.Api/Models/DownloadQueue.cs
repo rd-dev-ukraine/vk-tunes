@@ -54,7 +54,7 @@ namespace VkTunes.Api.Models
                 download.IsDownloadStarted = true;
                 using (var buffer = new MemoryStream())
                 {
-                    var audio = await vk.DownloadTo(buffer, download.AudioId, download.Owner, download);
+                    var audio = await vk.DownloadAudioFileTo(buffer, download.AudioId, download.Owner, download);
                     await storage.Save(buffer, audio);
 
                     download.IsDownloadCompleted = true;

@@ -40,12 +40,12 @@ namespace VkTunes.Api
             return audio;
         }
 
-        public Task<long?> FileSize(string url)
+        public Task<long?> GetFileSize(string url)
         {
             return apiClient.GetFileSize(url);
         }
 
-        public async Task<RemoteAudioRecord> DownloadTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
+        public async Task<RemoteAudioRecord> DownloadAudioFileTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));

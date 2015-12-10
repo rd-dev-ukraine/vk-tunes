@@ -56,7 +56,7 @@ namespace VkTunes.Api.Models
             foreach (var a in audio.Where(r => r.RemoteAudio != null))
             {
                 var audioInfo = a;
-                audioInfo.RemoteFileSize = await Queue.Enqueue(() => VK.FileSize(audioInfo.RemoteAudio.FileUrl));
+                audioInfo.RemoteFileSize = await Queue.Enqueue(() => VK.GetFileSize(audioInfo.RemoteAudio.FileUrl));
 
                 SynchronizationContext.Current.Send(_ =>
                 {
