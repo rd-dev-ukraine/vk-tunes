@@ -8,6 +8,6 @@ namespace VkTunes.Api.Client
         public int Count { get; set; } 
 
         [JsonProperty("items")]
-        public AudioRecord[] Audio { get; set; }
+        public RemoteAudioRecord[] Audio { get; set; }
     }
 }

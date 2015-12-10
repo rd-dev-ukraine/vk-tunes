@@ -5,9 +5,9 @@ namespace VkTunes.AudioList
     /// <summary>
     /// Interaction logic for AudioListView.xaml
     /// </summary>
-    public partial class AudioListView : UserControl
+    public partial class MyAudioView : UserControl
     {
-        public AudioListView()
+        public MyAudioView()
         {
             InitializeComponent();
         }

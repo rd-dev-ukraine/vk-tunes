@@ -40,7 +40,7 @@ namespace VkTunes.Authorization
                 browser.Navigated += (_, e) =>
                 {
                     if (authorizationService.ExtractTokenFromUrl(e.Uri.ToString()))
-                        navigator.GoTo<AudioListViewModel>();
+                        navigator.GoTo<MyAudioViewModel>();
                 };
             }
         }

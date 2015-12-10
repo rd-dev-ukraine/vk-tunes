@@ -2,7 +2,7 @@
 
 namespace VkTunes.Api.Client
 {
-    public class AudioRecord
+    public class RemoteAudioRecord
     {
         [JsonProperty("id")]
         public int Id { get; set; }

@@ -6,7 +6,7 @@ namespace VkTunes.Api.AudioStorage
 {
     public interface IVkAudioFileStorage
     {
-        Task<Dictionary<int, StoredAudioRecord>> Load();
+        Task<Dictionary<int, LocalAudioRecord>> Load();
 
         string GenerateFileName(int audioId, string artist, string title);
 

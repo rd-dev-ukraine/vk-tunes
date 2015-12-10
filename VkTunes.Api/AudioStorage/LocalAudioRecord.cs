@@ -1,6 +1,6 @@
 ﻿namespace VkTunes.Api.AudioStorage
 {
-    public class StoredAudioRecord
+    public class LocalAudioRecord
     {
         public int Id { get; set; } 
 

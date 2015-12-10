@@ -18,12 +18,12 @@ namespace VkTunes.Api.AudioStorage
             extractAudioId = new Regex(@"\.(\d{1,})\.\w*$");
         }
 
-        public Task<Dictionary<int, StoredAudioRecord>> Load()
+        public Task<Dictionary<int, LocalAudioRecord>> Load()
         {
             return Task.Run(() =>
             {
                 var files = Directory.GetFiles(storageFolder);
-                var result = new Dictionary<int, StoredAudioRecord>();
+                var result = new Dictionary<int, LocalAudioRecord>();
 
                 foreach (var file in files)
                 {
@@ -33,7 +33,7 @@ namespace VkTunes.Api.AudioStorage
                     {
                         var audioId = Int32.Parse(m.Captures[0].Value);
 
-                        result[audioId] = new StoredAudioRecord
+                        result[audioId] = new LocalAudioRecord
                         {
                             Name = fileName,
                             FilePath = file,
