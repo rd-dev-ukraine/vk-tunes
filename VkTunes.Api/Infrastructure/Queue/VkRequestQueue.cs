@@ -67,10 +67,10 @@ namespace VkTunes.Api.Infrastructure.Queue
             if (isRunning)
                 return;
 
-            ThreadPool.QueueUserWorkItem(s => ProcessTaskRecursively());
+            ThreadPool.QueueUserWorkItem(s => ProcessTask());
         }
 
-        private void ProcessTaskRecursively()
+        private void ProcessTask()
         {
             isRunning = true;
 

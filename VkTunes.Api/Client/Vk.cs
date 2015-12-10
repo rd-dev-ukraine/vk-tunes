@@ -30,6 +30,11 @@ namespace VkTunes.Api.Client
             return queue.Enqueue(() => apiClient.FileSize(url));
         }
 
+        public Task<long?> FileSizePriore(string url)
+        {
+            return queue.EnqueuePriore(() => apiClient.FileSize(url));
+        }
+
         public async Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress)
         {
             if (stream == null)

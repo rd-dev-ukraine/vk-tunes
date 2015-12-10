@@ -73,6 +73,8 @@
     <Compile Include="Models\AudioCollectionBase.cs" />
     <Compile Include="Models\AudioInfo.cs" />
     <Compile Include="Models\AudioInfoUpdatedEventArgs.cs" />
+    <Compile Include="Models\DownloadProgress.cs" />
+    <Compile Include="Models\DownloadQueue.cs" />
     <Compile Include="Models\MyAudioCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Authorization\InMemoryAuthorizationInfo.cs" />
