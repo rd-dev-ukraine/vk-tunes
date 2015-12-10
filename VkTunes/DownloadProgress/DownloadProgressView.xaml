@@ -8,8 +8,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" ></ProgressBar>
+        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
         <TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" ></ProgressBar>
+        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
     </StackPanel>
 </UserControl>
