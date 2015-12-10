@@ -12,7 +12,10 @@ namespace VkTunes.Api.Client
     public class Vk : IVk
     {
         private readonly IVkApiClient apiClient;
-        private readonly VkRequestQueue queue = new VkRequestQueue();
+        /// <summary>
+        /// Internal request queue. Should be used only in case of few API calls inside single method.
+        /// </summary>
+        private readonly VkRequestQueue methodScopeQueue = new VkRequestQueue();
 
         public Vk(IVkApiClient apiClient)
         {
@@ -24,23 +27,18 @@ namespace VkTunes.Api.Client
 
         public Task<UserAudioResponse> MyAudio()
         {
-            return queue.EnqueuePriore(() => apiClient.CallApi<UserAudioResponse>("audio.get"));
+            return apiClient.CallApi<UserAudioResponse>("audio.get");
         }
 
         public Task<RemoteAudioRecord[]> GetAudioById(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
-            return queue.EnqueuePriore(() => apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request));
+            return apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request);
         }
 
         public Task<long?> FileSize(string url)
         {
-            return queue.Enqueue(() => apiClient.FileSize(url));
-        }
-
-        public Task<long?> FileSizePriore(string url)
-        {
-            return queue.EnqueuePriore(() => apiClient.FileSize(url));
+            return apiClient.FileSize(url);
         }
 
         public async Task<RemoteAudioRecord> DownloadTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
@@ -48,12 +46,12 @@ namespace VkTunes.Api.Client
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            var audioInfo = await GetAudioById(audioId, owner);
+            var audioInfo = await methodScopeQueue.Enqueue(() => GetAudioById(audioId, owner));
             var audio = audioInfo?.FirstOrDefault();
             if (audio == null)
                 throw new ArgumentException("Audio record not found");
 
-            return await queue.EnqueuePriore(async () =>
+            return await methodScopeQueue.Enqueue(async () =>
             {
 
                 await apiClient.DowloadTo(stream, audio.FileUrl, progress);

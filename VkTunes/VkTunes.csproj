@@ -95,7 +95,7 @@
     <Compile Include="Authorization\AuthorizationViewModel.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
-    <Compile Include="DownloadProgress\DownloadEvent.cs" />
+    <Compile Include="DownloadProgress\EnqueueAudioDownloadEvent.cs" />
     <Compile Include="DownloadProgress\DownloadProgressView.xaml.cs">
       <DependentUpon>DownloadProgressView.xaml</DependentUpon>
     </Compile>

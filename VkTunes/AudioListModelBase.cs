@@ -6,6 +6,7 @@ using Caliburn.Micro;
 
 using VkTunes.Api.Models;
 using VkTunes.AudioRecord;
+using VkTunes.DownloadProgress;
 
 namespace VkTunes
 {
@@ -37,6 +38,17 @@ namespace VkTunes
         public async Task Reload()
         {
             await AudioCollection.Reload();
+        }
+
+        public void DownloadAll()
+        {
+            foreach(var audio in Audio)
+                DownloadAudio(audio);
+        }
+
+        protected void DownloadAudio(AudioRecordViewModel audio)
+        {
+            eventAggregator.PublishOnUIThread(new EnqueueAudioDownloadEvent(audio.Id, audio.OwnerId));
         }
 
         private AudioRecordViewModel Map(AudioInfo source, AudioRecordViewModel dest = null)

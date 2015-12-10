@@ -9,6 +9,7 @@
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button x:Name="Reload">Reload</Button>
+            <Button x:Name="DownloadAll">Download all</Button>
         </StackPanel>
         <ListBox x:Name="Audio" HorizontalContentAlignment="Stretch">
             

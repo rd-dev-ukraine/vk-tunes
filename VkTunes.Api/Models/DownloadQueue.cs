@@ -86,38 +86,40 @@ namespace VkTunes.Api.Models
 
             isRunning = true;
 
-            ThreadPool.QueueUserWorkItem(_ =>
+            ThreadPool.QueueUserWorkItem(_ => DownloadQueueWorker());
+        }
+
+        private void DownloadQueueWorker()
+        {
+            while (true)
             {
-                while (true)
+                Download current = null;
+
+                lock (syncRoot)
+                    current = queue.FirstOrDefault(e => !e.IsDownloadStarted);
+
+                if (current == null)
                 {
-                    Download current = null;
-
                     lock (syncRoot)
-                        current = queue.FirstOrDefault(e => !e.IsDownloadStarted);
-
-                    if (current == null)
                     {
-                        lock (syncRoot)
-                        {
-                            queue.Clear();
-                            Progress?.Invoke(this, EventArgs.Empty);
-                            break;
-                        }
-                    }
-
-                    current.IsDownloadStarted = true;
-                    using (var buffer = new MemoryStream())
-                    {
-                        var audio = vk.DownloadTo(buffer, current.AudioId, current.Owner, current).Result;
-                        storage.Save(buffer, audio);
-
-                        current.IsDownloadCompleted = true;
+                        queue.Clear();
                         Progress?.Invoke(this, EventArgs.Empty);
+                        break;
                     }
                 }
 
-                isRunning = false;
-            });
+                current.IsDownloadStarted = true;
+                using (var buffer = new MemoryStream())
+                {
+                    var audio = vk.DownloadTo(buffer, current.AudioId, current.Owner, current).Result;
+                    storage.Save(buffer, audio);
+
+                    current.IsDownloadCompleted = true;
+                    Progress?.Invoke(this, EventArgs.Empty);
+                }
+            }
+
+            isRunning = false;
         }
 
         private void NotifyProgress(Download download)

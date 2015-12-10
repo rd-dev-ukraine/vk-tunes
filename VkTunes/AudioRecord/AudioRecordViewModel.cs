@@ -91,11 +91,7 @@ namespace VkTunes.AudioRecord
 
         public void Download()
         {
-            eventAggregator.PublishOnUIThread(new DownloadEvent
-            {
-                AudioId = Id,
-                OwnerId = OwnerId
-            });
+            eventAggregator.PublishOnUIThread(new EnqueueAudioDownloadEvent(Id, OwnerId));
         }
     }
 }

@@ -6,7 +6,7 @@ using VkTunes.Api.Models;
 
 namespace VkTunes.DownloadProgress
 {
-    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<DownloadEvent>
+    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<EnqueueAudioDownloadEvent>
     {
         private readonly DownloadQueue queue;
         private DownloadProgressInfo info;
@@ -42,7 +42,7 @@ namespace VkTunes.DownloadProgress
 
         public bool IsDisplayed { get; private set; }
 
-        public void Handle(DownloadEvent message)
+        public void Handle(EnqueueAudioDownloadEvent message)
         {
             if (message != null)
                 queue.AddToDownloadQueue(message.AudioId, message.OwnerId);

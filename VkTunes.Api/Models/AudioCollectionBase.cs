@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
 using VkTunes.Api.Client.Audio;
+using VkTunes.Api.Infrastructure.Queue;
 
 namespace VkTunes.Api.Models
 {
@@ -18,6 +19,8 @@ namespace VkTunes.Api.Models
     /// </summary>
     public abstract class AudioCollectionBase
     {
+        private readonly VkRequestQueue queue = new VkRequestQueue();
+
         protected AudioCollectionBase(IVk vk, IVkAudioFileStorage storage)
         {
             if (vk == null)
@@ -51,7 +54,7 @@ namespace VkTunes.Api.Models
             foreach (var a in audio.Where(r => r.RemoteAudio != null))
             {
                 var audioInfo = a;
-                audioInfo.RemoteFileSize = await VK.FileSize(audioInfo.RemoteAudio.FileUrl);
+                audioInfo.RemoteFileSize = await queue.Enqueue(() => VK.FileSize(audioInfo.RemoteAudio.FileUrl));
 
                 SynchronizationContext.Current.Send(_ =>
                 {
@@ -68,7 +71,12 @@ namespace VkTunes.Api.Models
 
         private async Task<IEnumerable<AudioInfo>> LoadAudioInfo()
         {
-            var data = await TaskUtils.WhenAll(GetAudio(), Storage.Load());
+            queue.Clear();
+
+            var loadAudioTask = queue.EnqueuePriore(GetAudio);
+            var loadStorageTask = Storage.Load();
+
+            var data = await TaskUtils.WhenAll(loadAudioTask, loadStorageTask);
             var remoteAudio = data.Item1.ToDictionary(r => r.Id);
             var storedAudio = data.Item2;
 
