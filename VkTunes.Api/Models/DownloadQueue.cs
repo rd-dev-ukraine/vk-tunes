@@ -14,11 +14,11 @@ namespace VkTunes.Api.Models
     {
         private readonly IVk vk;
         private readonly IVkAudioFileStorage storage;
-        private readonly VkRequestQueue requestQueue;
+        private readonly IApiRequestQueue requestQueue;
         private readonly HashSet<Download> downloads = new HashSet<Download>();
         private readonly object syncRoot = new object();
 
-        public DownloadQueue(IVk vk, IVkAudioFileStorage storage, VkRequestQueue requestQueue)
+        public DownloadQueue(IVk vk, IVkAudioFileStorage storage, IApiRequestQueue requestQueue)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
@@ -49,7 +49,7 @@ namespace VkTunes.Api.Models
                 downloads.Add(download);
             }
 
-            requestQueue.EnqueuePriore(async () =>
+            requestQueue.EnqueueLast(async () =>
             {
                 download.IsDownloadStarted = true;
                 using (var buffer = new MemoryStream())
@@ -66,7 +66,8 @@ namespace VkTunes.Api.Models
                         downloads.Clear();
 
                 return Task.FromResult(0);
-            });
+            },
+            QueuePriorities.DownloadFile);
         }
 
         public DownloadProgressInfo DownloadProgress()

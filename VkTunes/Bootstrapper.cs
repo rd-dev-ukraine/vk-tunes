@@ -38,7 +38,6 @@ namespace VkTunes
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
-            kernel.Bind<VkRequestQueue>().ToSelf().InSingletonScope();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

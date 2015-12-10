@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace VkTunes.Api.Queue
 {
-    public class VkRequestQueue
+    public class VkApiRequestQueue
     {
         private const int RequestIntervalMs = 300;
 

@@ -74,7 +74,10 @@
     <Compile Include="LowLevel\HttpErrorApiCallException.cs" />
     <Compile Include="LowLevel\VkApiHttpClient.cs" />
     <Compile Include="LowLevel\IVkApiClient.cs" />
-    <Compile Include="Queue\VkRequestQueue.cs" />
+    <Compile Include="Models\QueuePriorities.cs" />
+    <Compile Include="Queue\IApiRequestQueue.cs" />
+    <Compile Include="Queue\VkPriorityApiRequestQueue.cs" />
+    <Compile Include="Queue\VkApiRequestQueue.cs" />
     <Compile Include="Models\AudioCollectionBase.cs" />
     <Compile Include="Models\AudioInfo.cs" />
     <Compile Include="Models\AudioInfoUpdatedEventArgs.cs" />
