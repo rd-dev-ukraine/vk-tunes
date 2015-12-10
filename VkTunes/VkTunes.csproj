@@ -95,6 +95,11 @@
     <Compile Include="Authorization\AuthorizationViewModel.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
+    <Compile Include="DownloadProgress\DownloadEvent.cs" />
+    <Compile Include="DownloadProgress\DownloadProgressView.xaml.cs">
+      <DependentUpon>DownloadProgressView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DownloadProgress\DownloadProgressViewModel.cs" />
     <Compile Include="Infrastructure\Async\AsyncOperationCompletedEvent.cs" />
     <Compile Include="Infrastructure\Async\AsyncOperationStartedEvent.cs" />
     <Compile Include="Infrastructure\Async\AsyncRunner.cs" />
@@ -154,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Authorization\AuthorizationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DownloadProgress\DownloadProgressView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

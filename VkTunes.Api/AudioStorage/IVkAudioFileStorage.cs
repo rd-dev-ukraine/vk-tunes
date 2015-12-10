@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.CodeDom;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
+using VkTunes.Api.Client.Audio;
 
 namespace VkTunes.Api.AudioStorage
 {
@@ -8,8 +11,6 @@ namespace VkTunes.Api.AudioStorage
     {
         Task<Dictionary<int, LocalAudioRecord>> Load();
 
-        string GenerateFileName(int audioId, string artist, string title);
-
-        Stream OpenSave(string fileName);
+        Task Save(Stream source, RemoteAudioRecord audio);
     }
 }

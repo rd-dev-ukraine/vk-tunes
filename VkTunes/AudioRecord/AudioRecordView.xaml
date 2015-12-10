@@ -17,7 +17,7 @@
             <TextBlock>|</TextBlock>
             <TextBlock>Size:</TextBlock>
             <TextBlock Text="{Binding FileSize, Converter={local:BytesToSizeConverter}}" ></TextBlock>
-            
+            <Button x:Name="Download">Download</Button>
         </StackPanel>
         <TextBlock Text="{Binding LocalFilePath}"></TextBlock>
     </StackPanel>

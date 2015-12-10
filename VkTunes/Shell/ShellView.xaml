@@ -9,6 +9,8 @@
     <Grid>
         <DockPanel>
             <TextBlock DockPanel.Dock="Top" TextAlignment="Center" FontSize="30">VK-Tunes</TextBlock>
+            <ContentControl x:Name="Progress" DockPanel.Dock="Top">
+            </ContentControl>
             <DockPanel Margin="10">
                 <ContentControl x:Name="ActiveItem" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></ContentControl>
             </DockPanel>

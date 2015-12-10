@@ -5,6 +5,7 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Authorization;
+using VkTunes.DownloadProgress;
 using VkTunes.Infrastructure.Navigation;
 
 namespace VkTunes.Shell
@@ -17,7 +18,8 @@ namespace VkTunes.Shell
         public ShellViewModel(
             IKernel kernel,
             IEventAggregator eventAggregator,
-            INavigator navigator)
+            INavigator navigator, 
+            DownloadProgressViewModel downloadProgressViewModel)
         {
             if (kernel == null)
                 throw new ArgumentNullException(nameof(kernel));
@@ -28,9 +30,12 @@ namespace VkTunes.Shell
 
             this.kernel = kernel;
             this.navigator = navigator;
+            this.Progress = downloadProgressViewModel;
 
             eventAggregator.Subscribe(this);
         }
+
+        public DownloadProgressViewModel Progress { get; }
 
         protected override void OnActivate()
         {

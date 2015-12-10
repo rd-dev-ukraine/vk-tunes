@@ -2,10 +2,14 @@
 
 using Caliburn.Micro;
 
+using VkTunes.DownloadProgress;
+
 namespace VkTunes.AudioRecord
 {
     public class AudioRecordViewModel : PropertyChangedBase
     {
+        private readonly IEventAggregator eventAggregator;
+
         private string title;
         private TimeSpan duration;
         private long? fileSize;
@@ -13,7 +17,17 @@ namespace VkTunes.AudioRecord
         private bool isInVk;
         private string localFilePath;
 
+        public AudioRecordViewModel(IEventAggregator eventAggregator)
+        {
+            if (eventAggregator == null)
+                throw new ArgumentNullException(nameof(eventAggregator));
+
+            this.eventAggregator = eventAggregator;
+        }
+
         public int Id { get; set; }
+
+        public int OwnerId { get; set; }
 
         public string Title
         {
@@ -73,6 +87,15 @@ namespace VkTunes.AudioRecord
                 isInVk = value;
                 NotifyOfPropertyChange(() => IsInVk);
             }
+        }
+
+        public void Download()
+        {
+            eventAggregator.PublishOnUIThread(new DownloadEvent
+            {
+                AudioId = Id,
+                OwnerId = OwnerId
+            });
         }
     }
 }

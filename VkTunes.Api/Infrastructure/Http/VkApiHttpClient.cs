@@ -46,11 +46,11 @@ namespace VkTunes.Api.Infrastructure.Http
                 Version = "5.40"
             };
 
-            var url = UrlBuilder.Build(ApiUrl + apiMethod, requestParam);
-            var requestBody = JsonConvert.SerializeObject(request);
+            var url = UrlBuilder.Build(ApiUrl + apiMethod, requestParam) + "&" + UrlBuilder.SerializeToQueryString(request);
+            
 
             using (var httpClient = new HttpClient())
-            using (var httpResponse = await httpClient.PostAsync(new Uri(url), new StringContent(requestBody)))
+            using (var httpResponse = await httpClient.PostAsync(new Uri(url), new StringContent(String.Empty)))
             {
                 if (!httpResponse.IsSuccessStatusCode)
                     throw new HttpErrorException($"HTTP API call error: {httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
@@ -60,7 +60,6 @@ namespace VkTunes.Api.Infrastructure.Http
                 Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
                 Debug.WriteLine(url);
-                Debug.WriteLine(requestBody);
                 Debug.WriteLine(responseBody);
                 Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
@@ -109,33 +108,35 @@ namespace VkTunes.Api.Infrastructure.Http
             if (String.IsNullOrWhiteSpace(fileUrl))
                 throw new ArgumentNullException(nameof(fileUrl));
 
-            var size = await FileSize(fileUrl);
-
             using (var http = new HttpClient())
-            using (var response = await http.GetStreamAsync(fileUrl))
+            using (var response = await http.GetAsync(fileUrl))
             {
-                var buffer = new byte[1024 * 4];
-                var totalBytesRead = 0;
-                while (true)
+                var size = response.Content.Headers?.ContentLength ?? 0;
+                using (var contentStream = await response.Content.ReadAsStreamAsync())
                 {
-                    var bytesRead = await response.ReadAsync(buffer, 0, buffer.Length);
-                    await stream.WriteAsync(buffer, 0, bytesRead);
-
-                    totalBytesRead += bytesRead;
-
-                    progress?.Report(new AudioDownloadProgress
+                    var buffer = new byte[1024 * 4];
+                    var totalBytesRead = 0;
+                    while (true)
                     {
-                        BytesRead = totalBytesRead,
-                        TotalBytes = (int)size
-                    });
+                        var bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length);
+                        await stream.WriteAsync(buffer, 0, bytesRead);
 
-                    if (bytesRead < buffer.Length)
-                    {
-                        if (size != 0 && totalBytesRead != size)
-                            throw new InvalidOperationException("Non-robust reading");
+                        totalBytesRead += bytesRead;
 
-                        break;
-                    } 
+                        progress?.Report(new AudioDownloadProgress
+                        {
+                            BytesRead = totalBytesRead,
+                            TotalBytes = (int)size
+                        });
+
+                        if (bytesRead < buffer.Length)
+                        {
+                            if (size != 0 && totalBytesRead != size)
+                                throw new InvalidOperationException("Non-robust reading");
+
+                            break;
+                        }
+                    }
                 }
             }
         }

@@ -55,9 +55,10 @@
     <Compile Include="Authorization\IAuthorization.cs" />
     <Compile Include="Authorization\InAppBrowserAuthorization.cs" />
     <Compile Include="Client\AudioDownloadProgress.cs" />
-    <Compile Include="Client\RemoteAudioRecord.cs" />
+    <Compile Include="Client\Audio\GetAudioByIdRequest.cs" />
+    <Compile Include="Client\Audio\RemoteAudioRecord.cs" />
     <Compile Include="Client\IVk.cs" />
-    <Compile Include="Client\UserAudioResponse.cs" />
+    <Compile Include="Client\Audio\UserAudioResponse.cs" />
     <Compile Include="Client\Vk.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="AudioStorage\IVkAudioFileStorage.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Models\AudioCollectionBase.cs" />
     <Compile Include="Models\AudioInfo.cs" />
     <Compile Include="Models\AudioInfoUpdatedEventArgs.cs" />
-    <Compile Include="Models\DownloadProgress.cs" />
+    <Compile Include="Models\DownloadProgressInfo.cs" />
     <Compile Include="Models\DownloadQueue.cs" />
     <Compile Include="Models\MyAudioCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

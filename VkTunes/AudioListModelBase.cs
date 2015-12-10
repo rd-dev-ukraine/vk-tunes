@@ -11,9 +11,12 @@ namespace VkTunes
 {
     public abstract class AudioListModelBase : Screen
     {
-        protected AudioListModelBase(AudioCollectionBase audioCollection)
+        private readonly IEventAggregator eventAggregator;
+
+        protected AudioListModelBase(AudioCollectionBase audioCollection, IEventAggregator eventAggregator)
         {
             AudioCollection = audioCollection;
+            this.eventAggregator = eventAggregator;
             AudioCollection.Audio.CollectionChanged += (sender, e) =>
             {
                 Audio.Clear();
@@ -38,7 +41,7 @@ namespace VkTunes
 
         private AudioRecordViewModel Map(AudioInfo source, AudioRecordViewModel dest = null)
         {
-            dest = dest ?? new AudioRecordViewModel();
+            dest = dest ?? new AudioRecordViewModel(eventAggregator);
 
             dest.Id = source.Id;
             dest.Duration = TimeSpan.FromSeconds(source.RemoteAudio?.DurationInSeconds ?? 0);
@@ -47,6 +50,7 @@ namespace VkTunes
             dest.IsInVk = source.RemoteAudio != null;
             dest.LocalFilePath = source.LocalAudio?.FilePath;
             dest.FileSize = source.RemoteFileSize;
+            dest.OwnerId = source.RemoteAudio?.Owner ?? 0;
 
             return dest;
         }

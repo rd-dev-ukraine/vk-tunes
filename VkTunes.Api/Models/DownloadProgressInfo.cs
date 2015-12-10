@@ -1,8 +1,9 @@
 ﻿using VkTunes.Api.Client;
+using VkTunes.Api.Client.Audio;
 
 namespace VkTunes.Api.Models
 {
-    public class DownloadProgress
+    public class DownloadProgressInfo
     {
         public int TotalAudioInQueue { get; set; } 
 
@@ -12,7 +13,7 @@ namespace VkTunes.Api.Models
 
         public int QueueDownloadBytes { get; set; }
 
-        public RemoteAudioRecord CurrentDownloadingAudio { get; set; }
+        public int CurrentDownloadingAudioId { get; set; }
 
         public int CurrentDownloadingTotalBytes { get; set; }
 

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using VkTunes.Api.Client.Audio;
+
 namespace VkTunes.Api.AudioStorage
 {
     public class FileSystemAudioStorage : IVkAudioFileStorage
@@ -46,20 +48,24 @@ namespace VkTunes.Api.AudioStorage
             });
         }
 
-        public string GenerateFileName(int audioId, string artist, string title)
+        public async Task Save(Stream source, RemoteAudioRecord audio)
+        {
+            var fileName = GenerateFileName(audio.Id, audio.Artist, audio.Title);
+            var path = Path.Combine(storageFolder, fileName);
+
+            source.Position = 0;
+            using (var file = File.OpenWrite(path))
+            {
+                await source.CopyToAsync(file);
+                file.Close();
+            }
+        }
+
+        private string GenerateFileName(int audioId, string artist, string title)
         {
             artist = SanitizeFileName(artist);
             title = SanitizeFileName(title);
             return $"{artist} - {title}.{audioId}.mp3";
-        }
-
-        public Stream OpenSave(string fileName)
-        {
-            if (String.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
-
-            var path = Path.Combine(storageFolder, fileName);
-            return File.OpenWrite(path);
         }
 
         private static string SanitizeFileName(string value)

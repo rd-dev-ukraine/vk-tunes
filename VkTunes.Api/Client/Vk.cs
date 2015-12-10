@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
+using VkTunes.Api.Client.Audio;
 using VkTunes.Api.Infrastructure.Http;
 using VkTunes.Api.Infrastructure.Queue;
 
@@ -22,7 +24,13 @@ namespace VkTunes.Api.Client
 
         public Task<UserAudioResponse> MyAudio()
         {
-            return CallApi<UserAudioResponse>("audio.get");
+            return queue.EnqueuePriore(() => apiClient.CallApi<UserAudioResponse>("audio.get"));
+        }
+
+        public Task<RemoteAudioRecord[]> GetAudioById(int audioId, int ownerId)
+        {
+            var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
+            return queue.EnqueuePriore(() => apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request));
         }
 
         public Task<long?> FileSize(string url)
@@ -35,25 +43,22 @@ namespace VkTunes.Api.Client
             return queue.EnqueuePriore(() => apiClient.FileSize(url));
         }
 
-        public async Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress)
+        public async Task<RemoteAudioRecord> DownloadTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            if (String.IsNullOrWhiteSpace(fileUrl))
-                throw new ArgumentNullException(nameof(fileUrl));
 
-            await queue.EnqueuePriore(async () =>
+            var audioInfo = await GetAudioById(audioId, owner);
+            var audio = audioInfo?.FirstOrDefault();
+            if (audio == null)
+                throw new ArgumentException("Audio record not found");
+
+            return await queue.EnqueuePriore(async () =>
             {
-                await apiClient.DowloadTo(stream, fileUrl, progress);
-                return true;
-            });
-        }
 
-        private Task<TResponse> CallApi<TResponse>(string method)
-            where TResponse : class
-        {
-            queue.Clear();
-            return queue.Enqueue(() => apiClient.CallApi<TResponse>(method));
+                await apiClient.DowloadTo(stream, audio.FileUrl, progress);
+                return audio;
+            });
         }
     }
 }

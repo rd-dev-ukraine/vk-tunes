@@ -1,11 +1,13 @@
-﻿using VkTunes.Api.Models;
+﻿using Caliburn.Micro;
+
+using VkTunes.Api.Models;
 
 namespace VkTunes.AudioList
 {
     public class MyAudioViewModel : AudioListModelBase
     {
-        public MyAudioViewModel(MyAudioCollection myAudio) 
-            : base(myAudio)
+        public MyAudioViewModel(MyAudioCollection myAudio, IEventAggregator eventAggregator) 
+            : base(myAudio, eventAggregator)
         {
         }
 

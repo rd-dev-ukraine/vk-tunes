@@ -2,6 +2,7 @@
 
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
+using VkTunes.Api.Client.Audio;
 
 namespace VkTunes.Api.Models
 {

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
+using VkTunes.Api.Client.Audio;
 
 namespace VkTunes.Api.Models
 {
@@ -14,6 +16,7 @@ namespace VkTunes.Api.Models
         private readonly IVkAudioFileStorage storage;
         private readonly LinkedList<Download> queue = new LinkedList<Download>();
         private readonly object syncRoot = new object();
+        private bool isRunning;
 
         public DownloadQueue(IVk vk, IVkAudioFileStorage storage)
         {
@@ -26,23 +29,18 @@ namespace VkTunes.Api.Models
             this.storage = storage;
         }
 
-        public void AddToDownloadQueue(RemoteAudioRecord audio)
+        public void AddToDownloadQueue(int audioId, int owner)
         {
-            if (audio == null)
-                throw new ArgumentNullException(nameof(audio));
-
             lock (syncRoot)
             {
-                if (queue.Any(i => i.Audio.Id == audio.Id))
+                if (queue.Any(i => i.AudioId == audioId))
                     return;
             }
 
-            var size = vk.FileSizePriore(audio.FileUrl).Result;
-
             var download = new Download(NotifyProgress)
             {
-                Audio = audio,
-                TotalBytes = (int)(size ?? 0)
+                AudioId = audioId,
+                Owner = owner
             };
 
             lock (syncRoot)
@@ -51,9 +49,9 @@ namespace VkTunes.Api.Models
             Run();
         }
 
-        public DownloadProgress DownloadProgress()
+        public DownloadProgressInfo DownloadProgress()
         {
-            var result = new DownloadProgress();
+            var result = new DownloadProgressInfo();
 
             lock (syncRoot)
             {
@@ -71,7 +69,7 @@ namespace VkTunes.Api.Models
 
                     if (item.IsDownloadStarted && !item.IsDownloadCompleted)
                     {
-                        result.CurrentDownloadingAudio = item.Audio;
+                        result.CurrentDownloadingAudioId = item.AudioId;
                         result.CurrentDownloadingTotalBytes = item.TotalBytes;
                         result.CurrentDownloadingCompletedBytes = item.BytesRead;
                     }
@@ -83,9 +81,10 @@ namespace VkTunes.Api.Models
 
         private void Run()
         {
-            lock (syncRoot)
-                if (queue.Count > 0)
-                    return;
+            if (isRunning)
+                return;
+
+            isRunning = true;
 
             ThreadPool.QueueUserWorkItem(_ =>
             {
@@ -107,14 +106,17 @@ namespace VkTunes.Api.Models
                     }
 
                     current.IsDownloadStarted = true;
-                    var fileName = storage.GenerateFileName(current.Audio.Id, current.Audio.Artist, current.Audio.Title);
-                    using (var destination = storage.OpenSave(fileName))
+                    using (var buffer = new MemoryStream())
                     {
-                        vk.DownloadTo(destination, current.Audio.FileUrl, current).Wait();
+                        var audio = vk.DownloadTo(buffer, current.AudioId, current.Owner, current).Result;
+                        storage.Save(buffer, audio);
+
                         current.IsDownloadCompleted = true;
                         Progress?.Invoke(this, EventArgs.Empty);
                     }
                 }
+
+                isRunning = false;
             });
         }
 
@@ -137,7 +139,9 @@ namespace VkTunes.Api.Models
                 this.notifyProgress = notifyProgress;
             }
 
-            public RemoteAudioRecord Audio { get; set; }
+            public int AudioId { get; set; }
+
+            public int Owner { get; set; }
 
             public int TotalBytes { get; set; }
 
