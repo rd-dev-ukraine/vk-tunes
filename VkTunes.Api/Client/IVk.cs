@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace VkTunes.Api.Client
 {
@@ -7,5 +9,7 @@ namespace VkTunes.Api.Client
         Task<UserAudioResponse> MyAudio();
 
         Task<long?> FileSize(string url);
+
+        Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress);
     }
 }

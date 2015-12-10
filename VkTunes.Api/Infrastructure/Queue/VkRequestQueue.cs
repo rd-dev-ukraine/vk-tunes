@@ -20,16 +20,23 @@ namespace VkTunes.Api.Infrastructure.Queue
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            var queueTask = new TaskQueueItem<TResult>(workload);
-
-            lock (syncRoot)
+            return EnqueueCore(workload, queueTask =>
             {
-                requestQueue.AddLast(queueTask);
-            }
+                lock (syncRoot)
+                   requestQueue.AddLast(queueTask);
+            });
+        }
 
-            Run();
+        public Task<TResult> EnqueuePriore<TResult>(Func<Task<TResult>> workload)
+        {
+            if (workload == null)
+                throw new ArgumentNullException(nameof(workload));
 
-            return queueTask.TaskCompletionSource.Task;
+            return EnqueueCore(workload, queueTask =>
+            {
+                lock (syncRoot)
+                   requestQueue.AddFirst(queueTask);
+            });
         }
 
         public void Clear()
@@ -40,6 +47,19 @@ namespace VkTunes.Api.Infrastructure.Queue
             }
 
             isRunning = false;
+        }
+
+        private Task<TResult> EnqueueCore<TResult>(Func<Task<TResult>> workload, Action<IQueueItem> addItemToQueue)
+        {
+            if (workload == null)
+                throw new ArgumentNullException(nameof(workload));
+
+            var queueTask = new TaskQueueItem<TResult>(workload);
+
+            addItemToQueue(queueTask);
+            Run();
+
+            return queueTask.TaskCompletionSource.Task;
         }
 
         private void Run()
@@ -68,7 +88,7 @@ namespace VkTunes.Api.Infrastructure.Queue
                         requestQueue.RemoveFirst();
                     }
                 }
-                
+
                 item?.Run();
             }
 

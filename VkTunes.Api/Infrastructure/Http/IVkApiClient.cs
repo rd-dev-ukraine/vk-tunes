@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+
+using VkTunes.Api.Client;
 
 namespace VkTunes.Api.Infrastructure.Http
 {
@@ -15,5 +19,7 @@ namespace VkTunes.Api.Infrastructure.Http
             where TResponse : class;
 
         Task<long?> FileSize(string url);
+
+        Task DowloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null);
     }
 }

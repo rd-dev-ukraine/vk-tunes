@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 using VkTunes.Api.Infrastructure.Http;
@@ -27,6 +28,20 @@ namespace VkTunes.Api.Client
         public Task<long?> FileSize(string url)
         {
             return queue.Enqueue(() => apiClient.FileSize(url));
+        }
+
+        public async Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+            if (String.IsNullOrWhiteSpace(fileUrl))
+                throw new ArgumentNullException(nameof(fileUrl));
+
+            await queue.EnqueuePriore(async () =>
+            {
+                await apiClient.DowloadTo(stream, fileUrl, progress);
+                return true;
+            });
         }
 
         private Task<TResponse> CallApi<TResponse>(string method)

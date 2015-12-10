@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using VkTunes.Api.Authorization;
+using VkTunes.Api.Client;
 using VkTunes.Api.Url;
 
 namespace VkTunes.Api.Infrastructure.Http
@@ -96,6 +98,44 @@ namespace VkTunes.Api.Infrastructure.Http
                     Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 
                     return response.Content.Headers.ContentLength;
+                }
+            }
+        }
+
+        public async Task DowloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+            if (String.IsNullOrWhiteSpace(fileUrl))
+                throw new ArgumentNullException(nameof(fileUrl));
+
+            var size = await FileSize(fileUrl);
+
+            using (var http = new HttpClient())
+            using (var response = await http.GetStreamAsync(fileUrl))
+            {
+                var buffer = new byte[1024 * 4];
+                var totalBytesRead = 0;
+                while (true)
+                {
+                    var bytesRead = await response.ReadAsync(buffer, 0, buffer.Length);
+                    await stream.WriteAsync(buffer, 0, bytesRead);
+
+                    totalBytesRead += bytesRead;
+
+                    progress?.Report(new AudioDownloadProgress
+                    {
+                        BytesRead = totalBytesRead,
+                        TotalBytes = (int)size
+                    });
+
+                    if (bytesRead < buffer.Length)
+                    {
+                        if (size != 0 && totalBytesRead != size)
+                            throw new InvalidOperationException("Non-robust reading");
+
+                        break;
+                    } 
                 }
             }
         }
