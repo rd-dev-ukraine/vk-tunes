@@ -138,6 +138,11 @@ namespace VkTunes.Api.Infrastructure.Http
                         }
                     }
                 }
+
+                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
+                Debug.WriteLine($"Download {size} bytes from {fileUrl}");
+                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
             }
         }
     }

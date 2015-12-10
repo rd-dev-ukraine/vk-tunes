@@ -3,13 +3,14 @@
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
 using VkTunes.Api.Client.Audio;
+using VkTunes.Api.Infrastructure.Queue;
 
 namespace VkTunes.Api.Models
 {
     public class MyAudioCollection : AudioCollectionBase
     {
-        public MyAudioCollection(IVk vk, IVkAudioFileStorage storage) 
-            : base(vk, storage)
+        public MyAudioCollection(IVk vk, IVkAudioFileStorage storage, VkRequestQueue queue) 
+            : base(vk, storage, queue)
         {
         }
 

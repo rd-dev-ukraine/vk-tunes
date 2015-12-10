@@ -19,17 +19,18 @@ namespace VkTunes.Api.Models
     /// </summary>
     public abstract class AudioCollectionBase
     {
-        private readonly VkRequestQueue queue = new VkRequestQueue();
-
-        protected AudioCollectionBase(IVk vk, IVkAudioFileStorage storage)
+        protected AudioCollectionBase(IVk vk, IVkAudioFileStorage storage, VkRequestQueue queue)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
             if (storage == null)
                 throw new ArgumentNullException(nameof(storage));
+            if (queue == null)
+                throw new ArgumentNullException(nameof(queue));
 
             VK = vk;
             Storage = storage;
+            Queue = queue;
 
             Storage.LocalAudioUpdated += OnLocalAudioUpdated;
         }
@@ -39,6 +40,8 @@ namespace VkTunes.Api.Models
         protected IVk VK { get; }
 
         protected IVkAudioFileStorage Storage { get; }
+
+        protected VkRequestQueue Queue { get; }
 
         public async Task Reload()
         {
@@ -54,7 +57,7 @@ namespace VkTunes.Api.Models
             foreach (var a in audio.Where(r => r.RemoteAudio != null))
             {
                 var audioInfo = a;
-                audioInfo.RemoteFileSize = await queue.Enqueue(() => VK.FileSize(audioInfo.RemoteAudio.FileUrl));
+                audioInfo.RemoteFileSize = await Queue.Enqueue(() => VK.FileSize(audioInfo.RemoteAudio.FileUrl));
 
                 SynchronizationContext.Current.Send(_ =>
                 {
@@ -71,9 +74,9 @@ namespace VkTunes.Api.Models
 
         private async Task<IEnumerable<AudioInfo>> LoadAudioInfo()
         {
-            queue.Clear();
+            Queue.Clear();
 
-            var loadAudioTask = queue.EnqueuePriore(GetAudio);
+            var loadAudioTask = Queue.EnqueuePriore(GetAudio);
             var loadStorageTask = Storage.Load();
 
             var data = await TaskUtils.WhenAll(loadAudioTask, loadStorageTask);

@@ -30,10 +30,15 @@ namespace VkTunes.Api.Client
             return apiClient.CallApi<UserAudioResponse>("audio.get");
         }
 
-        public Task<RemoteAudioRecord[]> GetAudioById(int audioId, int ownerId)
+        public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
-            return apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request);
+            var all = await apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request);
+            var audio = all.FirstOrDefault();
+            if (audio == null)
+                throw new VkApiCallException($"Call audio.getById(audioId:{audioId}, owner:{ownerId}) doesn't return an audio.");
+
+            return audio;
         }
 
         public Task<long?> FileSize(string url)
@@ -46,14 +51,10 @@ namespace VkTunes.Api.Client
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            var audioInfo = await methodScopeQueue.Enqueue(() => GetAudioById(audioId, owner));
-            var audio = audioInfo?.FirstOrDefault();
-            if (audio == null)
-                throw new ArgumentException("Audio record not found");
+            var audio = await methodScopeQueue.Enqueue(() => GetAudioById(audioId, owner));
 
             return await methodScopeQueue.Enqueue(async () =>
             {
-
                 await apiClient.DowloadTo(stream, audio.FileUrl, progress);
                 return audio;
             });

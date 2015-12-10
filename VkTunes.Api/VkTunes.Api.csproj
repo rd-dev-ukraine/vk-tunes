@@ -61,6 +61,7 @@
     <Compile Include="Client\IVk.cs" />
     <Compile Include="Client\Audio\UserAudioResponse.cs" />
     <Compile Include="Client\Vk.cs" />
+    <Compile Include="Client\VkApiCallException.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="AudioStorage\IVkAudioFileStorage.cs" />
     <Compile Include="AudioStorage\LocalAudioRecord.cs" />

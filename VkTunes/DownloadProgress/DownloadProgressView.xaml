@@ -6,12 +6,10 @@
              xmlns:local="clr-namespace:VkTunes.DownloadProgress"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <DockPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock>Downloading </TextBlock>
-            <TextBlock Text="{Binding Info.NumberOfAudioDownloadCompleted}"></TextBlock>
-            <TextBlock>/</TextBlock>
-            <TextBlock Text="{Binding Info.TotalAudioInQueue}"></TextBlock>
-        </StackPanel>
-    </DockPanel>
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>
+        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" ></ProgressBar>
+        <TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>
+        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" ></ProgressBar>
+    </StackPanel>
 </UserControl>

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Client;
-using VkTunes.Api.Client.Audio;
+using VkTunes.Api.Infrastructure.Queue;
 
 namespace VkTunes.Api.Models
 {
@@ -14,11 +15,11 @@ namespace VkTunes.Api.Models
     {
         private readonly IVk vk;
         private readonly IVkAudioFileStorage storage;
-        private readonly LinkedList<Download> queue = new LinkedList<Download>();
+        private readonly VkRequestQueue requestQueue;
+        private readonly HashSet<Download> downloads = new HashSet<Download>();
         private readonly object syncRoot = new object();
-        private bool isRunning;
 
-        public DownloadQueue(IVk vk, IVkAudioFileStorage storage)
+        public DownloadQueue(IVk vk, IVkAudioFileStorage storage, VkRequestQueue requestQueue)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
@@ -27,13 +28,14 @@ namespace VkTunes.Api.Models
 
             this.vk = vk;
             this.storage = storage;
+            this.requestQueue = requestQueue;
         }
 
         public void AddToDownloadQueue(int audioId, int owner)
         {
             lock (syncRoot)
             {
-                if (queue.Any(i => i.AudioId == audioId))
+                if (downloads.Any(d => d.AudioId == audioId))
                     return;
             }
 
@@ -44,9 +46,28 @@ namespace VkTunes.Api.Models
             };
 
             lock (syncRoot)
-                queue.AddLast(download);
+            {
+                downloads.Add(download);
+            }
 
-            Run();
+            requestQueue.EnqueuePriore(async () =>
+            {
+                download.IsDownloadStarted = true;
+                using (var buffer = new MemoryStream())
+                {
+                    var audio = await vk.DownloadTo(buffer, download.AudioId, download.Owner, download);
+                    await storage.Save(buffer, audio);
+
+                    download.IsDownloadCompleted = true;
+                    Progress?.Invoke(this, EventArgs.Empty);
+                }
+
+                lock (downloads)
+                    if (downloads.All(d => d.IsDownloadCompleted))
+                        downloads.Clear();
+
+                return Task.FromResult(0);
+            });
         }
 
         public DownloadProgressInfo DownloadProgress()
@@ -55,17 +76,12 @@ namespace VkTunes.Api.Models
 
             lock (syncRoot)
             {
-                foreach (var item in queue)
+                foreach (var item in downloads)
                 {
                     result.TotalAudioInQueue++;
 
                     if (item.IsDownloadCompleted)
                         result.NumberOfAudioDownloadCompleted++;
-
-                    result.TotalQueueBytes += item.TotalBytes;
-
-                    if (item.IsDownloadStarted)
-                        result.QueueDownloadBytes += item.BytesRead;
 
                     if (item.IsDownloadStarted && !item.IsDownloadCompleted)
                     {
@@ -77,49 +93,6 @@ namespace VkTunes.Api.Models
             }
 
             return result;
-        }
-
-        private void Run()
-        {
-            if (isRunning)
-                return;
-
-            isRunning = true;
-
-            ThreadPool.QueueUserWorkItem(_ => DownloadQueueWorker());
-        }
-
-        private void DownloadQueueWorker()
-        {
-            while (true)
-            {
-                Download current = null;
-
-                lock (syncRoot)
-                    current = queue.FirstOrDefault(e => !e.IsDownloadStarted);
-
-                if (current == null)
-                {
-                    lock (syncRoot)
-                    {
-                        queue.Clear();
-                        Progress?.Invoke(this, EventArgs.Empty);
-                        break;
-                    }
-                }
-
-                current.IsDownloadStarted = true;
-                using (var buffer = new MemoryStream())
-                {
-                    var audio = vk.DownloadTo(buffer, current.AudioId, current.Owner, current).Result;
-                    storage.Save(buffer, audio);
-
-                    current.IsDownloadCompleted = true;
-                    Progress?.Invoke(this, EventArgs.Empty);
-                }
-            }
-
-            isRunning = false;
         }
 
         private void NotifyProgress(Download download)

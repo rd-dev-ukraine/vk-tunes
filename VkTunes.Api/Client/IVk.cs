@@ -10,7 +10,7 @@ namespace VkTunes.Api.Client
     {
         Task<UserAudioResponse> MyAudio();
 
-        Task<RemoteAudioRecord[]> GetAudioById(int audioId, int ownerId);
+        Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId);
 
         Task<long?> FileSize(string url);
 

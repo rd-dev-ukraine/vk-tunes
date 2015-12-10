@@ -4,6 +4,7 @@ using Caliburn.Micro;
 
 using Ninject;
 
+using VkTunes.AudioList;
 using VkTunes.Authorization;
 using VkTunes.DownloadProgress;
 using VkTunes.Infrastructure.Navigation;
@@ -36,6 +37,11 @@ namespace VkTunes.Shell
         }
 
         public DownloadProgressViewModel Progress { get; }
+
+        public void MyAudio()
+        {
+            navigator.GoTo<MyAudioViewModel>();
+        }
 
         protected override void OnActivate()
         {

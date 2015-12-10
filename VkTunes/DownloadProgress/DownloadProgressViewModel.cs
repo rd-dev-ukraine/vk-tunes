@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 using Caliburn.Micro;
 
@@ -21,8 +22,11 @@ namespace VkTunes.DownloadProgress
             this.queue = queue;
             this.queue.Progress += (sender, args) =>
             {
-                Info = this.queue.DownloadProgress();
-                IsDisplayed = Info.TotalAudioInQueue > 0;
+                Execute.OnUIThread(() =>
+                {
+                    Info = this.queue.DownloadProgress();
+                    IsDisplayed = Info.TotalAudioInQueue > 0;
+                });
             };
         }
 

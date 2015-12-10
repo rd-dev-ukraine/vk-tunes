@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Api;
+using VkTunes.Api.Infrastructure.Queue;
 using VkTunes.Configuration;
 using VkTunes.Infrastructure.Async;
 using VkTunes.Infrastructure.Navigation;
@@ -37,6 +38,7 @@ namespace VkTunes
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
+            kernel.Bind<VkRequestQueue>().ToSelf().InSingletonScope();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
