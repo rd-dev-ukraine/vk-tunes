@@ -2,12 +2,10 @@
 using System.IO;
 using System.Threading.Tasks;
 
-using VkTunes.Api.Client;
-
-namespace VkTunes.Api.Infrastructure.Http
+namespace VkTunes.Api.LowLevel
 {
     /// <summary>
-    /// Untyped access to vk.com API
+    /// Generic low-level access to vk.com API.
     /// </summary>
     public interface IVkApiClient
     {
@@ -18,8 +16,8 @@ namespace VkTunes.Api.Infrastructure.Http
         Task<TResponse> CallApi<TResponse>(string apiMethod)
             where TResponse : class;
 
-        Task<long?> FileSize(string url);
+        Task<long?> GetFileSize(string url);
 
-        Task DowloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null);
+        Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null);
     }
 }

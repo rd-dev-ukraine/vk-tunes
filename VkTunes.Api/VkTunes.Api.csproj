@@ -65,14 +65,16 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="AudioStorage\IVkAudioFileStorage.cs" />
     <Compile Include="AudioStorage\LocalAudioRecord.cs" />
-    <Compile Include="Infrastructure\Http\VkApiError.cs" />
-    <Compile Include="Infrastructure\Http\VkApiErrorResponseException.cs" />
-    <Compile Include="Infrastructure\Http\VkApiRequestParameters.cs" />
-    <Compile Include="Infrastructure\Http\VkApiResponse.cs" />
-    <Compile Include="Infrastructure\Http\HttpErrorException.cs" />
-    <Compile Include="Infrastructure\Http\VkApiHttpClient.cs" />
-    <Compile Include="Infrastructure\Http\IVkApiClient.cs" />
-    <Compile Include="Infrastructure\Queue\VkRequestQueue.cs" />
+    <Compile Include="LowLevel\ApiCallException.cs" />
+    <Compile Include="LowLevel\VkApiError.cs" />
+    <Compile Include="LowLevel\VkApiErrorDetails.cs" />
+    <Compile Include="LowLevel\ErrorApiCallException.cs" />
+    <Compile Include="LowLevel\VkApiRequestParameters.cs" />
+    <Compile Include="LowLevel\VkApiResponse.cs" />
+    <Compile Include="LowLevel\HttpErrorApiCallException.cs" />
+    <Compile Include="LowLevel\VkApiHttpClient.cs" />
+    <Compile Include="LowLevel\IVkApiClient.cs" />
+    <Compile Include="Queue\VkRequestQueue.cs" />
     <Compile Include="Models\AudioCollectionBase.cs" />
     <Compile Include="Models\AudioInfo.cs" />
     <Compile Include="Models\AudioInfoUpdatedEventArgs.cs" />
@@ -82,7 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Authorization\InMemoryAuthorizationInfo.cs" />
     <Compile Include="Authorization\IAuthorizationInfo.cs" />
-    <Compile Include="TaskUtils.cs" />
+    <Compile Include="Utils\TaskUtils.cs" />
     <Compile Include="Url\QueryStringNameAttribute.cs" />
     <Compile Include="Url\UrlBuilder.cs" />
   </ItemGroup>

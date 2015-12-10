@@ -1,6 +1,4 @@
-﻿using VkTunes.Api.Client;
-
-namespace VkTunes.DownloadProgress
+﻿namespace VkTunes.DownloadProgress
 {
     public class EnqueueAudioDownloadEvent
     {

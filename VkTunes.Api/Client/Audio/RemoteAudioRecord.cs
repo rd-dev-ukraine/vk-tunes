@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace VkTunes.Api.Client.Audio
+namespace VkTunes.Api
 {
     public class RemoteAudioRecord
     {

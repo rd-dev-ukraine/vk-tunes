@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-using VkTunes.Api.Client.Audio;
-
 namespace VkTunes.Api.AudioStorage
 {
     public interface IVkAudioFileStorage

@@ -3,11 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using VkTunes.Api.Client.Audio;
-using VkTunes.Api.Infrastructure.Http;
-using VkTunes.Api.Infrastructure.Queue;
+using VkTunes.Api.LowLevel;
+using VkTunes.Api.Queue;
 
-namespace VkTunes.Api.Client
+namespace VkTunes.Api
 {
     public class Vk : IVk
     {
@@ -43,7 +42,7 @@ namespace VkTunes.Api.Client
 
         public Task<long?> FileSize(string url)
         {
-            return apiClient.FileSize(url);
+            return apiClient.GetFileSize(url);
         }
 
         public async Task<RemoteAudioRecord> DownloadTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
@@ -55,7 +54,7 @@ namespace VkTunes.Api.Client
 
             return await methodScopeQueue.Enqueue(async () =>
             {
-                await apiClient.DowloadTo(stream, audio.FileUrl, progress);
+                await apiClient.DownloadTo(stream, audio.FileUrl, progress);
                 return audio;
             });
         }

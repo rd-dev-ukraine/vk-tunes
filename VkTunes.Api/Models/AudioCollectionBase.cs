@@ -6,9 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using VkTunes.Api.AudioStorage;
-using VkTunes.Api.Client;
-using VkTunes.Api.Client.Audio;
-using VkTunes.Api.Infrastructure.Queue;
+using VkTunes.Api.Queue;
+using VkTunes.Api.Utils;
 
 namespace VkTunes.Api.Models
 {

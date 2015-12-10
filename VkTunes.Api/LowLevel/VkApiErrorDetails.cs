@@ -1,13 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-namespace VkTunes.Api.Infrastructure.Http
+namespace VkTunes.Api.LowLevel
 {
-    public class VkApiError
-    {
-        [JsonProperty("error")]
-        public VkApiErrorDetails Error { get; set; }
-    }
-
     public class VkApiErrorDetails
     {
         [JsonProperty("error_code")]

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace VkTunes.Api
+namespace VkTunes.Api.Utils
 {
     public static class TaskUtils
     {

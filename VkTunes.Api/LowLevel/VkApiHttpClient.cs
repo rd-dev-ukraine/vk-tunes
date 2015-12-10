@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
 using VkTunes.Api.Authorization;
-using VkTunes.Api.Client;
 using VkTunes.Api.Url;
 
-namespace VkTunes.Api.Infrastructure.Http
+namespace VkTunes.Api.LowLevel
 {
     public class VkApiHttpClient : IVkApiClient
     {
@@ -47,25 +44,21 @@ namespace VkTunes.Api.Infrastructure.Http
             };
 
             var url = UrlBuilder.Build(ApiUrl + apiMethod, requestParam) + "&" + UrlBuilder.SerializeToQueryString(request);
-            
+
 
             using (var httpClient = new HttpClient())
             using (var httpResponse = await httpClient.PostAsync(new Uri(url), new StringContent(String.Empty)))
             {
                 if (!httpResponse.IsSuccessStatusCode)
-                    throw new HttpErrorException($"HTTP API call error: {httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
+                    throw new HttpErrorApiCallException("POST", url, $"HTTP API call error: {httpResponse.StatusCode} {httpResponse.ReasonPhrase}");
 
                 var responseBody = await httpResponse.Content.ReadAsStringAsync();
 
-                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
-                Debug.WriteLine(url);
-                Debug.WriteLine(responseBody);
-                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                DebugOut(url, responseBody);
 
                 var error = JsonConvert.DeserializeObject<VkApiError>(responseBody);
                 if (error.Error != null)
-                    throw new VkApiErrorResponseException(error.Error);
+                    throw new ErrorApiCallException(error.Error);
 
                 var response = JsonConvert.DeserializeObject<VkApiResponse<TResponse>>(responseBody);
                 return response.Response;
@@ -77,31 +70,24 @@ namespace VkTunes.Api.Infrastructure.Http
             return CallApi<string, TResponse>(apiMethod, String.Empty);
         }
 
-        public async Task<long?> FileSize(string url)
+        public async Task<long?> GetFileSize(string url)
         {
             using (var http = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Head, url))
             {
-                request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36");
-                request.Headers.Accept.ParseAdd("*/*");
-                request.Headers.Add("X-Requested-With", "XMLHttpRequest");
-
                 using (var response = await http.SendAsync(request))
                 {
                     if (!response.IsSuccessStatusCode)
                         return null;
 
-                    Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                    Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
-                    Debug.WriteLine(url);
-                    Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                    DebugOut($"Getting file size at {url}");
 
                     return response.Content.Headers.ContentLength;
                 }
             }
         }
 
-        public async Task DowloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null)
+        public async Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress = null)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
@@ -111,6 +97,9 @@ namespace VkTunes.Api.Infrastructure.Http
             using (var http = new HttpClient())
             using (var response = await http.GetAsync(fileUrl))
             {
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpErrorApiCallException("GET", fileUrl, $"Downloading file error: {response.StatusCode} {response.ReasonPhrase}");
+
                 var size = response.Content.Headers?.ContentLength ?? 0;
                 using (var contentStream = await response.Content.ReadAsStreamAsync())
                 {
@@ -139,11 +128,17 @@ namespace VkTunes.Api.Infrastructure.Http
                     }
                 }
 
-                Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
-                Debug.WriteLine($"Download {size} bytes from {fileUrl}");
-                Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                DebugOut($"Download {size} bytes from {fileUrl}");
             }
+        }
+
+        private void DebugOut(params string[] lines)
+        {
+            Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
+            foreach (var l in lines)
+                Debug.WriteLine(l);
+            Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         }
     }
 }

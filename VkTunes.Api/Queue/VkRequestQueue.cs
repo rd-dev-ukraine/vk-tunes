@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VkTunes.Api.Infrastructure.Queue
+namespace VkTunes.Api.Queue
 {
     public class VkRequestQueue
     {

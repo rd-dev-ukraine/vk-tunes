@@ -2,9 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-using VkTunes.Api.Client.Audio;
-
-namespace VkTunes.Api.Client
+namespace VkTunes.Api
 {
     public interface IVk
     {

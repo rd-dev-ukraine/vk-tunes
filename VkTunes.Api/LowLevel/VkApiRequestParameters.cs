@@ -1,6 +1,6 @@
 ﻿using VkTunes.Api.Url;
 
-namespace VkTunes.Api.Infrastructure.Http
+namespace VkTunes.Api.LowLevel
 {
     public class VkApiRequestParameters
     {

@@ -2,8 +2,7 @@
 
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Authorization;
-using VkTunes.Api.Client;
-using VkTunes.Api.Infrastructure.Http;
+using VkTunes.Api.LowLevel;
 
 namespace VkTunes.Api
 {
