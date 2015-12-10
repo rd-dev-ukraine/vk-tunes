@@ -11,5 +11,7 @@ namespace VkTunes.Api.Client
         Task<long?> FileSize(string url);
 
         Task DownloadTo(Stream stream, string fileUrl, IProgress<AudioDownloadProgress> progress);
+
+        Task<long?> FileSizePriore(string url);
     }
 }
