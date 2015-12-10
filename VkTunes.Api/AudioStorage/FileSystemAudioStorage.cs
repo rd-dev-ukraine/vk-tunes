@@ -33,7 +33,7 @@ namespace VkTunes.Api.AudioStorage
                     var m = extractAudioId.Match(file);
                     if (m.Success)
                     {
-                        var audioId = Int32.Parse(m.Captures[0].Value);
+                        var audioId = Int32.Parse(m.Groups[1].Value);
 
                         result[audioId] = new LocalAudioRecord
                         {
@@ -50,6 +50,9 @@ namespace VkTunes.Api.AudioStorage
 
         public async Task Save(Stream source, RemoteAudioRecord audio)
         {
+            if (audio == null)
+                throw new ArgumentNullException(nameof(audio));
+
             var fileName = GenerateFileName(audio.Id, audio.Artist, audio.Title);
             var path = Path.Combine(storageFolder, fileName);
 
@@ -59,6 +62,16 @@ namespace VkTunes.Api.AudioStorage
                 await source.CopyToAsync(file);
                 file.Close();
             }
+            LocalAudioUpdated?.Invoke(this, new LocalAudioRecordUpdatedEventArgs
+            {
+                AudioId = audio.Id,
+                LocalAudio = new LocalAudioRecord
+                {
+                    Id = audio.Id,
+                    FilePath = path,
+                    Name = fileName
+                }
+            });
         }
 
         private string GenerateFileName(int audioId, string artist, string title)
@@ -73,5 +86,7 @@ namespace VkTunes.Api.AudioStorage
             return Path.GetInvalidFileNameChars()
                        .Aggregate(value, (current, ch) => current.Replace(ch.ToString(), String.Empty));
         }
+
+        public event EventHandler<LocalAudioRecordUpdatedEventArgs> LocalAudioUpdated;
     }
 }

@@ -27,6 +27,8 @@ namespace VkTunes.Api.Models
 
             VK = vk;
             Storage = storage;
+
+            Storage.LocalAudioUpdated += OnLocalAudioUpdated;
         }
 
         public ObservableCollection<AudioInfo> Audio { get; } = new ObservableCollection<AudioInfo>();
@@ -94,6 +96,16 @@ namespace VkTunes.Api.Models
             }
 
             return result;
+        }
+
+        private void OnLocalAudioUpdated(object sender, LocalAudioRecordUpdatedEventArgs e)
+        {
+            var audio = Audio.FirstOrDefault(a => a.Id == e.AudioId);
+            if (audio != null)
+            {
+                audio.LocalAudio = e.LocalAudio;
+                AudioInfoUpdated?.Invoke(this, new AudioInfoUpdatedEventArgs { Audio = audio, AudioId = audio.Id });
+            }
         }
 
         public event EventHandler<AudioInfoUpdatedEventArgs> AudioInfoUpdated;

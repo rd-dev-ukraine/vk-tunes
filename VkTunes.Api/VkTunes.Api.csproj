@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
     <Compile Include="AudioStorage\FileSystemAudioStorage.cs" />
+    <Compile Include="AudioStorage\LocalAudioRecordUpdatedEventArgs.cs" />
     <Compile Include="Authorization\AuthorizationRequiredException.cs" />
     <Compile Include="Authorization\AuthorizationUrlParameters.cs" />
     <Compile Include="Authorization\IAuthorization.cs" />
