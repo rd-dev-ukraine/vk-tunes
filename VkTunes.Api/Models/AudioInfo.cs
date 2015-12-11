@@ -1,4 +1,5 @@
-﻿using VkTunes.Api.AudioStorage;
+﻿using VkTunes.Api.Api;
+using VkTunes.Api.AudioStorage;
 
 namespace VkTunes.Api.Models
 {

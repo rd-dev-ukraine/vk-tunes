@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace VkTunes.Api
+namespace VkTunes.Api.Api
 {
     public class UserAudioResponse
     {

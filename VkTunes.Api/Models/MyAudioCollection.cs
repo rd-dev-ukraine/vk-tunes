@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 
+using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
-using VkTunes.Api.Queue;
 
 namespace VkTunes.Api.Models
 {
     public class MyAudioCollection : AudioCollectionBase
     {
-        public MyAudioCollection(IVk vk, IVkAudioFileStorage storage) 
+        public MyAudioCollection(Vk vk, IVkAudioFileStorage storage) 
             : base(vk, storage)
         {
         }

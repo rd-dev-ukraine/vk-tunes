@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
+using VkTunes.Api.Api;
 using VkTunes.Api.Authorization;
 using VkTunes.Api.Url;
 
 namespace VkTunes.Api.LowLevel
 {
-    public class VkApiHttpClient : IVkApiClient
+    public class VkHttpClient : IVkHttpClient
     {
         private const string ApiUrl = "https://api.vk.com/method/";
 
         private readonly IAuthorizationInfo authorizationInfo;
 
-        public VkApiHttpClient(IAuthorizationInfo authorizationInfo)
+        public VkHttpClient(IAuthorizationInfo authorizationInfo)
         {
             if (authorizationInfo == null)
                 throw new ArgumentNullException(nameof(authorizationInfo));

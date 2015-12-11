@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace VkTunes.Api
+namespace VkTunes.Api.Api
 {
     /// <summary>
     /// The exception that is thrown if call vk.com API doesn't return expected results because of parameters are invalid.

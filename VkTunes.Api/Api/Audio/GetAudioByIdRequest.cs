@@ -1,6 +1,6 @@
 ﻿using VkTunes.Api.Url;
 
-namespace VkTunes.Api
+namespace VkTunes.Api.Api
 {
     public class GetAudioByIdRequest
     {

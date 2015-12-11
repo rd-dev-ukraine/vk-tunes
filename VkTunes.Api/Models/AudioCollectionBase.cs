@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
+using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
-using VkTunes.Api.Queue;
 using VkTunes.Api.Utils;
 
 namespace VkTunes.Api.Models
@@ -18,7 +17,7 @@ namespace VkTunes.Api.Models
     /// </summary>
     public abstract class AudioCollectionBase
     {
-        protected AudioCollectionBase(IVk vk, IVkAudioFileStorage storage)
+        protected AudioCollectionBase(Vk vk, IVkAudioFileStorage storage)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
@@ -33,7 +32,7 @@ namespace VkTunes.Api.Models
 
         public ObservableCollection<AudioInfo> Audio { get; } = new ObservableCollection<AudioInfo>();
 
-        protected IVk VK { get; }
+        protected Vk VK { get; }
 
         protected IVkAudioFileStorage Storage { get; }
 

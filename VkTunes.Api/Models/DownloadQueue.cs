@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
+using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
-using VkTunes.Api.Queue;
 
 namespace VkTunes.Api.Models
 {
     public class DownloadQueue
     {
-        private readonly IVk vk;
+        private readonly Vk vk;
         private readonly IVkAudioFileStorage storage;
         private readonly HashSet<Download> downloads = new HashSet<Download>();
         private readonly object syncRoot = new object();
 
-        public DownloadQueue(IVk vk, IVkAudioFileStorage storage)
+        public DownloadQueue(Vk vk, IVkAudioFileStorage storage)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));

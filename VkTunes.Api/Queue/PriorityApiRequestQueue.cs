@@ -18,8 +18,6 @@ namespace VkTunes.Api.Queue
 
         public PriorityApiRequestQueue()
         {
-            Throttler = new Throttler();
-
             processLoop = new Thread(_ => ProcessQueue())
             {
                 Name = "VK API Request Queue",
@@ -27,8 +25,6 @@ namespace VkTunes.Api.Queue
             };
             processLoop.Start();
         }
-
-        public Throttler Throttler { get; }
 
         public Task<TResult> EnqueueFirst<TResult>(Func<Task<TResult>> workload, int priority, string description)
         {
@@ -157,58 +153,7 @@ namespace VkTunes.Api.Queue
                     taskQueue.RemoveFirst();
                 }
 
-                Throttler.Throttle(nextTask.Run).Wait();
-            }
-        }
-
-        private interface IQueueItem
-        {
-            int Priority { get; }
-
-            Task Run();
-        }
-
-        private class QueueItem<TResult> : IQueueItem
-        {
-            public QueueItem(Func<Task<TResult>> workload, int priority, string description)
-            {
-                if (workload == null)
-                    throw new ArgumentNullException(nameof(workload));
-
-                Workload = workload;
-                Priority = priority;
-                CompletionSource = new TaskCompletionSource<TResult>();
-                Description = description;
-            }
-
-            public int Priority { get; }
-
-            public string Description { get; }
-
-            public Task<TResult> ResultTask => CompletionSource.Task;
-
-            private TaskCompletionSource<TResult> CompletionSource { get; }
-
-            private Func<Task<TResult>> Workload { get; }
-
-            public async Task Run()
-            {
-                var taskToRun = Workload();
-
-                try
-                {
-                    var result = await taskToRun;
-                    CompletionSource.SetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    CompletionSource.SetException(ex);
-                }
-            }
-
-            public override string ToString()
-            {
-                return $"{Priority}:::{Description} ({ResultTask.Status})";
+                nextTask.Run().Wait();
             }
         }
     }

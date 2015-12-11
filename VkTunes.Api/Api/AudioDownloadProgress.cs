@@ -1,4 +1,4 @@
-﻿namespace VkTunes.Api
+﻿namespace VkTunes.Api.Api
 {
     public class AudioDownloadProgress
     {

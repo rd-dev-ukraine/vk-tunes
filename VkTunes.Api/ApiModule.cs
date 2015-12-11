@@ -1,8 +1,10 @@
 ﻿using Ninject.Modules;
 
+using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Authorization;
 using VkTunes.Api.LowLevel;
+using VkTunes.Api.Models;
 using VkTunes.Api.Queue;
 
 namespace VkTunes.Api
@@ -14,10 +16,12 @@ namespace VkTunes.Api
             Bind<IAuthorization>().To<InAppBrowserAuthorization>();
             Bind<IAuthorizationInfo>().To<InMemoryAuthorizationInfo>().InSingletonScope();
 
-            Bind<IVkApiClient>().To<VkApiHttpClient>().InSingletonScope();
-            Bind<IVk>().To<Vk>().InSingletonScope();
+            Bind<IVkHttpClient>().To<VkHttpClient>().InSingletonScope();
+            Bind<IVkApi>().To<VkApi>().InSingletonScope();
+            Bind<Vk>().ToSelf().InSingletonScope();
             Bind<IVkAudioFileStorage>().To<FileSystemAudioStorage>().InSingletonScope();
 
+            Bind<IThrottler>().To<Throttler>().InSingletonScope();
             Bind<IApiRequestQueue>().To<PriorityApiRequestQueue>().InSingletonScope();
         }
     }
