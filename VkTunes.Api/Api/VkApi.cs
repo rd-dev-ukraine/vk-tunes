@@ -29,6 +29,23 @@ namespace VkTunes.Api.Api
             return throttler.Throttle(() => client.CallApi<UserAudioResponse>("audio.get"));
         }
 
+        public Task<SearchAudioResponse> SearchAudio(string q)
+        {
+            if (String.IsNullOrWhiteSpace(q))
+                return Task.FromResult(new SearchAudioResponse
+                {
+                    Audio = new RemoteAudioRecord[] {},
+                    Count = 0
+                });
+
+            return throttler.Throttle(() => client.CallApi<SearchAudioRequest, SearchAudioResponse>(
+                                                            "audio.search",
+                                                            new SearchAudioRequest
+                                                            {
+                                                                Query = q
+                                                            }));
+        }
+
         public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };

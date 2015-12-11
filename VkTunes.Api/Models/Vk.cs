@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 using VkTunes.Api.Api;
-using VkTunes.Api.LowLevel;
 using VkTunes.Api.Queue;
 
 namespace VkTunes.Api.Models
@@ -34,6 +32,11 @@ namespace VkTunes.Api.Models
             return queue.EnqueueFirst(() => api.MyAudio(), QueuePriorities.ApiCall, "API::audio.get");
         }
 
+        public Task<SearchAudioResponse> SearchAudio(string query)
+        {
+            return queue.EnqueueFirst(() => api.SearchAudio(query), QueuePriorities.ApiCall, "API::audio.search"));
+        }
+
         public Task<long?> GetFileSize(string url)
         {
             return queue.EnqueueLast(() => api.GetFileSize(url), QueuePriorities.GetFileSize, $"Get file size for file {url}");
@@ -44,7 +47,7 @@ namespace VkTunes.Api.Models
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            return await queue.EnqueueFirst(() => api.DownloadAudioFileTo(stream, audioId, owner, progress), 
+            return await queue.EnqueueFirst(() => api.DownloadAudioFileTo(stream, audioId, owner, progress),
                                     QueuePriorities.DownloadFile,
                                     $"Download file for audio {owner}_{audioId}");
         }

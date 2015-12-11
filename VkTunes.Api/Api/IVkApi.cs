@@ -13,5 +13,7 @@ namespace VkTunes.Api.Api
         Task<long?> GetFileSize(string url);
 
         Task<RemoteAudioRecord> DownloadAudioFileTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress);
+
+        Task<SearchAudioResponse> SearchAudio(string q);
     }
 }

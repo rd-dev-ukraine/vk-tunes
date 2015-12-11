@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace VkTunes.AudioList
+namespace VkTunes.MyAudio
 {
     /// <summary>
     /// Interaction logic for AudioListView.xaml

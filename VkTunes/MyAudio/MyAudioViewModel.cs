@@ -2,7 +2,7 @@
 
 using VkTunes.Api.Models;
 
-namespace VkTunes.AudioList
+namespace VkTunes.MyAudio
 {
     public class MyAudioViewModel : AudioListModelBase
     {

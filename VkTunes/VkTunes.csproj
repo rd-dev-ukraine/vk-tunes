@@ -80,10 +80,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AudioListModelBase.cs" />
-    <Compile Include="AudioList\MyAudioView.xaml.cs">
+    <Compile Include="MyAudio\MyAudioView.xaml.cs">
       <DependentUpon>MyAudioView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AudioList\MyAudioViewModel.cs" />
+    <Compile Include="MyAudio\MyAudioViewModel.cs" />
     <Compile Include="AudioRecord\BytesToSizeConverter.cs" />
     <Compile Include="AudioRecord\AudioRecordView.xaml.cs">
       <DependentUpon>AudioRecordView.xaml</DependentUpon>
@@ -104,6 +104,7 @@
     <Compile Include="Infrastructure\Async\AsyncOperationStartedEvent.cs" />
     <Compile Include="Infrastructure\Async\AsyncRunner.cs" />
     <Compile Include="Infrastructure\Async\IAsync.cs" />
+    <Compile Include="SearchAudio\SearchAudioModel.cs" />
     <Compile Include="Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -150,7 +151,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AudioList\MyAudioView.xaml">
+    <Page Include="MyAudio\MyAudioView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

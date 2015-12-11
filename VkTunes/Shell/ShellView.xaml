@@ -9,6 +9,10 @@
     <Grid>
         <DockPanel>
             <TextBlock DockPanel.Dock="Top" TextAlignment="Center" FontSize="30">VK-Tunes</TextBlock>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                <Button x:Name="MyAudio">My Audio</Button>
+                <Button x:Name="SearchAudio">Search audio</Button>
+            </StackPanel>
             <ContentControl x:Name="Progress" DockPanel.Dock="Top" Margin="10">
             </ContentControl>
             <DockPanel Margin="10">

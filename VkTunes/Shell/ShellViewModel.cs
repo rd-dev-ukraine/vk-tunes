@@ -8,6 +8,7 @@ using VkTunes.AudioList;
 using VkTunes.Authorization;
 using VkTunes.DownloadProgress;
 using VkTunes.Infrastructure.Navigation;
+using VkTunes.MyAudio;
 
 namespace VkTunes.Shell
 {

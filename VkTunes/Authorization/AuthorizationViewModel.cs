@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using VkTunes.Api.Authorization;
 using VkTunes.AudioList;
 using VkTunes.Infrastructure.Navigation;
+using VkTunes.MyAudio;
 
 namespace VkTunes.Authorization
 {
