@@ -77,6 +77,7 @@
     <Compile Include="Models\QueuePriorities.cs" />
     <Compile Include="Queue\IApiRequestQueue.cs" />
     <Compile Include="Queue\PriorityApiRequestQueue.cs" />
+    <Compile Include="Queue\Throttler.cs" />
     <Compile Include="Queue\VkApiRequestQueue.cs" />
     <Compile Include="Models\AudioCollectionBase.cs" />
     <Compile Include="Models\AudioInfo.cs" />

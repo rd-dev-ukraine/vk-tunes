@@ -8,8 +8,6 @@ namespace VkTunes.Api
     {
         Task<UserAudioResponse> MyAudio();
 
-        Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId);
-
         Task<long?> GetFileSize(string url);
 
         Task<RemoteAudioRecord> DownloadAudioFileTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress);

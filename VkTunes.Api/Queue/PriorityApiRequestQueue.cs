@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,14 +12,14 @@ namespace VkTunes.Api.Queue
     /// </summary>
     public class PriorityApiRequestQueue : IApiRequestQueue
     {
-        private const int ApiRequestPerSecond = 3;
         private readonly LinkedList<IQueueItem> taskQueue = new LinkedList<IQueueItem>();
-        private readonly Queue<long> taskStartTime = new Queue<long>();
         private readonly Thread processLoop;
         private readonly object syncRoot = new object();
 
         public PriorityApiRequestQueue()
         {
+            Throttler = new Throttler();
+
             processLoop = new Thread(_ => ProcessQueue())
             {
                 Name = "VK API Request Queue",
@@ -28,6 +27,8 @@ namespace VkTunes.Api.Queue
             };
             processLoop.Start();
         }
+
+        public Throttler Throttler { get; }
 
         public Task<TResult> EnqueueFirst<TResult>(Func<Task<TResult>> workload, int priority, string description)
         {
@@ -108,7 +109,6 @@ namespace VkTunes.Api.Queue
             }
         }
 
-
         private void InsertLast(IQueueItem item)
         {
             if (item == null)
@@ -141,33 +141,6 @@ namespace VkTunes.Api.Queue
             }
         }
 
-        private LinkedListNode<IQueueItem> LastOrDefault(Func<IQueueItem, bool> predicate)
-        {
-            var node = taskQueue.First;
-
-            var isNodeFound = false;
-
-            while (node != null)
-            {
-                var isNodeMatch = predicate(node.Value);
-
-                if (isNodeMatch)
-                {
-                    isNodeFound = true;
-                    node = node.Next;
-
-                    continue;
-                }
-
-                if (isNodeFound)
-                    return node;
-
-                node = node.Next;
-            }
-
-            return taskQueue.Last;
-        }
-
         private void ProcessQueue()
         {
             while (true)
@@ -184,19 +157,7 @@ namespace VkTunes.Api.Queue
                     taskQueue.RemoveFirst();
                 }
 
-                taskStartTime.Enqueue(DateTime.Now.Ticks);
-                if (taskStartTime.Count > ApiRequestPerSecond)
-                    taskStartTime.Dequeue();
-
-                if (taskStartTime.Count >= ApiRequestPerSecond)
-                {
-                    var lastTaskTicks = taskStartTime.First();
-                    var elapsedSinceLastTime = TimeSpan.FromTicks(DateTime.Now.Ticks - lastTaskTicks);
-                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
-                        Thread.Sleep(1000 - (int)elapsedSinceLastTime.TotalMilliseconds);
-                }
-
-                nextTask.Run().Wait();
+                Throttler.Throttle(nextTask.Run).Wait();
             }
         }
 

@@ -37,15 +37,11 @@ namespace VkTunes.Api
             return requestQueue.EnqueueFirst(() => apiClient.CallApi<UserAudioResponse>("audio.get"), QueuePriorities.ApiCall, "API::audio.get");
         }
 
-        public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
+        private async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
 
-            var all = await requestQueue.EnqueueFirst(
-                                () => apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request),
-                                QueuePriorities.ApiCall,
-                                $"API::audio.getById({ownerId}_{audioId})");
-
+            var all = await apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request);
 
             var audio = all.FirstOrDefault();
             if (audio == null)
@@ -68,8 +64,8 @@ namespace VkTunes.Api
             return await requestQueue.EnqueueFirst(async () =>
                                         {
                                             // Error: unable to enqueue tasks inside other queued task
-                                            var audio = await GetAudioById(audioId, owner);
-                                            await apiClient.DownloadTo(stream, audio.FileUrl, progress);
+                                            var audio = await requestQueue.Throttler.Throttle(() => GetAudioById(audioId, owner));
+                                            await requestQueue.Throttler.Throttle(() => apiClient.DownloadTo(stream, audio.FileUrl, progress));
                                             return audio;
                                         }, 
                                         QueuePriorities.DownloadFile,
