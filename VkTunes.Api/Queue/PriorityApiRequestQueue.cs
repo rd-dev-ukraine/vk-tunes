@@ -34,7 +34,7 @@ namespace VkTunes.Api.Queue
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            return EnqueueCore(workload, priority, description, q => q.Priority > priority);
+            return EnqueueCore(workload, priority, description, InsertFirst);
         }
 
         public Task<TResult> EnqueueLast<TResult>(Func<Task<TResult>> workload, int priority, string description)
@@ -42,10 +42,10 @@ namespace VkTunes.Api.Queue
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            return EnqueueCore(workload, priority, description, q => q.Priority >= priority);
+            return EnqueueCore(workload, priority, description, InsertLast);
         }
 
-        private Task<TResult> EnqueueCore<TResult>(Func<Task<TResult>> workload, int priority, string description, Func<IQueueItem, bool> findPreviousNode)
+        private Task<TResult> EnqueueCore<TResult>(Func<Task<TResult>> workload, int priority, string description, Action<IQueueItem> insertInQueue)
         {
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
@@ -54,14 +54,7 @@ namespace VkTunes.Api.Queue
 
             var item = new QueueItem<TResult>(workload, priority, description);
 
-            lock (syncRoot)
-            {
-                var prev = LastOrDefault(findPreviousNode);
-                if (prev == null)
-                    taskQueue.AddFirst(item);
-                else
-                    taskQueue.AddAfter(prev, item);
-            }
+            insertInQueue(item);
 
             return item.ResultTask;
         }
@@ -83,35 +76,68 @@ namespace VkTunes.Api.Queue
             }
         }
 
-        private void ProcessQueue()
+        private void InsertFirst(IQueueItem item)
         {
-            while (true)
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            lock (syncRoot)
             {
-                IQueueItem nextTask;
-
-                lock (syncRoot)
+                if (taskQueue.Count == 0)
+                    taskQueue.AddFirst(item);
+                else
                 {
-                    var nextNode = taskQueue.First;
-                    if (nextNode == null)
-                        continue;
+                    // Insert 2 in 3 3 2 2 1 1
+                    //        2 in 3 3
+                    //        2 in 1 1      
+                    var node = taskQueue.First;
 
-                    nextTask = nextNode.Value;
-                    taskQueue.RemoveFirst();
+                    while (node != null)
+                    {
+                        if (node.Value.Priority <= item.Priority)
+                        {
+                            taskQueue.AddBefore(node, item);
+                            return;
+                        }
+
+                        node = node.Previous;
+                    }
+
+                    taskQueue.AddLast(item);
                 }
+            }
+        }
 
-                taskStartTime.Enqueue(DateTime.Now.Ticks);
-                if (taskStartTime.Count > ApiRequestPerSecond)
-                    taskStartTime.Dequeue();
 
-                if (taskStartTime.Count >= ApiRequestPerSecond)
+        private void InsertLast(IQueueItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            lock (syncRoot)
+            {
+                if (taskQueue.Count == 0)
+                    taskQueue.AddFirst(item);
+                else
                 {
-                    var lastTaskTicks = taskStartTime.Last();
-                    var elapsedSinceLastTime = TimeSpan.FromTicks(DateTime.Now.Ticks - lastTaskTicks);
-                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
-                        Thread.Sleep(1000 - (int)elapsedSinceLastTime.TotalMilliseconds);
-                }
+                    // Insert 2 in 3 3 2 2 1 1
+                    //        2 in 3 3
+                    //        2 in 1 1
 
-                nextTask.Run().Wait();
+                    var node = taskQueue.First;
+
+                    while (node != null)
+                    {
+                        if (node.Value.Priority < item.Priority)
+                        {
+                            taskQueue.AddBefore(node, item);
+                            return;
+                        }
+
+                        node = node.Previous;
+                    }
+
+                    taskQueue.AddLast(item);
+                }
             }
         }
 
@@ -140,6 +166,38 @@ namespace VkTunes.Api.Queue
             }
 
             return taskQueue.Last;
+        }
+
+        private void ProcessQueue()
+        {
+            while (true)
+            {
+                IQueueItem nextTask;
+
+                lock (syncRoot)
+                {
+                    var nextNode = taskQueue.First;
+                    if (nextNode == null)
+                        continue;
+
+                    nextTask = nextNode.Value;
+                    taskQueue.RemoveFirst();
+                }
+
+                taskStartTime.Enqueue(DateTime.Now.Ticks);
+                if (taskStartTime.Count > ApiRequestPerSecond)
+                    taskStartTime.Dequeue();
+
+                if (taskStartTime.Count >= ApiRequestPerSecond)
+                {
+                    var lastTaskTicks = taskStartTime.First();
+                    var elapsedSinceLastTime = TimeSpan.FromTicks(DateTime.Now.Ticks - lastTaskTicks);
+                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
+                        Thread.Sleep(1000 - (int)elapsedSinceLastTime.TotalMilliseconds);
+                }
+
+                nextTask.Run().Wait();
+            }
         }
 
         private interface IQueueItem

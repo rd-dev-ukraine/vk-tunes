@@ -63,16 +63,17 @@ namespace VkTunes.Api
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-
-            var audio = await GetAudioById(audioId, owner);
+            
 
             return await requestQueue.EnqueueFirst(async () =>
-            {
-                await apiClient.DownloadTo(stream, audio.FileUrl, progress);
-                return audio;
-            }, 
-            QueuePriorities.DownloadFile,
-            $"Download file for audio {owner}_{audioId}");
+                                        {
+                                            // Error: unable to enqueue tasks inside other queued task
+                                            var audio = await GetAudioById(audioId, owner);
+                                            await apiClient.DownloadTo(stream, audio.FileUrl, progress);
+                                            return audio;
+                                        }, 
+                                        QueuePriorities.DownloadFile,
+                                        $"Download file for audio {owner}_{audioId}");
         }
 
         public void CancelTasks(int priority)
