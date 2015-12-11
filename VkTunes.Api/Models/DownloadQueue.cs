@@ -14,11 +14,10 @@ namespace VkTunes.Api.Models
     {
         private readonly IVk vk;
         private readonly IVkAudioFileStorage storage;
-        private readonly IApiRequestQueue requestQueue;
         private readonly HashSet<Download> downloads = new HashSet<Download>();
         private readonly object syncRoot = new object();
 
-        public DownloadQueue(IVk vk, IVkAudioFileStorage storage, IApiRequestQueue requestQueue)
+        public DownloadQueue(IVk vk, IVkAudioFileStorage storage)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
@@ -27,7 +26,6 @@ namespace VkTunes.Api.Models
 
             this.vk = vk;
             this.storage = storage;
-            this.requestQueue = requestQueue;
         }
 
         public void AddToDownloadQueue(int audioId, int owner)
@@ -49,25 +47,24 @@ namespace VkTunes.Api.Models
                 downloads.Add(download);
             }
 
-            requestQueue.EnqueueLast(async () =>
+            EnqueueDownload(download);
+        }
+
+        private async Task EnqueueDownload(Download download)
+        {
+            download.IsDownloadStarted = true;
+            using (var buffer = new MemoryStream())
             {
-                download.IsDownloadStarted = true;
-                using (var buffer = new MemoryStream())
-                {
-                    var audio = await vk.DownloadAudioFileTo(buffer, download.AudioId, download.Owner, download);
-                    await storage.Save(buffer, audio);
+                var audio = await vk.DownloadAudioFileTo(buffer, download.AudioId, download.Owner, download);
+                await storage.Save(buffer, audio);
 
-                    download.IsDownloadCompleted = true;
-                    Progress?.Invoke(this, EventArgs.Empty);
-                }
+                download.IsDownloadCompleted = true;
+                Progress?.Invoke(this, EventArgs.Empty);
+            }
 
-                lock (downloads)
-                    if (downloads.All(d => d.IsDownloadCompleted))
-                        downloads.Clear();
-
-                return Task.FromResult(0);
-            },
-            QueuePriorities.DownloadFile);
+            lock (downloads)
+                if (downloads.All(d => d.IsDownloadCompleted))
+                    downloads.Clear();
         }
 
         public DownloadProgressInfo DownloadProgress()

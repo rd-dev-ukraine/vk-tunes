@@ -25,9 +25,12 @@ namespace VkTunes
             };
             AudioCollection.AudioInfoUpdated += (s, e) =>
             {
-                var model = Audio.SingleOrDefault(a => a.Id == e.AudioId);
-                if (model != null)
-                    Map(e.Audio, model);
+                Execute.OnUIThread(() =>
+                {
+                    var model = Audio.SingleOrDefault(a => a.Id == e.AudioId);
+                    if (model != null)
+                        Map(e.Audio, model);
+                });
             };
         }
 
@@ -42,7 +45,7 @@ namespace VkTunes
 
         public void DownloadAll()
         {
-            foreach(var audio in Audio)
+            foreach (var audio in Audio)
                 DownloadAudio(audio);
         }
 

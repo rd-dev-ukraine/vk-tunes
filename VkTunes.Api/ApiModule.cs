@@ -18,7 +18,7 @@ namespace VkTunes.Api
             Bind<IVk>().To<Vk>().InSingletonScope();
             Bind<IVkAudioFileStorage>().To<FileSystemAudioStorage>().InSingletonScope();
 
-            Bind<IApiRequestQueue>().To<VkPriorityApiRequestQueue>().InSingletonScope();
+            Bind<IApiRequestQueue>().To<PriorityApiRequestQueue>().InSingletonScope();
         }
     }
 }

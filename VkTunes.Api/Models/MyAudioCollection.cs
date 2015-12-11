@@ -7,8 +7,8 @@ namespace VkTunes.Api.Models
 {
     public class MyAudioCollection : AudioCollectionBase
     {
-        public MyAudioCollection(IVk vk, IVkAudioFileStorage storage, IApiRequestQueue queue) 
-            : base(vk, storage, queue)
+        public MyAudioCollection(IVk vk, IVkAudioFileStorage storage) 
+            : base(vk, storage)
         {
         }
 

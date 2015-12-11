@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using VkTunes.Api.LowLevel;
+using VkTunes.Api.Models;
 using VkTunes.Api.Queue;
 
 namespace VkTunes.Api
@@ -13,34 +14,39 @@ namespace VkTunes.Api
         /// <summary>
         /// Puts the API call to the first position of queue - task will be execute immediately after delay passed.
         /// </summary>
-        private const int QueuePriorityImmediate = 10000;
         private readonly IVkApiClient apiClient;
 
         /// <summary>
         /// Internal request queue. Should be used only in case of few API calls inside single method.
         /// </summary>
-        private readonly IApiRequestQueue methodScopeQueue;
+        private readonly IApiRequestQueue requestQueue;
 
-        public Vk(IVkApiClient apiClient, IApiRequestQueue methodScopeQueue)
+        public Vk(IVkApiClient apiClient, IApiRequestQueue requestQueue)
         {
             if (apiClient == null)
                 throw new ArgumentNullException(nameof(apiClient));
-            if (methodScopeQueue == null)
-                throw new ArgumentNullException(nameof(methodScopeQueue));
+            if (requestQueue == null)
+                throw new ArgumentNullException(nameof(requestQueue));
 
             this.apiClient = apiClient;
-            this.methodScopeQueue = methodScopeQueue;
+            this.requestQueue = requestQueue;
         }
 
         public Task<UserAudioResponse> MyAudio()
         {
-            return apiClient.CallApi<UserAudioResponse>("audio.get");
+            return requestQueue.EnqueueFirst(() => apiClient.CallApi<UserAudioResponse>("audio.get"), QueuePriorities.ApiCall, "API::audio.get");
         }
 
         public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
-            var all = await apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request);
+
+            var all = await requestQueue.EnqueueFirst(
+                                () => apiClient.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request),
+                                QueuePriorities.ApiCall,
+                                $"API::audio.getById({ownerId}_{audioId})");
+
+
             var audio = all.FirstOrDefault();
             if (audio == null)
                 throw new VkApiCallException($"Call audio.getById(audioId:{audioId}, owner:{ownerId}) doesn't return an audio.");
@@ -50,7 +56,7 @@ namespace VkTunes.Api
 
         public Task<long?> GetFileSize(string url)
         {
-            return apiClient.GetFileSize(url);
+            return requestQueue.EnqueueLast(() => apiClient.GetFileSize(url), QueuePriorities.GetFileSize, $"Get file size for file {url}");
         }
 
         public async Task<RemoteAudioRecord> DownloadAudioFileTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
@@ -58,13 +64,20 @@ namespace VkTunes.Api
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            var audio = await methodScopeQueue.EnqueueFirst(() => GetAudioById(audioId, owner), QueuePriorityImmediate);
+            var audio = await GetAudioById(audioId, owner);
 
-            return await methodScopeQueue.EnqueueFirst(async () =>
+            return await requestQueue.EnqueueFirst(async () =>
             {
                 await apiClient.DownloadTo(stream, audio.FileUrl, progress);
                 return audio;
-            }, QueuePriorityImmediate);
+            }, 
+            QueuePriorities.DownloadFile,
+            $"Download file for audio {owner}_{audioId}");
+        }
+
+        public void CancelTasks(int priority)
+        {
+            requestQueue.Clear(priority);
         }
     }
 }

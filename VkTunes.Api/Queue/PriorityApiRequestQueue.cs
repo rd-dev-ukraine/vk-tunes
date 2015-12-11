@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VkTunes.Api.Queue
@@ -9,36 +11,48 @@ namespace VkTunes.Api.Queue
     /// Queue of tasks with priority. Queue executes max 3 requests per second.
     /// Each task in queue has a priority. Tasks with higher priority are executed first.
     /// </summary>
-    public class VkPriorityApiRequestQueue : IApiRequestQueue
+    public class PriorityApiRequestQueue : IApiRequestQueue
     {
         private const int ApiRequestPerSecond = 3;
         private readonly LinkedList<IQueueItem> taskQueue = new LinkedList<IQueueItem>();
         private readonly Queue<long> taskStartTime = new Queue<long>();
+        private readonly Thread processLoop;
         private readonly object syncRoot = new object();
-        private bool isRunning;
 
-        public Task<TResult> EnqueueFirst<TResult>(Func<Task<TResult>> workload, int priority)
+        public PriorityApiRequestQueue()
         {
-            if (workload == null)
-                throw new ArgumentNullException(nameof(workload));
-
-            return EnqueueCore(workload, priority, q => q.Priority > priority);
+            processLoop = new Thread(_ => ProcessQueue())
+            {
+                Name = "VK API Request Queue",
+                IsBackground = true
+            };
+            processLoop.Start();
         }
 
-        public Task<TResult> EnqueueLast<TResult>(Func<Task<TResult>> workload, int priority)
+        public Task<TResult> EnqueueFirst<TResult>(Func<Task<TResult>> workload, int priority, string description)
         {
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            return EnqueueCore(workload, priority, q => q.Priority >= priority);
+            return EnqueueCore(workload, priority, description, q => q.Priority > priority);
         }
 
-        private Task<TResult> EnqueueCore<TResult>(Func<Task<TResult>> workload, int priority, Func<IQueueItem, bool> findPreviousNode)
+        public Task<TResult> EnqueueLast<TResult>(Func<Task<TResult>> workload, int priority, string description)
         {
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            var item = new QueueItem<TResult>(workload, priority);
+            return EnqueueCore(workload, priority, description, q => q.Priority >= priority);
+        }
+
+        private Task<TResult> EnqueueCore<TResult>(Func<Task<TResult>> workload, int priority, string description, Func<IQueueItem, bool> findPreviousNode)
+        {
+            if (workload == null)
+                throw new ArgumentNullException(nameof(workload));
+
+            Debug.WriteLine($"Enqueue task with priority {priority} [{description}]");
+
+            var item = new QueueItem<TResult>(workload, priority, description);
 
             lock (syncRoot)
             {
@@ -48,8 +62,6 @@ namespace VkTunes.Api.Queue
                 else
                     taskQueue.AddAfter(prev, item);
             }
-
-            Run();
 
             return item.ResultTask;
         }
@@ -71,58 +83,63 @@ namespace VkTunes.Api.Queue
             }
         }
 
-        private async Task Run()
+        private void ProcessQueue()
         {
-            if (isRunning)
-                return;
-
-            isRunning = true;
-
-            IQueueItem nextTask = null;
-
-            lock (syncRoot)
+            while (true)
             {
-                var nextNode = taskQueue.First;
-                if (nextNode == null)
+                IQueueItem nextTask;
+
+                lock (syncRoot)
                 {
-                    isRunning = false;
-                    return;
+                    var nextNode = taskQueue.First;
+                    if (nextNode == null)
+                        continue;
+
+                    nextTask = nextNode.Value;
+                    taskQueue.RemoveFirst();
                 }
 
-                nextTask = nextNode.Value;
-                taskQueue.RemoveFirst();
+                taskStartTime.Enqueue(DateTime.Now.Ticks);
+                if (taskStartTime.Count > ApiRequestPerSecond)
+                    taskStartTime.Dequeue();
+
+                if (taskStartTime.Count >= ApiRequestPerSecond)
+                {
+                    var lastTaskTicks = taskStartTime.Last();
+                    var elapsedSinceLastTime = TimeSpan.FromTicks(DateTime.Now.Ticks - lastTaskTicks);
+                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
+                        Thread.Sleep(1000 - (int)elapsedSinceLastTime.TotalMilliseconds);
+                }
+
+                nextTask.Run().Wait();
             }
-
-            taskStartTime.Enqueue(DateTime.Now.Ticks);
-            if (taskStartTime.Count > ApiRequestPerSecond)
-                taskStartTime.Dequeue();
-
-            await nextTask.Run();
-
-            if (taskStartTime.Count >= ApiRequestPerSecond)
-            {
-                var lastTaskTicks = taskStartTime.Last();
-                var elapsedSinceLastTime = TimeSpan.FromTicks(DateTime.Now.Ticks - lastTaskTicks);
-                if (elapsedSinceLastTime.TotalMilliseconds < 1000)
-                    await Task.Delay(1000 - (int)elapsedSinceLastTime.TotalMilliseconds);
-            }
-
-            Run();
         }
 
         private LinkedListNode<IQueueItem> LastOrDefault(Func<IQueueItem, bool> predicate)
         {
             var node = taskQueue.First;
 
+            var isNodeFound = false;
+
             while (node != null)
             {
-                if (predicate(node.Value))
+                var isNodeMatch = predicate(node.Value);
+
+                if (isNodeMatch)
+                {
+                    isNodeFound = true;
+                    node = node.Next;
+
+                    continue;
+                }
+
+                if (isNodeFound)
                     return node;
 
                 node = node.Next;
             }
 
-            return null;
+            return taskQueue.Last;
         }
 
         private interface IQueueItem
@@ -134,7 +151,7 @@ namespace VkTunes.Api.Queue
 
         private class QueueItem<TResult> : IQueueItem
         {
-            public QueueItem(Func<Task<TResult>> workload, int priority)
+            public QueueItem(Func<Task<TResult>> workload, int priority, string description)
             {
                 if (workload == null)
                     throw new ArgumentNullException(nameof(workload));
@@ -142,9 +159,12 @@ namespace VkTunes.Api.Queue
                 Workload = workload;
                 Priority = priority;
                 CompletionSource = new TaskCompletionSource<TResult>();
+                Description = description;
             }
 
             public int Priority { get; }
+
+            public string Description { get; }
 
             public Task<TResult> ResultTask => CompletionSource.Task;
 
@@ -165,6 +185,11 @@ namespace VkTunes.Api.Queue
                 {
                     CompletionSource.SetException(ex);
                 }
+            }
+
+            public override string ToString()
+            {
+                return $"{Priority}:::{Description} ({ResultTask.Status})";
             }
         }
     }
