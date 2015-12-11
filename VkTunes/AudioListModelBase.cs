@@ -10,11 +10,12 @@ using VkTunes.DownloadProgress;
 
 namespace VkTunes
 {
-    public abstract class AudioListModelBase : Screen
+    public abstract class AudioListModelBase<TAudioCollection> : Screen
+        where TAudioCollection: AudioCollectionBase
     {
         private readonly IEventAggregator eventAggregator;
 
-        protected AudioListModelBase(AudioCollectionBase audioCollection, IEventAggregator eventAggregator)
+        protected AudioListModelBase(TAudioCollection audioCollection, IEventAggregator eventAggregator)
         {
             AudioCollection = audioCollection;
             this.eventAggregator = eventAggregator;
@@ -34,9 +35,15 @@ namespace VkTunes
             };
         }
 
+        protected override void OnDeactivate(bool close)
+        {
+            base.OnDeactivate(close);
+            AudioCollection.CancelSizeLoading();
+        }
+
         public BindableCollection<AudioRecordViewModel> Audio { get; set; } = new BindableCollection<AudioRecordViewModel>();
 
-        protected AudioCollectionBase AudioCollection { get; }
+        protected TAudioCollection AudioCollection { get; }
 
         public async Task Reload()
         {

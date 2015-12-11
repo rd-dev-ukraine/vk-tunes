@@ -34,7 +34,7 @@ namespace VkTunes.Api.Models
 
         public Task<SearchAudioResponse> SearchAudio(string query)
         {
-            return queue.EnqueueFirst(() => api.SearchAudio(query), QueuePriorities.ApiCall, "API::audio.search"));
+            return queue.EnqueueFirst(() => api.SearchAudio(query), QueuePriorities.ApiCallSearchAudio, "API::audio.search");
         }
 
         public Task<long?> GetFileSize(string url)

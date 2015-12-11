@@ -9,6 +9,7 @@ using VkTunes.Authorization;
 using VkTunes.DownloadProgress;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.MyAudio;
+using VkTunes.SearchAudio;
 
 namespace VkTunes.Shell
 {
@@ -42,6 +43,11 @@ namespace VkTunes.Shell
         public void MyAudio()
         {
             navigator.GoTo<MyAudioViewModel>();
+        }
+
+        public void SearchAudio()
+        {
+            navigator.GoTo<SearchAudioViewModel>();
         }
 
         protected override void OnActivate()

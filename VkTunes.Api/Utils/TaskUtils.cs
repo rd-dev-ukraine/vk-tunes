@@ -18,5 +18,10 @@ namespace VkTunes.Api.Utils
                 return new Tuple<T1, T2>(f.Result, s.Result);
             });
         }
+
+        public static void FireAndForget(this Task task)
+        {
+            // Do nothing, indicates that task don't need to be awaited.
+        }
     }
 }

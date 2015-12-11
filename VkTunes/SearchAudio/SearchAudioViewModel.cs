@@ -4,11 +4,11 @@ using VkTunes.Api.Models;
 
 namespace VkTunes.SearchAudio
 {
-    public class SearchAudioModel : AudioListModelBase
+    public class SearchAudioViewModel : AudioListModelBase<SearchAudioCollection>
     {
         private string search;
 
-        public SearchAudioModel(AudioCollectionBase audioCollection, IEventAggregator eventAggregator)
+        public SearchAudioViewModel(SearchAudioCollection audioCollection, IEventAggregator eventAggregator)
             : base(audioCollection, eventAggregator)
         {
         }
@@ -21,6 +21,7 @@ namespace VkTunes.SearchAudio
                 if (search != value)
                 {
                     search = value;
+                    AudioCollection.Query = value;
                     NotifyOfPropertyChange();
                 }
             }

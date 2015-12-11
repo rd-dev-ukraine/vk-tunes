@@ -104,7 +104,10 @@
     <Compile Include="Infrastructure\Async\AsyncOperationStartedEvent.cs" />
     <Compile Include="Infrastructure\Async\AsyncRunner.cs" />
     <Compile Include="Infrastructure\Async\IAsync.cs" />
-    <Compile Include="SearchAudio\SearchAudioModel.cs" />
+    <Compile Include="SearchAudio\SearchAudioView.xaml.cs">
+      <DependentUpon>SearchAudioView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SearchAudio\SearchAudioViewModel.cs" />
     <Compile Include="Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
@@ -164,6 +167,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DownloadProgress\DownloadProgressView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchAudio\SearchAudioView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

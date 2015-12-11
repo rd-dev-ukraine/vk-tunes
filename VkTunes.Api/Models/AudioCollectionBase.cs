@@ -62,6 +62,11 @@ namespace VkTunes.Api.Models
             }
         }
 
+        public void CancelSizeLoading()
+        {
+            VK.CancelTasks(QueuePriorities.GetFileSize);
+        }
+
         protected abstract Task<RemoteAudioRecord[]> GetAudio();
 
         private async Task<IEnumerable<AudioInfo>> LoadAudioInfo()
