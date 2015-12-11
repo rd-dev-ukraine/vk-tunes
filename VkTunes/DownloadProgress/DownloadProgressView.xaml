@@ -6,10 +6,21 @@
              xmlns:local="clr-namespace:VkTunes.DownloadProgress"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Visibility>
+        <Binding Path="IsDisplayed">
+            <Binding.Converter>
+                <BooleanToVisibilityConverter />
+            </Binding.Converter>
+        </Binding>
+    </UserControl.Visibility>
+
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>
         <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
         <TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>
         <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="Cancel">Cancel downloads</Button>
+        </StackPanel>
     </StackPanel>
 </UserControl>

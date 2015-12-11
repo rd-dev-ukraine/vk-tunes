@@ -16,7 +16,7 @@
 
         public int CurrentDownloadProgress => CurrentDownloadingTotalBytes == 0 ? 0 : (int)(CurrentDownloadingCompletedBytes / ((decimal)CurrentDownloadingTotalBytes) * 100);
 
-        public string DownloadingCountStatus => $"Downloading {NumberOfAudioDownloadCompleted + 1} from {TotalAudioInQueue} audio";
+        public string DownloadingCountStatus => $"Downloaded {NumberOfAudioDownloadCompleted} from {TotalAudioInQueue} audio";
 
         public string CurrentDownloadingBytesStatus => $"Downloaded {CurrentDownloadingCompletedBytes / 1024:0.##} from {CurrentDownloadingTotalBytes / 1024:0.##} bytes";
     }

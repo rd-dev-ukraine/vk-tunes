@@ -49,6 +49,16 @@ namespace VkTunes.Api.Models
             EnqueueDownload(download);
         }
 
+        public void CancelDownloads()
+        {
+            vk.CancelTasks(QueuePriorities.DownloadFile);
+            lock (syncRoot)
+            {
+                downloads.Clear();
+                Progress?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         private async Task EnqueueDownload(Download download)
         {
             download.IsDownloadStarted = true;
@@ -63,7 +73,10 @@ namespace VkTunes.Api.Models
 
             lock (downloads)
                 if (downloads.All(d => d.IsDownloadCompleted))
+                {
                     downloads.Clear();
+                    Progress?.Invoke(this, EventArgs.Empty);
+                }
         }
 
         public DownloadProgressInfo DownloadProgress()

@@ -46,6 +46,11 @@ namespace VkTunes.DownloadProgress
 
         public bool IsDisplayed { get; private set; }
 
+        public void Cancel()
+        {
+            queue.CancelDownloads();
+        }
+
         public void Handle(EnqueueAudioDownloadEvent message)
         {
             if (message != null)
