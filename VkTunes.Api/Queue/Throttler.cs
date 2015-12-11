@@ -37,7 +37,7 @@ namespace VkTunes.Api.Queue
 
             workQueue.Enqueue(queueItem);
 
-            Run();
+            Run().Wait();
 
             return queueItem.ResultTask;
         }
@@ -76,8 +76,6 @@ namespace VkTunes.Api.Queue
                 await nextTask.Run();
             }
         }
-
-
 
         private class TimeRecord
         {
