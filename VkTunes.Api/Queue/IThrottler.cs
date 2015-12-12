@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace VkTunes.Api.Queue
 {
-    public interface IThrottler
+    public interface IThrottler : IDisposable
     {
         Task Throttle(Func<Task> workload);
 
