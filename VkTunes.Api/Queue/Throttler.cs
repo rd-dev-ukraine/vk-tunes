@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,12 +17,7 @@ namespace VkTunes.Api.Queue
     /// </summary>
     public class Throttler : IThrottler
     {
-        private readonly object syncRoot = new object();
-        private readonly int MaxRequestsPerSecond = 3;
         private readonly DelayManager delayManager = new DelayManager();
-
-        private readonly ConcurrentQueue<IQueueItem> workQueue = new ConcurrentQueue<IQueueItem>();
-        private readonly Queue<TimeRecord> taskStartTime = new Queue<TimeRecord>();
 
         public async Task Throttle(Func<Task> workload)
         {
@@ -32,7 +28,7 @@ namespace VkTunes.Api.Queue
             });
         }
 
-        public Task<TResult> Throttle<TResult>(Func<Task<TResult>> workload)
+        public async Task<TResult> Throttle<TResult>(Func<Task<TResult>> workload)
         {
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
@@ -41,42 +37,7 @@ namespace VkTunes.Api.Queue
             Thread.Sleep(delay);
             delayManager.CompleteWork();
 
-            return workload();
-        }
-
-        public async Task Run()
-        {
-            IQueueItem nextTask;
-
-            while (workQueue.TryDequeue(out nextTask))
-            {
-                var now = new TimeRecord { Ticks = DateTime.UtcNow.Ticks };
-
-                TimeRecord lastTaskTime = null;
-                lock (syncRoot)
-                {
-                    taskStartTime.Enqueue(now);
-                    if (taskStartTime.Count > MaxRequestsPerSecond - 1)
-                        lastTaskTime = taskStartTime.Dequeue();
-                }
-
-                if (lastTaskTime != null)
-                {
-                    var elapsedSinceLastTime = TimeSpan.FromTicks(now.Ticks - lastTaskTime.Ticks);
-                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
-                    {
-                        var awaitMillisecond = 1000 - (int)elapsedSinceLastTime.TotalMilliseconds;
-
-                        Debug.WriteLine($"Throttler awaiting {awaitMillisecond}ms");
-
-                        await Task.Delay(awaitMillisecond);
-                    }
-                }
-
-                now.Ticks = DateTime.UtcNow.Ticks;
-
-                await nextTask.Run();
-            }
+            return await workload();
         }
 
         public void Dispose()
@@ -91,16 +52,40 @@ namespace VkTunes.Api.Queue
 
         private class DelayManager : IDisposable
         {
+            private readonly int MaxRequestsPerSecond = 3;
+
+            private readonly Queue<TimeRecord> taskStartTime = new Queue<TimeRecord>();
             private readonly Mutex mutex = new Mutex();
 
             public int RequestTimeout()
             {
                 mutex.WaitOne();
-                return 333;
+                TimeRecord lastTaskTime = null;
+
+                var now = new TimeRecord { Ticks = DateTime.UtcNow.Ticks };
+
+                taskStartTime.Enqueue(now);
+
+                if (taskStartTime.Count > MaxRequestsPerSecond - 1)
+                    lastTaskTime = taskStartTime.Dequeue();
+
+                if (lastTaskTime != null)
+                {
+                    var elapsedSinceLastTime = TimeSpan.FromTicks(now.Ticks - lastTaskTime.Ticks);
+                    if (elapsedSinceLastTime.TotalMilliseconds < 1000)
+                    {
+                        var awaitMillisecond = 1000 - (int)elapsedSinceLastTime.TotalMilliseconds;
+                        Debug.WriteLine($"Throttler awaiting {awaitMillisecond}ms");
+                        return awaitMillisecond;
+                    }
+                }
+
+                return 0;
             }
 
             public void CompleteWork()
             {
+                taskStartTime.Last().Ticks = DateTime.UtcNow.Ticks;
                 mutex.ReleaseMutex();
             }
 

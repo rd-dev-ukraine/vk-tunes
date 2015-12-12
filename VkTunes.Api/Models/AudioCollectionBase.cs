@@ -46,7 +46,7 @@ namespace VkTunes.Api.Models
                 Audio.Add(a);
 
 
-            foreach (var a in audioInfos.Where(r => r.RemoteAudio != null))
+            foreach (var a in audioInfos.Where(r => r.RemoteAudio != null && !String.IsNullOrWhiteSpace(r.RemoteAudio.FileUrl)))
             {
                 var audioInfo = a;
                 VK.GetFileSize(audioInfo.RemoteAudio.FileUrl)
@@ -58,7 +58,8 @@ namespace VkTunes.Api.Models
                             Audio = audioInfo,
                             AudioId = audioInfo.Id
                         });
-                    });
+                    })
+                    .FireAndForget();
             }
         }
 

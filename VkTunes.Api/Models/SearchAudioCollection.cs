@@ -24,8 +24,6 @@ namespace VkTunes.Api.Models
                 if (query != value)
                 {
                     query = value;
-                    VK.CancelTasks(QueuePriorities.ApiCallSearchAudio);
-                    VK.CancelTasks(QueuePriorities.GetFileSize);
                     Reload().FireAndForget();
                 }
             }
@@ -33,6 +31,8 @@ namespace VkTunes.Api.Models
 
         protected override async Task<RemoteAudioRecord[]> GetAudio()
         {
+            VK.CancelTasks(QueuePriorities.ApiCallSearchAudio);
+
             var result = await VK.SearchAudio(Query);
             return result.Audio;
         }

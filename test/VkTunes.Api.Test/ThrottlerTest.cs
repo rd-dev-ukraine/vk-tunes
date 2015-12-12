@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VkTunes.Api.Queue;
+using VkTunes.Api.Utils;
 
 namespace VkTunes.Api.Test
 {
@@ -27,14 +28,22 @@ namespace VkTunes.Api.Test
                 {
                     for (var j = 0; j < 3; j++)
                     {
+                        var taskId = j;
+
+                        var taskIdentifier = $"Task {taskId} of Worker {index} ";
+
+                        Debug.WriteLine($"{taskIdentifier} scheduling at {DateTime.Now.TimeOfDay}");
                         throttler.Throttle(async () =>
                         {
-                            var delay = random.Next(1, 700);
-                            Debug.WriteLine($"Task {index} executed at {DateTime.Now.TimeOfDay} will work for {delay}ms");
 
+                            var delay = random.Next(1, 700);
+                            Debug.WriteLine($"{taskIdentifier} started at {DateTime.Now.TimeOfDay} will work for {delay}ms");
                             await Task.Delay(delay);
+                            Debug.WriteLine($"{taskIdentifier} completed at {DateTime.Now.TimeOfDay}");
                         })
-                        .Wait();
+                        .FireAndForget();
+
+                        Debug.WriteLine($"{taskIdentifier} scheduled at {DateTime.Now.TimeOfDay}");
                     }
 
                     Thread.Sleep(random.Next(1, 600));
