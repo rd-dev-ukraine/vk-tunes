@@ -59,9 +59,9 @@
                     <Setter Property="Template"  >
                         <Setter.Value>
                             <ControlTemplate TargetType="ListBoxItem">
-                                <Border BorderBrush="{TemplateBinding Background}"
-                                    BorderThickness="0, 0, 0, 2"
-                                        Margin="0, 0, 10, 0">
+                                <Border BorderThickness="0, 0, 0, 2"
+                                        Margin="0, 0, 10, 0"
+                                        BorderBrush="{TemplateBinding Border.BorderBrush}">
                                     <ContentPresenter 
                                         Content="{TemplateBinding Content}"
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -71,10 +71,10 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+                                        <Setter Property="Border.BorderBrush" Value="{StaticResource ButtonBackground}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundHover}" />
+                                        <Setter Property="Border.BorderBrush" Value="{StaticResource ButtonBackgroundHover}" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -88,7 +88,7 @@
                 <DataTemplate>
                     <TextBlock Text="{Binding DisplayName}"
                                    Foreground="{StaticResource ForeColor}"
-                                   FontSize="17">
+                                   FontSize="18">
                     </TextBlock>
                 </DataTemplate>
             </Setter.Value>
