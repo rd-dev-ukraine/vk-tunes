@@ -18,7 +18,7 @@ namespace VkTunes.Infrastructure.Navigation
 
         public void GoTo<TScreen>() where TScreen : IScreen
         {
-            eventAggregator.PublishOnUIThread(new GoToViewModelEvent { ViewModel = typeof(TScreen) });
+            eventAggregator.PublishOnUIThread(new GoToViewModelEvent { ViewModelType = typeof(TScreen) });
         }
     }
 }

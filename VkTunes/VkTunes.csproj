@@ -80,6 +80,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AudioListModelBase.cs" />
+    <Compile Include="AudioShell\AudioShellView.xaml.cs">
+      <DependentUpon>AudioShellView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AudioShell\AudioShellViewModel.cs" />
     <Compile Include="MyAudio\MyAudioView.xaml.cs">
       <DependentUpon>MyAudioView.xaml</DependentUpon>
     </Compile>
@@ -154,6 +158,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AudioShell\AudioShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MyAudio\MyAudioView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

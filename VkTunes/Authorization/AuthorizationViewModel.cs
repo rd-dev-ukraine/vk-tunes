@@ -6,6 +6,7 @@ using Caliburn.Micro;
 
 using VkTunes.Api.Authorization;
 using VkTunes.AudioList;
+using VkTunes.AudioShell;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.MyAudio;
 
@@ -41,7 +42,7 @@ namespace VkTunes.Authorization
                 browser.Navigated += (_, e) =>
                 {
                     if (authorizationService.ExtractTokenFromUrl(e.Uri.ToString()))
-                        navigator.GoTo<MyAudioViewModel>();
+                        navigator.GoTo<AudioShellViewModel>();
                 };
             }
         }
