@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VkTunes.Shell"
         mc:Ignorable="d"
-        Title="VK-Tunes">
+        Title="VK-Tunes"
+        Style="{StaticResource TextDefault}">
     <Grid>
         <DockPanel>
             <TextBlock DockPanel.Dock="Top" TextAlignment="Center" FontSize="30">VK-Tunes</TextBlock>

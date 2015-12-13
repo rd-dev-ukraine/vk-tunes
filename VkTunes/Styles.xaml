@@ -1,26 +1,36 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:VkTunes">
+
+    <SolidColorBrush x:Key="ForeColor" Color="#2B587A"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#6d8cb0"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonBackground" Color="#6383a8"></SolidColorBrush>
-    <Style x:Key="Default" TargetType="{x:Type Control}">
+    <SolidColorBrush x:Key="ButtonForeColor" Color="White"></SolidColorBrush>
+    
+    <Style x:Key="TextDefault" TargetType="{x:Type Control}">
+        <Setter Property="Foreground" Value="{StaticResource ForeColor}"/>
         <Setter Property="FontFamily" Value="Tahoma"></Setter>
         <Setter Property="FontSize" Value="13px"></Setter>
     </Style>
-
-    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource Default}">
-        <Setter Property="Background" Value="#6383a8"/>
-        <Setter Property="Foreground" Value="White"/>
+    
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
+        <Setter Property="Foreground" Value="{StaticResource ButtonForeColor}"/>
         <Setter Property="Padding" Value="16px 6px 16px 7px"/>
         <Setter Property="BorderThickness" Value="0"></Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="2" 
-                            Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" 
-                            BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" 
-                            BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}}" >
-                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter x:Name="contentPresenter" 
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          Margin="{TemplateBinding Padding}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -33,4 +43,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
 </ResourceDictionary>
