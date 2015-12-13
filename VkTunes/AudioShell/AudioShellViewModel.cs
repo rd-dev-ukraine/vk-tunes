@@ -18,6 +18,9 @@ namespace VkTunes.AudioShell
 
             Items.Add(myAudio);
             Items.Add(searchAudio);
+
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
+            ActivateItem(myAudio);
         }
     }
 }

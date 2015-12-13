@@ -6,13 +6,13 @@
     <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#6d8cb0"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonBackground" Color="#6383a8"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonForeColor" Color="White"></SolidColorBrush>
-    
+
     <Style x:Key="TextDefault" TargetType="{x:Type Control}">
         <Setter Property="Foreground" Value="{StaticResource ForeColor}"/>
         <Setter Property="FontFamily" Value="Tahoma"></Setter>
         <Setter Property="FontSize" Value="13px"></Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type Button}">
         <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
         <Setter Property="Foreground" Value="{StaticResource ButtonForeColor}"/>
@@ -43,5 +43,56 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
+    <Style x:Key="TabListBox" TargetType="{x:Type ListBox}">
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"></WrapPanel>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Template"  >
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border BorderBrush="{TemplateBinding Background}"
+                                    BorderThickness="0, 0, 0, 2"
+                                        Margin="0, 0, 10, 0">
+                                    <ContentPresenter 
+                                        Content="{TemplateBinding Content}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        Margin="{TemplateBinding Padding}">
+                                    </ContentPresenter>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource ButtonBackgroundHover}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayName}"
+                                   Foreground="{StaticResource ForeColor}"
+                                   FontSize="17">
+                    </TextBlock>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

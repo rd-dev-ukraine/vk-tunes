@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 
 using VkTunes.Api.Models;
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
 
 namespace VkTunes.SearchAudio
 {
@@ -11,6 +12,7 @@ namespace VkTunes.SearchAudio
         public SearchAudioViewModel(SearchAudioCollection audioCollection, IEventAggregator eventAggregator)
             : base(audioCollection, eventAggregator)
         {
+            DisplayName = "Search audio";
         }
 
         public string Search
