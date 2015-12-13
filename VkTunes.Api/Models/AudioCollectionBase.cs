@@ -17,15 +17,21 @@ namespace VkTunes.Api.Models
     /// </summary>
     public abstract class AudioCollectionBase
     {
-        protected AudioCollectionBase(Vk vk, IVkAudioFileStorage storage)
+        private readonly bool includeOrphanLocalAudio;
+
+        protected AudioCollectionBase(
+            Vk vk,
+            IVkAudioFileStorage storage,
+            bool includeOrphanLocalAudio)
         {
             if (vk == null)
                 throw new ArgumentNullException(nameof(vk));
             if (storage == null)
                 throw new ArgumentNullException(nameof(storage));
-            
+
             VK = vk;
             Storage = storage;
+            this.includeOrphanLocalAudio = includeOrphanLocalAudio;
 
             Storage.LocalAudioUpdated += OnLocalAudioUpdated;
         }
@@ -84,8 +90,10 @@ namespace VkTunes.Api.Models
             var allAudioId = new HashSet<int>();
             foreach (var remote in remoteAudio)
                 allAudioId.Add(remote.Key);
-            foreach (var local in storedAudio)
-                allAudioId.Add(local.Key);
+
+            if (includeOrphanLocalAudio)
+                foreach (var local in storedAudio)
+                    allAudioId.Add(local.Key);
 
             var result = new List<AudioInfo>();
             foreach (var id in allAudioId)

@@ -12,7 +12,7 @@ namespace VkTunes.Api.Models
         private string query;
 
         public SearchAudioCollection(Vk vk, IVkAudioFileStorage storage) 
-            : base(vk, storage)
+            : base(vk, storage, false)
         {
         }
 
