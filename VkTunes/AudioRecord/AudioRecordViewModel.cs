@@ -11,6 +11,7 @@ namespace VkTunes.AudioRecord
         private readonly IEventAggregator eventAggregator;
 
         private string title;
+        private string artist;
         private TimeSpan duration;
         private long? fileSize;
         private bool isInStorage;
@@ -29,13 +30,23 @@ namespace VkTunes.AudioRecord
 
         public int OwnerId { get; set; }
 
+        public string Artist
+        {
+            get { return artist; }
+            set
+            {
+                artist = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
         public string Title
         {
             get { return title; }
             set
             {
                 title = value;
-                NotifyOfPropertyChange(() => Title);
+                NotifyOfPropertyChange();
             }
         }
 

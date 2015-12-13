@@ -67,7 +67,8 @@ namespace VkTunes
 
             dest.Id = source.Id;
             dest.Duration = TimeSpan.FromSeconds(source.RemoteAudio?.DurationInSeconds ?? 0);
-            dest.Title = source.RemoteAudio == null ? source.LocalAudio.Name : $"{source.RemoteAudio?.Artist} - {source.RemoteAudio?.Title}";
+            dest.Artist = source.RemoteAudio?.Artist;
+            dest.Title = source.RemoteAudio?.Title;
             dest.IsInStorage = source.LocalAudio != null;
             dest.IsInVk = source.RemoteAudio != null;
             dest.LocalFilePath = source.LocalAudio?.FilePath;

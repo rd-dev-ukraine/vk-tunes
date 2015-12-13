@@ -10,7 +10,11 @@
     <StackPanel Orientation="Vertical">
         <DockPanel>
             <TextBlock Text="{Binding Duration}" DockPanel.Dock="Right"></TextBlock>
-            <TextBlock Text="{Binding Title}"></TextBlock>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Artist}" FontWeight="Bold"></TextBlock>
+                <TextBlock> - </TextBlock>
+                <TextBlock Text="{Binding Title}"></TextBlock>
+            </StackPanel>
         </DockPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock>Audio ID:</TextBlock>
