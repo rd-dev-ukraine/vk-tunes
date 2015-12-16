@@ -7,7 +7,6 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Api;
-using VkTunes.Api.Queue;
 using VkTunes.Configuration;
 using VkTunes.Infrastructure.Async;
 using VkTunes.Infrastructure.Navigation;
