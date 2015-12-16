@@ -9,9 +9,6 @@ namespace VkTunes.Api.Models
 {
     public class Vk
     {
-        /// <summary>
-        /// Puts the API call to the first position of queue - task will be execute immediately after delay passed.
-        /// </summary>
         private readonly IVkApi api;
         private readonly IApiRequestQueue queue;
 
@@ -50,6 +47,26 @@ namespace VkTunes.Api.Models
             return await queue.EnqueueFirst(() => api.DownloadAudioFileTo(stream, audioId, owner, progress),
                                     QueuePriorities.DownloadFile,
                                     $"Download file for audio {owner}_{audioId}");
+        }
+
+        public async Task<RemoteAudioRecord> AddAudio(int audioId, int ownerId)
+        {
+            if (ownerId == api.MyUserId)
+                return null;
+
+            return await queue.EnqueueFirst(async () =>
+            {
+                var existing = api.GetAudioByIdOrDefault(audioId, ownerId);
+                if (existing == null)
+                {
+                    var addedAudio = await api.AddAudio(audioId, ownerId);
+                    return await api.GetAudioById(addedAudio, api.MyUserId);
+                }
+
+                return default(RemoteAudioRecord);
+            },
+            QueuePriorities.ApiCall,
+            $"Add audio {ownerId}_{audioId}");
         }
 
         public void CancelTasks(int priority)

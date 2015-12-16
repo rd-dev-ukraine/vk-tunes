@@ -4,8 +4,16 @@ namespace VkTunes.Api.Models.Collections
 {
     public class AudioInfoUpdatedEventArgs : EventArgs
     {
-        public int AudioId { get; set; }
+        public AudioInfoUpdatedEventArgs(int audioId, AudioInfo audio)
+        {
+            if (audio == null)
+                throw new ArgumentNullException(nameof(audio));
+            AudioId = audioId;
+            Audio = audio;
+        }
 
-        public AudioInfo Audio { get; set; }
+        public int AudioId { get; }
+
+        public AudioInfo Audio { get; }
     }
 }

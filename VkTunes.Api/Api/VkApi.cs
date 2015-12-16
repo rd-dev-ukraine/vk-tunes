@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using VkTunes.Api.Authorization;
 using VkTunes.Api.LowLevel;
 using VkTunes.Api.Throttle;
 
@@ -12,17 +13,23 @@ namespace VkTunes.Api.Api
     {
         private readonly IVkHttpClient client;
         private readonly IThrottler throttler;
+        private readonly IAuthorizationInfo authorizationInfo;
 
-        public VkApi(IVkHttpClient client, IThrottler throttler)
+        public VkApi(IVkHttpClient client, IThrottler throttler, IAuthorizationInfo authorizationInfo)
         {
             if (client == null)
                 throw new ArgumentNullException(nameof(client));
             if (throttler == null)
                 throw new ArgumentNullException(nameof(throttler));
+            if (authorizationInfo == null)
+                throw new ArgumentNullException(nameof(authorizationInfo));
 
             this.client = client;
             this.throttler = throttler;
+            this.authorizationInfo = authorizationInfo;
         }
+
+        public int MyUserId => authorizationInfo.UserId;
 
         public Task<UserAudioResponse> MyAudio()
         {
@@ -34,7 +41,7 @@ namespace VkTunes.Api.Api
             if (String.IsNullOrWhiteSpace(q))
                 return Task.FromResult(new SearchAudioResponse
                 {
-                    Audio = new RemoteAudioRecord[] {},
+                    Audio = new RemoteAudioRecord[] { },
                     Count = 0
                 });
 
@@ -46,17 +53,44 @@ namespace VkTunes.Api.Api
                                                             }));
         }
 
-        public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
+        public async Task<RemoteAudioRecord> GetAudioByIdOrDefault(int audioId, int ownerId)
         {
             var request = new GetAudioByIdRequest { AudioId = $"{ownerId}_{audioId}" };
 
             var all = await throttler.Throttle(() => client.CallApi<GetAudioByIdRequest, RemoteAudioRecord[]>("audio.getById", request));
 
-            var audio = all.FirstOrDefault();
+            return all.FirstOrDefault();
+        }
+
+        public async Task<RemoteAudioRecord> GetAudioById(int audioId, int ownerId)
+        {
+            var audio = await GetAudioByIdOrDefault(audioId, ownerId);
             if (audio == null)
                 throw new VkApiCallException($"Call audio.getById(audioId:{audioId}, owner:{ownerId}) doesn't return an audio.");
 
             return audio;
+        }
+
+        public async Task<int> AddAudio(int audioId, int ownerId)
+        {
+            return await throttler.Throttle(() => client.CallApi<AudioAddDeleteRequest, int>(
+                "audio.add",
+                new AudioAddDeleteRequest
+                {
+                    AudioId = audioId,
+                    OwnerId = ownerId
+                }));
+        }
+
+        public async Task<int> DeleteAudio(int audioId, int ownerId)
+        {
+            return await throttler.Throttle(() => client.CallApi<AudioAddDeleteRequest, int>(
+                "audio.delete",
+                new AudioAddDeleteRequest
+                {
+                    AudioId = audioId,
+                    OwnerId = ownerId
+                }));
         }
 
         public Task<long?> GetFileSize(string url)

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
@@ -114,12 +113,17 @@ namespace VkTunes.AudioRecord
 
         public void Download()
         {
-            eventAggregator.PublishOnBackgroundThread(new EnqueueAudioDownloadEvent(Id, OwnerId));
+            eventAggregator.PublishOnBackgroundThread(new DownloadAudioEvent(Id, OwnerId));
         }
 
-        public async Task AddToMyAudio()
+        public void AddToMyAudio()
         {
+            eventAggregator.PublishOnBackgroundThread(new AddAudioEvent(Id, OwnerId));
+        }
 
+        public void DeleteAudio()
+        {
+            eventAggregator.PublishOnBackgroundThread(new DeleteAudioEvent(Id, OwnerId));
         }
     }
 }

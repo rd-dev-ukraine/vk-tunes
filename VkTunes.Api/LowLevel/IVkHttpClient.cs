@@ -11,12 +11,9 @@ namespace VkTunes.Api.LowLevel
     /// </summary>
     public interface IVkHttpClient
     {
-        Task<TResponse> CallApi<TRequest, TResponse>(string apiMethod, TRequest request) 
-            where TRequest: class
-            where TResponse: class;
+        Task<TResponse> CallApi<TRequest, TResponse>(string apiMethod, TRequest request) ;
 
-        Task<TResponse> CallApi<TResponse>(string apiMethod)
-            where TResponse : class;
+        Task<TResponse> CallApi<TResponse>(string apiMethod);
 
         Task<long?> GetFileSize(string url);
 

@@ -80,6 +80,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AudioListModelBase.cs" />
+    <Compile Include="AudioRecord\AddAudioEvent.cs" />
+    <Compile Include="AudioRecord\DeleteAudioEvent.cs" />
     <Compile Include="AudioShell\AudioShellView.xaml.cs">
       <DependentUpon>AudioShellView.xaml</DependentUpon>
     </Compile>
@@ -99,7 +101,7 @@
     <Compile Include="Authorization\AuthorizationViewModel.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
-    <Compile Include="DownloadProgress\EnqueueAudioDownloadEvent.cs" />
+    <Compile Include="DownloadProgress\DownloadAudioEvent.cs" />
     <Compile Include="DownloadProgress\DownloadProgressView.xaml.cs">
       <DependentUpon>DownloadProgressView.xaml</DependentUpon>
     </Compile>

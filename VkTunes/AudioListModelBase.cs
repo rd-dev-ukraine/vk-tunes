@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
-using VkTunes.Api.Models;
 using VkTunes.Api.Models.Collections;
 using VkTunes.AudioRecord;
 using VkTunes.DownloadProgress;
@@ -60,7 +59,7 @@ namespace VkTunes
         protected void DownloadAudio(AudioRecordViewModel audio)
         {
             if (audio.Id != 0 && audio.OwnerId != 0)
-                eventAggregator.PublishOnBackgroundThread(new EnqueueAudioDownloadEvent(audio.Id, audio.OwnerId));
+                eventAggregator.PublishOnBackgroundThread(new DownloadAudioEvent(audio.Id, audio.OwnerId));
         }
 
         private AudioRecordViewModel Map(AudioInfo source, AudioRecordViewModel dest = null)

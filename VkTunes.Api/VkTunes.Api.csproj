@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiModule.cs" />
+    <Compile Include="Api\Audio\AudioAddDeleteRequest.cs" />
     <Compile Include="Api\Audio\SearchAudioRequest.cs" />
     <Compile Include="Api\Audio\SearchAudioResponse.cs" />
     <Compile Include="Api\IVkApi.cs" />

@@ -70,6 +70,17 @@ namespace VkTunes.Api.Models.Collections
             }
         }
 
+        public async Task AddAudio(int audioId, int ownerId)
+        {
+            var added = await VK.AddAudio(audioId, ownerId);
+            if (added != null)
+                AudioInfoUpdated?.Invoke(this, new AudioInfoUpdatedEventArgs(added.Id, new AudioInfo
+                {
+                    Id = added.Id,
+                    RemoteAudio = added
+                }));
+        }
+
         public void CancelSizeLoading()
         {
             VK.CancelTasks(QueuePriorities.GetFileSize);

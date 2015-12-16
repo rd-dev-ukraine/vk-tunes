@@ -27,8 +27,6 @@ namespace VkTunes.Api.LowLevel
         }
 
         public async Task<TResponse> CallApi<TRequest, TResponse>(string apiMethod, TRequest request)
-            where TRequest : class
-            where TResponse : class
         {
             if (String.IsNullOrWhiteSpace(apiMethod))
                 throw new ArgumentNullException(nameof(apiMethod));
@@ -66,7 +64,7 @@ namespace VkTunes.Api.LowLevel
             }
         }
 
-        public Task<TResponse> CallApi<TResponse>(string apiMethod) where TResponse : class
+        public Task<TResponse> CallApi<TResponse>(string apiMethod)
         {
             return CallApi<string, TResponse>(apiMethod, String.Empty);
         }

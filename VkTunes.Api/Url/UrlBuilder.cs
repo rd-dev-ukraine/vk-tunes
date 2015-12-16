@@ -7,7 +7,6 @@ namespace VkTunes.Api.Url
     public static class UrlBuilder
     {
         public static string SerializeToQueryString<T>(T parameters)
-            where T : class
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -28,7 +27,6 @@ namespace VkTunes.Api.Url
         }
 
         public static string Build<T>(string path, T query)
-            where T : class
         {
             if (String.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException(nameof(path));

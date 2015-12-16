@@ -1,8 +1,8 @@
 ﻿namespace VkTunes.DownloadProgress
 {
-    public class EnqueueAudioDownloadEvent
+    public class DownloadAudioEvent
     {
-        public EnqueueAudioDownloadEvent(int audioId, int ownerId)
+        public DownloadAudioEvent(int audioId, int ownerId)
         {
             AudioId = audioId;
             OwnerId = ownerId;

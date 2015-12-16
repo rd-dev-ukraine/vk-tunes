@@ -2,12 +2,11 @@
 
 using Caliburn.Micro;
 
-using VkTunes.Api.Models;
 using VkTunes.Api.Models.Downloading;
 
 namespace VkTunes.DownloadProgress
 {
-    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<EnqueueAudioDownloadEvent>
+    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<DownloadAudioEvent>
     {
         private readonly DownloadQueue queue;
         private DownloadProgressInfo info;
@@ -51,7 +50,7 @@ namespace VkTunes.DownloadProgress
             queue.CancelDownloads();
         }
 
-        public void Handle(EnqueueAudioDownloadEvent message)
+        public void Handle(DownloadAudioEvent message)
         {
             if (message != null)
                 queue.AddToDownloadQueue(message.AudioId, message.OwnerId);
