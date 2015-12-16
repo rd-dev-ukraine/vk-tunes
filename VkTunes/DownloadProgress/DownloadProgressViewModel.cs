@@ -24,7 +24,7 @@ namespace VkTunes.DownloadProgress
             {
                 Execute.OnUIThread(() =>
                 {
-                    Info = this.queue.DownloadProgress();
+                    Info = args.Progress;
                     IsDisplayed = Info.TotalAudioInQueue > 0;
                 });
             };

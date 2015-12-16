@@ -2,6 +2,7 @@
 
 using VkTunes.Api.Models;
 using VkTunes.Api.Models.Collections;
+using VkTunes.Api.Utils;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -18,7 +19,7 @@ namespace VkTunes.MyAudio
         protected override void OnActivate()
         {
             base.OnActivate();
-            Reload();
+            Reload().FireAndForget();
         }
     }
 }

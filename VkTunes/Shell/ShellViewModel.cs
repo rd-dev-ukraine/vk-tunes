@@ -34,7 +34,6 @@ namespace VkTunes.Shell
             eventAggregator.Subscribe(this);
 
             AuthorizationViewModel = authorizationViewModel;
-            Progress = downloadProgressViewModel;
             AudioShell = audioShell;
         }
 
@@ -42,13 +41,10 @@ namespace VkTunes.Shell
 
         public AudioShellViewModel AudioShell { get; }
 
-        public DownloadProgressViewModel Progress { get; }
-
         protected override void OnActivate()
         {
             base.OnActivate();
             DisplayName = "VK-Tunes";
-
 
             ActivateItem(AuthorizationViewModel);
         }

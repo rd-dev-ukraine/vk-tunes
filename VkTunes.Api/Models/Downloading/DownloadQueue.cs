@@ -28,7 +28,7 @@ namespace VkTunes.Api.Models.Downloading
             this.storage = storage;
         }
 
-        public void AddToDownloadQueue(int audioId, int owner)
+        public async Task AddToDownloadQueue(int audioId, int owner)
         {
             lock (syncRoot)
             {
@@ -45,9 +45,10 @@ namespace VkTunes.Api.Models.Downloading
             lock (syncRoot)
             {
                 downloads.Add(download);
+                NotifyProgress();
             }
 
-            EnqueueDownload(download);
+            await EnqueueDownload(download);
         }
 
         public void CancelDownloads()
@@ -56,7 +57,7 @@ namespace VkTunes.Api.Models.Downloading
             lock (syncRoot)
             {
                 downloads.Clear();
-                Progress?.Invoke(this, EventArgs.Empty);
+                NotifyProgress();
             }
         }
 
@@ -69,18 +70,18 @@ namespace VkTunes.Api.Models.Downloading
                 await storage.Save(buffer, audio);
 
                 download.IsDownloadCompleted = true;
-                Progress?.Invoke(this, EventArgs.Empty);
+                NotifyProgress(download);
             }
 
             lock (downloads)
                 if (downloads.All(d => d.IsDownloadCompleted))
                 {
                     downloads.Clear();
-                    Progress?.Invoke(this, EventArgs.Empty);
+                    NotifyProgress();
                 }
         }
 
-        public DownloadProgressInfo DownloadProgress()
+        private DownloadProgressInfo DownloadProgress()
         {
             var result = new DownloadProgressInfo();
 
@@ -105,12 +106,14 @@ namespace VkTunes.Api.Models.Downloading
             return result;
         }
 
-        private void NotifyProgress(Download download)
+        private void NotifyProgress(Download byDownload = null)
         {
-            Progress?.Invoke(this, EventArgs.Empty);
+            var progress = DownloadProgress();
+
+            Progress?.Invoke(this, new DownloadProgressEventArgs(progress));
         }
 
-        public event EventHandler<EventArgs> Progress;
+        public event EventHandler<DownloadProgressEventArgs> Progress;
 
         private class Download : IProgress<AudioDownloadProgress>
         {
