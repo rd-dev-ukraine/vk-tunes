@@ -19,15 +19,6 @@ namespace VkTunes.Api.Queue
     {
         private readonly DelayManager delayManager = new DelayManager();
 
-        public async Task Throttle(Func<Task> workload)
-        {
-            await Throttle(async () =>
-            {
-                await workload();
-                return Task.FromResult(0);
-            });
-        }
-
         public async Task<TResult> Throttle<TResult>(Func<Task<TResult>> workload)
         {
             if (workload == null)
