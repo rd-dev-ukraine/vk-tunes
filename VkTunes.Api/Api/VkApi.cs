@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using VkTunes.Api.LowLevel;
-using VkTunes.Api.Queue;
+using VkTunes.Api.Throttle;
 
 namespace VkTunes.Api.Api
 {

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
-using VkTunes.Api.Utils;
 
-namespace VkTunes.Api.Queue
+namespace VkTunes.Api.Throttle
 {
     /// <summary>
     /// Ensures requests are executed not frequently than 3 request per second.

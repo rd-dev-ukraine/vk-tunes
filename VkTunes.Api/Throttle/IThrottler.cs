@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace VkTunes.Api.Queue
+namespace VkTunes.Api.Throttle
 {
     public interface IThrottler : IDisposable
     {

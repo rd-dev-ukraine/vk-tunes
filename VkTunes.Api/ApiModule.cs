@@ -6,6 +6,7 @@ using VkTunes.Api.Authorization;
 using VkTunes.Api.LowLevel;
 using VkTunes.Api.Models;
 using VkTunes.Api.Queue;
+using VkTunes.Api.Throttle;
 
 namespace VkTunes.Api
 {
@@ -21,7 +22,7 @@ namespace VkTunes.Api
             Bind<Vk>().ToSelf().InSingletonScope();
             Bind<IVkAudioFileStorage>().To<FileSystemAudioStorage>().InSingletonScope();
 
-            Bind<IThrottler>().To<AsyncThrottler>().InSingletonScope();
+            Bind<IThrottler>().To<SlimThrottler>().InSingletonScope();
             Bind<IApiRequestQueue>().To<PriorityApiRequestQueue>().InSingletonScope();
         }
     }

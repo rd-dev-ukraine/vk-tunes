@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VkTunes.Api.Queue
+namespace VkTunes.Api.Throttle
 {
     public class AsyncThrottler : IThrottler
     {
