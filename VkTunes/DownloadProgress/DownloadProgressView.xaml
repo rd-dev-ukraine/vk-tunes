@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VkTunes.DownloadProgress"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             Style="{StaticResource Row}">
     <UserControl.Visibility>
         <Binding Path="IsDisplayed">
             <Binding.Converter>
@@ -16,9 +17,10 @@
 
     <StackPanel Orientation="Vertical">
         <TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
+        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" Height="5"></ProgressBar>
         <TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" Height="5" ></ProgressBar>
+        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" Height="5"
+                     Style="{StaticResource Row}"></ProgressBar>
         <StackPanel Orientation="Horizontal">
             <Button x:Name="Cancel">Cancel downloads</Button>
         </StackPanel>

@@ -11,7 +11,7 @@
                  SelectedItem="{Binding ActiveItem, Mode=TwoWay}"
                  Style="{StaticResource TabListBox}">
         </ListBox>
-        <ContentControl x:Name="DownloadProgress" DockPanel.Dock="Top" Margin="10">
+        <ContentControl x:Name="DownloadProgress" DockPanel.Dock="Top">
         </ContentControl>
         
         <ContentControl x:Name="ActiveItem"></ContentControl>

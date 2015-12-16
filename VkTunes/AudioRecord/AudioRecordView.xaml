@@ -8,22 +8,16 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Style="{StaticResource TextDefault}">
     <StackPanel Orientation="Vertical">
-        <DockPanel>
+        <DockPanel Style="{StaticResource Row}">
             <TextBlock Text="{Binding Duration}" DockPanel.Dock="Right"></TextBlock>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="{Binding Artist}" FontWeight="Bold"></TextBlock>
-                <TextBlock> - </TextBlock>
+                <TextBlock> -</TextBlock>
                 <TextBlock Text="{Binding Title}"></TextBlock>
             </StackPanel>
         </DockPanel>
         <StackPanel Orientation="Horizontal">
-            <TextBlock>Audio ID:</TextBlock>
-            <TextBlock Text="{Binding Id}"></TextBlock>
-            <TextBlock>|</TextBlock>
-            <TextBlock>Size:</TextBlock>
-            <TextBlock Text="{Binding FileSize, Converter={local:BytesToSizeConverter}}" ></TextBlock>
             <Button x:Name="Download">Download</Button>
         </StackPanel>
-        <TextBlock Text="{Binding LocalFilePath}"></TextBlock>
     </StackPanel>
 </UserControl>

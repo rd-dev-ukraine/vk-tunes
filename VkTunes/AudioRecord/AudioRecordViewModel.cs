@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
@@ -17,6 +18,7 @@ namespace VkTunes.AudioRecord
         private bool isInStorage;
         private bool isInVk;
         private string localFilePath;
+        private bool isInMyAudio;
 
         public AudioRecordViewModel(IEventAggregator eventAggregator)
         {
@@ -100,9 +102,24 @@ namespace VkTunes.AudioRecord
             }
         }
 
+        public bool IsInMyAudio
+        {
+            get { return isInMyAudio; }
+            set
+            {
+                isInMyAudio = value;
+                NotifyOfPropertyChange();
+            }
+        }
+
         public void Download()
         {
-            eventAggregator.PublishOnUIThread(new EnqueueAudioDownloadEvent(Id, OwnerId));
+            eventAggregator.PublishOnBackgroundThread(new EnqueueAudioDownloadEvent(Id, OwnerId));
+        }
+
+        public async Task AddToMyAudio()
+        {
+
         }
     }
 }

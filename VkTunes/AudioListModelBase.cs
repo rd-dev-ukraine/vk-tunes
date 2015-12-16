@@ -12,7 +12,7 @@ using VkTunes.DownloadProgress;
 namespace VkTunes
 {
     public abstract class AudioListModelBase<TAudioCollection> : Screen
-        where TAudioCollection: AudioCollectionBase
+        where TAudioCollection : AudioCollectionBase
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -59,7 +59,8 @@ namespace VkTunes
 
         protected void DownloadAudio(AudioRecordViewModel audio)
         {
-            eventAggregator.PublishOnUIThread(new EnqueueAudioDownloadEvent(audio.Id, audio.OwnerId));
+            if (audio.Id != 0 && audio.OwnerId != 0)
+                eventAggregator.PublishOnBackgroundThread(new EnqueueAudioDownloadEvent(audio.Id, audio.OwnerId));
         }
 
         private AudioRecordViewModel Map(AudioInfo source, AudioRecordViewModel dest = null)
