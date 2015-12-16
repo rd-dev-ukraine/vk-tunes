@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
+using VkTunes.Api.Queue;
 
-namespace VkTunes.Api.Models
+namespace VkTunes.Api.Models.Downloading
 {
     public class DownloadQueue
     {

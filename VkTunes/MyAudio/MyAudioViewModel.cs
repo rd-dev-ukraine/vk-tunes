@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
 
 using VkTunes.Api.Models;
+using VkTunes.Api.Models.Collections;
+
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
 namespace VkTunes.MyAudio

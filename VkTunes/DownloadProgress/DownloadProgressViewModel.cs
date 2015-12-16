@@ -3,6 +3,7 @@
 using Caliburn.Micro;
 
 using VkTunes.Api.Models;
+using VkTunes.Api.Models.Downloading;
 
 namespace VkTunes.DownloadProgress
 {

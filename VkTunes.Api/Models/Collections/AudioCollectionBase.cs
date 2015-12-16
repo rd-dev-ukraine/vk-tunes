@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
+using VkTunes.Api.Queue;
 using VkTunes.Api.Utils;
 
-namespace VkTunes.Api.Models
+namespace VkTunes.Api.Models.Collections
 {
     /// <summary>
     /// A collection of audio record represented remote and local record (or both).

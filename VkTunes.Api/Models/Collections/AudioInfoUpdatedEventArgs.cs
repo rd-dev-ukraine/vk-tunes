@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VkTunes.Api.Models
+namespace VkTunes.Api.Models.Collections
 {
     public class AudioInfoUpdatedEventArgs : EventArgs
     {

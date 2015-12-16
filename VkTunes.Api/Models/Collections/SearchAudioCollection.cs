@@ -2,9 +2,10 @@
 
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
+using VkTunes.Api.Queue;
 using VkTunes.Api.Utils;
 
-namespace VkTunes.Api.Models
+namespace VkTunes.Api.Models.Collections
 {
     public class SearchAudioCollection : AudioCollectionBase
     {

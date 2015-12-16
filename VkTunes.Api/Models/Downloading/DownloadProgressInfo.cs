@@ -1,4 +1,4 @@
-﻿namespace VkTunes.Api.Models
+﻿namespace VkTunes.Api.Models.Downloading
 {
     public class DownloadProgressInfo
     {

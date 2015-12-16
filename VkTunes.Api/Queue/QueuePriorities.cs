@@ -1,4 +1,4 @@
-﻿namespace VkTunes.Api.Models
+﻿namespace VkTunes.Api.Queue
 {
     public static class QueuePriorities
     {

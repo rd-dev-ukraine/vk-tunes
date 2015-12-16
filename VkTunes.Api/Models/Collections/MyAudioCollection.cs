@@ -3,7 +3,7 @@
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
 
-namespace VkTunes.Api.Models
+namespace VkTunes.Api.Models.Collections
 {
     public class MyAudioCollection : AudioCollectionBase
     {

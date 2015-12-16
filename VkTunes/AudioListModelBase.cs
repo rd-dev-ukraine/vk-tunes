@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.Api.Models;
+using VkTunes.Api.Models.Collections;
 using VkTunes.AudioRecord;
 using VkTunes.DownloadProgress;
 

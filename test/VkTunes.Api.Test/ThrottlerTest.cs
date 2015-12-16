@@ -16,7 +16,7 @@ namespace VkTunes.Api.Test
         [TestMethod]
         public async Task MultithreadThrottle()
         {
-            var throttler = new SlimThrottler();
+            var throttler = new ParallelThrottlerSlim();
 
             var random = new Random();
             var tasks = new List<Task>();
