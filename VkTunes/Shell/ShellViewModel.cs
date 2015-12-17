@@ -11,17 +11,20 @@ namespace VkTunes.Shell
     public class ShellViewModel : Conductor<IScreen>, IHandle<GoToViewModelEvent>
     {
         private readonly IKernel kernel;
+        private readonly CommandDispatcher.CommandDispatcher dispatcher;
 
         public ShellViewModel(
             IKernel kernel,
             IEventAggregator eventAggregator,
             AuthorizationViewModel authorizationViewModel,
             AudioShellViewModel audioShell,
-            DownloadProgressViewModel downloadProgressViewModel)
+            DownloadProgressViewModel downloadProgressViewModel,
+            CommandDispatcher.CommandDispatcher dispatcher)
         {
             if (kernel == null)
                 throw new ArgumentNullException(nameof(kernel));
             this.kernel = kernel;
+            this.dispatcher = dispatcher;
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
             if (authorizationViewModel == null)
@@ -30,6 +33,8 @@ namespace VkTunes.Shell
                 throw new ArgumentNullException(nameof(audioShell));
             if (downloadProgressViewModel == null)
                 throw new ArgumentNullException(nameof(downloadProgressViewModel));
+            if (dispatcher == null)
+                throw new ArgumentNullException(nameof(dispatcher));
 
             eventAggregator.Subscribe(this);
 

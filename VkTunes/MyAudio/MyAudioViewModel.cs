@@ -1,24 +1,47 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 
-using VkTunes.Api.Models.Collections;
-using VkTunes.Api.Utils;
+using Caliburn.Micro;
+
+using VkTunes.AudioRecord;
+using VkTunes.CommandDispatcher;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
 namespace VkTunes.MyAudio
 {
-    public class MyAudioViewModel : AudioListModelBase<MyAudioCollection>
+    public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>
     {
-        public MyAudioViewModel(MyAudioCollection myAudio, IEventAggregator eventAggregator) 
-            : base(myAudio, eventAggregator)
+        private readonly IEventAggregator eventAggregator;
+
+        public MyAudioViewModel(IEventAggregator eventAggregator)
         {
+            if (eventAggregator == null)
+                throw new ArgumentNullException(nameof(eventAggregator));
+
+            this.eventAggregator = eventAggregator;
             DisplayName = "My audio";
+
+            eventAggregator.Subscribe(this);
         }
+
+        public BindableCollection<AudioRecordViewModel> Audio { get; } = new BindableCollection<AudioRecordViewModel>();
 
         protected override void OnActivate()
         {
             base.OnActivate();
-            Reload().FireAndForget();
+
+            eventAggregator.PublishOnBackgroundThread(new MyAudioLoadCommand());
+        }
+
+        public async Task Handle(MyAudioLoadedEvent message)
+        {
+            await Execute.OnUIThreadAsync(() =>
+            {
+                Audio.Clear();
+                Audio.AddRange(message.Audio.Select(a => new AudioRecordViewModel(eventAggregator, a)));
+            });
         }
     }
 }

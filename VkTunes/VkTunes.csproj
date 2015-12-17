@@ -79,13 +79,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AudioListModelBase.cs" />
     <Compile Include="AudioRecord\AddAudioEvent.cs" />
     <Compile Include="AudioRecord\DeleteAudioEvent.cs" />
     <Compile Include="AudioShell\AudioShellView.xaml.cs">
       <DependentUpon>AudioShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioShell\AudioShellViewModel.cs" />
+    <Compile Include="CommandDispatcher\CommandBase.cs" />
+    <Compile Include="CommandDispatcher\CommandDispatcher.cs" />
+    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.AudioCommon.cs" />
+    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.SearchAudio.cs" />
+    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.MyAudio.cs" />
+    <Compile Include="CommandDispatcher\EventBase.cs" />
     <Compile Include="MyAudio\MyAudioView.xaml.cs">
       <DependentUpon>MyAudioView.xaml</DependentUpon>
     </Compile>
@@ -199,6 +204,7 @@
       <Name>VkTunes.Api</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

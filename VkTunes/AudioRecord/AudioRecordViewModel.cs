@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
+using VkTunes.Api.Models;
+using VkTunes.CommandDispatcher;
 using VkTunes.DownloadProgress;
 
 namespace VkTunes.AudioRecord
 {
-    public class AudioRecordViewModel : PropertyChangedBase
+    public class AudioRecordViewModel : PropertyChangedBase, IHandleWithTask<AudioUpdatedEvent>
     {
         private readonly IEventAggregator eventAggregator;
 
@@ -19,12 +22,15 @@ namespace VkTunes.AudioRecord
         private string localFilePath;
         private bool isInMyAudio;
 
-        public AudioRecordViewModel(IEventAggregator eventAggregator)
+        public AudioRecordViewModel(IEventAggregator eventAggregator, AudioInfo audio)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
 
             this.eventAggregator = eventAggregator;
+            eventAggregator.Subscribe(this);
+
+            Apply(audio);
         }
 
         public int Id { get; set; }
@@ -67,7 +73,7 @@ namespace VkTunes.AudioRecord
             set
             {
                 fileSize = value;
-                NotifyOfPropertyChange(() => FileSize);
+                NotifyOfPropertyChange();
             }
         }
 
@@ -111,19 +117,42 @@ namespace VkTunes.AudioRecord
             }
         }
 
-        public void Download()
+        //public void Download()
+        //{
+        //    eventAggregator.PublishOnBackgroundThread(new DownloadAudioEvent(Id, OwnerId));
+        //}
+
+        //public void AddToMyAudio()
+        //{
+        //    eventAggregator.PublishOnBackgroundThread(new AddAudioEvent(Id, OwnerId));
+        //}
+
+        //public void DeleteAudio()
+        //{
+        //    eventAggregator.PublishOnBackgroundThread(new DeleteAudioEvent(Id, OwnerId));
+        //}
+
+        private void Apply(AudioInfo audio)
         {
-            eventAggregator.PublishOnBackgroundThread(new DownloadAudioEvent(Id, OwnerId));
+            Id = audio.Id;
+
+            Duration = TimeSpan.FromSeconds(audio.RemoteAudio?.DurationInSeconds ?? 0);
+            Artist = audio.RemoteAudio?.Artist;
+            Title = audio.RemoteAudio?.Title;
+            IsInStorage = audio.LocalAudio != null;
+            IsInVk = audio.RemoteAudio != null;
+            LocalFilePath = audio.LocalAudio?.FilePath;
+            FileSize = audio.RemoteFileSize;
+            OwnerId = audio.RemoteAudio?.Owner ?? 0;
         }
 
-        public void AddToMyAudio()
+        public Task Handle(AudioUpdatedEvent message)
         {
-            eventAggregator.PublishOnBackgroundThread(new AddAudioEvent(Id, OwnerId));
-        }
-
-        public void DeleteAudio()
-        {
-            eventAggregator.PublishOnBackgroundThread(new DeleteAudioEvent(Id, OwnerId));
+            return Execute.OnUIThreadAsync(() =>
+            {
+                if (message.Audio.Id == Id && message.Audio.RemoteAudio.Owner == OwnerId)
+                    Apply(message.Audio);
+            });
         }
     }
 }

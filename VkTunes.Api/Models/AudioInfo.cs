@@ -1,7 +1,7 @@
 ﻿using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
 
-namespace VkTunes.Api.Models.Collections
+namespace VkTunes.Api.Models
 {
     public class AudioInfo
     {

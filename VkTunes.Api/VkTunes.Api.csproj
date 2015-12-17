@@ -64,7 +64,6 @@
     <Compile Include="Api\Audio\GetAudioByIdRequest.cs" />
     <Compile Include="Api\Audio\RemoteAudioRecord.cs" />
     <Compile Include="Api\Audio\UserAudioResponse.cs" />
-    <Compile Include="Models\Collections\SearchAudioCollection.cs" />
     <Compile Include="Models\Downloading\DownloadProgressEventArgs.cs" />
     <Compile Include="Models\Vk.cs" />
     <Compile Include="Api\VkApiCallException.cs" />
@@ -92,12 +91,9 @@
     <Compile Include="Throttle\TaskQueue.cs" />
     <Compile Include="Throttle\Throttler.cs" />
     <Compile Include="Throttle\ThrottlerExtensions.cs" />
-    <Compile Include="Models\Collections\AudioCollectionBase.cs" />
-    <Compile Include="Models\Collections\AudioInfo.cs" />
-    <Compile Include="Models\Collections\AudioInfoUpdatedEventArgs.cs" />
+    <Compile Include="Models\AudioInfo.cs" />
     <Compile Include="Models\Downloading\DownloadProgressInfo.cs" />
     <Compile Include="Models\Downloading\DownloadQueue.cs" />
-    <Compile Include="Models\Collections\MyAudioCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Authorization\InMemoryAuthorizationInfo.cs" />
     <Compile Include="Authorization\IAuthorizationInfo.cs" />
