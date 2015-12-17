@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.AudioRecord;
-using VkTunes.CommandDispatcher;
+using VkTunes.CommandDispatcher.Downloads;
+using VkTunes.CommandDispatcher.MyAudio;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -42,6 +43,12 @@ namespace VkTunes.MyAudio
                 Audio.Clear();
                 Audio.AddRange(message.Audio.Select(a => new AudioRecordViewModel(eventAggregator, a)));
             });
+        }
+
+        public void DownloadAll()
+        {
+            foreach (var audio in Audio.Where(a => !a.IsInStorage))
+                eventAggregator.PublishOnBackgroundThread(new DownloadAudioCommand(audio.Id, audio.OwnerId));
         }
     }
 }

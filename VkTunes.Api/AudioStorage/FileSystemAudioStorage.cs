@@ -48,7 +48,7 @@ namespace VkTunes.Api.AudioStorage
             });
         }
 
-        public async Task Save(Stream source, RemoteAudioRecord audio)
+        public async Task<LocalAudioRecord> Save(Stream source, RemoteAudioRecord audio)
         {
             if (audio == null)
                 throw new ArgumentNullException(nameof(audio));
@@ -62,16 +62,13 @@ namespace VkTunes.Api.AudioStorage
                 await source.CopyToAsync(file);
                 file.Close();
             }
-            LocalAudioUpdated?.Invoke(this, new LocalAudioRecordUpdatedEventArgs
+
+            return new LocalAudioRecord
             {
-                AudioId = audio.Id,
-                LocalAudio = new LocalAudioRecord
-                {
-                    Id = audio.Id,
-                    FilePath = path,
-                    Name = fileName
-                }
-            });
+                Id = audio.Id,
+                FilePath = path,
+                Name = fileName
+            };
         }
 
         private string GenerateFileName(int audioId, string artist, string title)
@@ -86,7 +83,5 @@ namespace VkTunes.Api.AudioStorage
             return Path.GetInvalidFileNameChars()
                        .Aggregate(value, (current, ch) => current.Replace(ch.ToString(), String.Empty));
         }
-
-        public event EventHandler<LocalAudioRecordUpdatedEventArgs> LocalAudioUpdated;
     }
 }

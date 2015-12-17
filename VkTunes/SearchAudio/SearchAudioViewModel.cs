@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.AudioRecord;
-using VkTunes.CommandDispatcher;
+using VkTunes.CommandDispatcher.SearchAudio;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 

@@ -11,8 +11,6 @@ namespace VkTunes.Api.AudioStorage
     {
         Task<Dictionary<int, LocalAudioRecord>> Load();
 
-        Task Save(Stream source, RemoteAudioRecord audio);
-
-        event EventHandler<LocalAudioRecordUpdatedEventArgs> LocalAudioUpdated;
+        Task<LocalAudioRecord> Save(Stream source, RemoteAudioRecord audio);
     }
 }

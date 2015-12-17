@@ -89,12 +89,21 @@
       <DependentUpon>AudioShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioShell\AudioShellViewModel.cs" />
+    <Compile Include="CommandDispatcher\AudioCommon\AudioUpdatedEvent.cs" />
     <Compile Include="CommandDispatcher\CommandBase.cs" />
     <Compile Include="CommandDispatcher\CommandDispatcher.cs" />
-    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.AudioCommon.cs" />
-    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.SearchAudio.cs" />
-    <Compile Include="CommandDispatcher\Commands\CommandDispatcher.MyAudio.cs" />
+    <Compile Include="CommandDispatcher\AudioCommon\CommandDispatcher.AudioCommon.cs" />
+    <Compile Include="CommandDispatcher\Downloads\AudioDownloadQueueElement.cs" />
+    <Compile Include="CommandDispatcher\Downloads\CommandDispatcher.Downloads.cs" />
+    <Compile Include="CommandDispatcher\Downloads\DownloadAudioCommand.cs" />
+    <Compile Include="CommandDispatcher\Downloads\DownloadProgressEvent.cs" />
+    <Compile Include="CommandDispatcher\SearchAudio\CommandDispatcher.SearchAudio.cs" />
+    <Compile Include="CommandDispatcher\MyAudio\CommandDispatcher.MyAudio.cs" />
     <Compile Include="CommandDispatcher\EventBase.cs" />
+    <Compile Include="CommandDispatcher\MyAudio\MyAudioLoadCommand.cs" />
+    <Compile Include="CommandDispatcher\MyAudio\MyAudioLoadedEvent.cs" />
+    <Compile Include="CommandDispatcher\SearchAudio\SearchAudioCommand.cs" />
+    <Compile Include="CommandDispatcher\SearchAudio\SearchAudioResultReceivedEvent.cs" />
     <Compile Include="MyAudio\MyAudioView.xaml.cs">
       <DependentUpon>MyAudioView.xaml</DependentUpon>
     </Compile>
@@ -110,7 +119,6 @@
     <Compile Include="Authorization\AuthorizationViewModel.cs" />
     <Compile Include="Configuration\ApplicationConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
-    <Compile Include="DownloadProgress\DownloadAudioEvent.cs" />
     <Compile Include="DownloadProgress\DownloadProgressView.xaml.cs">
       <DependentUpon>DownloadProgressView.xaml</DependentUpon>
     </Compile>

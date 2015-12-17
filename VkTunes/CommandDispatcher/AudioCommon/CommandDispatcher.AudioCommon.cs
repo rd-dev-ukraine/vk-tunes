@@ -8,7 +8,9 @@ using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Models;
 using VkTunes.Api.Queue;
 using VkTunes.Api.Utils;
+using VkTunes.CommandDispatcher.AudioCommon;
 
+// ReSharper disable once CheckNamespace
 namespace VkTunes.CommandDispatcher
 {
     public partial class CommandDispatcher
@@ -70,18 +72,5 @@ namespace VkTunes.CommandDispatcher
 
             PublishEvent(new AudioUpdatedEvent(audio));
         }
-    }
-
-    public class AudioUpdatedEvent : EventBase
-    {
-        public AudioUpdatedEvent(AudioInfo audio)
-        {
-            if (audio == null)
-                throw new ArgumentNullException(nameof(audio));
-
-            Audio = audio;
-        }
-
-        public AudioInfo Audio { get; }
     }
 }

@@ -2,58 +2,100 @@
 
 using Caliburn.Micro;
 
-using VkTunes.Api.Models.Downloading;
+using VkTunes.CommandDispatcher.Downloads;
 
 namespace VkTunes.DownloadProgress
 {
-    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<DownloadAudioEvent>
+    public class DownloadProgressViewModel : PropertyChangedBase, IHandle<DownloadProgressEvent>
     {
-        private readonly DownloadQueue queue;
-        private DownloadProgressInfo info;
+        private int downloadQueueLength;
+        private int completedDownloads;
+        private int currentDownloadBytes;
+        private int currentDownloadSize;
+        private bool isDisplayed;
 
-        public DownloadProgressViewModel(IEventAggregator eventAggregator, DownloadQueue queue)
+        public DownloadProgressViewModel(IEventAggregator eventAggregator)
         {
-            if (queue == null)
-                throw new ArgumentNullException(nameof(queue));
+            if (eventAggregator == null)
+                throw new ArgumentNullException(nameof(eventAggregator));
 
             eventAggregator.Subscribe(this);
-
-            this.queue = queue;
-            this.queue.Progress += (sender, args) =>
-            {
-                Execute.OnUIThread(() =>
-                {
-                    Info = args.Progress;
-                    IsDisplayed = Info.TotalAudioInQueue > 0;
-                });
-            };
         }
 
-        public DownloadProgressInfo Info
+        public int DownloadQueueLength
         {
-            get { return info; }
+            get { return downloadQueueLength; }
             set
             {
-                info = value;
-                IsDisplayed = info?.TotalAudioInQueue > 0;
-
-
+                downloadQueueLength = value;
                 NotifyOfPropertyChange();
-                NotifyOfPropertyChange(() => IsDisplayed);
+                NotifyOfPropertyChange(() => QueueProgress);
             }
         }
 
-        public bool IsDisplayed { get; private set; }
-
-        public void Cancel()
+        public int CompletedDownloads
         {
-            queue.CancelDownloads();
+            get { return completedDownloads; }
+            set
+            {
+                completedDownloads = value;
+                NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => QueueProgress);
+            }
         }
 
-        public void Handle(DownloadAudioEvent message)
+        public int CurrentDownloadBytes
         {
-            if (message != null)
-                queue.AddToDownloadQueue(message.AudioId, message.OwnerId);
+            get { return currentDownloadBytes; }
+            set
+            {
+                currentDownloadBytes = value;
+                NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => CurrentDownloadProgress);
+            }
+        }
+
+        public int CurrentDownloadSize
+        {
+            get { return currentDownloadSize; }
+            set
+            {
+                currentDownloadSize = value;
+                NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => CurrentDownloadProgress);
+            }
+        }
+
+        public bool IsDisplayed
+        {
+            get { return isDisplayed; }
+            set
+            {
+                isDisplayed = value; 
+                NotifyOfPropertyChange();
+            }
+        }
+
+        public int QueueProgress => Progress(CompletedDownloads, DownloadQueueLength);
+
+        public int CurrentDownloadProgress => Progress(CurrentDownloadBytes, CurrentDownloadSize);
+
+        private int Progress(int currentValue, int totalValue)
+        {
+            if (totalValue == 0)
+                return 0;
+
+            var ratio = currentValue / (decimal)totalValue;
+            return (int)(ratio * 100);
+        }
+
+        public void Handle(DownloadProgressEvent message)
+        {
+            IsDisplayed = message.QueueLength != 0;
+            DownloadQueueLength = message.QueueLength;
+            CompletedDownloads = message.CompletedDownloads;
+            CurrentDownloadBytes = message.CompletedBytes;
+            CurrentDownloadSize = message.AudioSize;
         }
     }
 }

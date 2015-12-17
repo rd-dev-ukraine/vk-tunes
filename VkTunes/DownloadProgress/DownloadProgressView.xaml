@@ -16,11 +16,10 @@
     </UserControl.Visibility>
 
     <StackPanel Orientation="Vertical">
-        <TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.TotalDownloadProgress, Mode=OneWay}" Height="5"></ProgressBar>
-        <TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>
-        <ProgressBar Value="{Binding Info.CurrentDownloadProgress, Mode=OneWay}" Height="5"
-                     Style="{StaticResource Row}"></ProgressBar>
+        <!--<TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>-->
+        <ProgressBar Value="{Binding QueueProgress, Mode=OneWay}" Style="{StaticResource Row}" Height="5"/>
+        <!--<TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>-->
+        <ProgressBar Value="{Binding CurrentDownloadProgress, Mode=OneWay}" Height="5" Style="{StaticResource Row}"/>
         <StackPanel Orientation="Horizontal">
             <Button x:Name="Cancel">Cancel downloads</Button>
         </StackPanel>

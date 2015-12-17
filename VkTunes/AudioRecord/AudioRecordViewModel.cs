@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.Api.Models;
-using VkTunes.CommandDispatcher;
-using VkTunes.DownloadProgress;
+using VkTunes.CommandDispatcher.AudioCommon;
 
 namespace VkTunes.AudioRecord
 {
@@ -102,7 +101,7 @@ namespace VkTunes.AudioRecord
             set
             {
                 localFilePath = value;
-                NotifyOfPropertyChange(() => LocalFilePath);
+                NotifyOfPropertyChange();
             }
         }
 
