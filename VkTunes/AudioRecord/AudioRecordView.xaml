@@ -19,10 +19,10 @@
         </DockPanel>
         <StackPanel Orientation="Horizontal" Style="{StaticResource Row}">
             <Border Style="{StaticResource Badge}"
-                    Background="#FA833E"
+                    Background="#FCA573"
                     Visibility="{Binding IsInStorage, Converter={StaticResource VisibilityConverter}}"
                     ToolTip="{Binding LocalFilePath}">
-                <fa:FontAwesome Icon="CloudDownload"></fa:FontAwesome>
+                <fa:FontAwesome Foreground="White" Icon="CloudDownload"></fa:FontAwesome>
             </Border>
             <Border Style="{StaticResource Badge}"
                     Background="#4CCC4C"

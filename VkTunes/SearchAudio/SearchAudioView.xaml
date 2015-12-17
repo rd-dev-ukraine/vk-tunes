@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:VkTunes.SearchAudio"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -11,8 +12,13 @@
             <Button x:Name="Reload">Reload</Button>
             <Button x:Name="DownloadAll">Download all</Button>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Top">
-            <TextBox x:Name="Search" Margin="3" HorizontalAlignment="Stretch"></TextBox>
+        <StackPanel Style="{StaticResource Row}" DockPanel.Dock="Top">
+            <Border BorderThickness="1" BorderBrush="{StaticResource ButtonBackground}" CornerRadius="2" Padding="3px">
+                <DockPanel>
+                    <fa:FontAwesome Icon="Search" Margin="0 0 10 0" DockPanel.Dock="Left"/>
+                    <TextBox x:Name="Search" Style="{StaticResource InvisibleTextBox}" HorizontalAlignment="Stretch"></TextBox>
+                </DockPanel>
+            </Border>
         </StackPanel>
         <ListBox x:Name="Audio" HorizontalContentAlignment="Stretch">
         </ListBox>

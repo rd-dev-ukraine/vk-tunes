@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.Api.Models;
+using VkTunes.Api.Queue;
 
 namespace VkTunes.CommandDispatcher
 {
@@ -12,6 +13,7 @@ namespace VkTunes.CommandDispatcher
     {
         public async Task Handle(SearchAudioCommand message)
         {
+            vk.CancelTasks(QueuePriorities.ApiCallSearchAudio);
             var searchResults = await LoadAudioCollection(async () => (await vk.SearchAudio(message.Query)).Audio);
             await PublishEvent(new SearchAudioResultReceivedEvent(searchResults.ToArray(), message.Query));
         }

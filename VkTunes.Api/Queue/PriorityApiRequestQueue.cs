@@ -47,8 +47,6 @@ namespace VkTunes.Api.Queue
             if (workload == null)
                 throw new ArgumentNullException(nameof(workload));
 
-            Debug.WriteLine($"Enqueue task with priority {priority} [{description}]");
-
             var item = new QueueItem<TResult>(workload, priority, description);
 
             insertInQueue(item);

@@ -133,11 +133,11 @@ namespace VkTunes.Api.LowLevel
 
         private void DebugOut(params string[] lines)
         {
-            Debug.WriteLine(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
-            foreach (var l in lines)
-                Debug.WriteLine(l);
-            Debug.WriteLine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            //Debug.WriteLine("{0:HH:MM:ss.fff}", DateTime.Now);
+            //foreach (var l in lines)
+            //    Debug.WriteLine(l);
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
         }
     }
 }

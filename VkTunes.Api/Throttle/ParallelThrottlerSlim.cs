@@ -18,12 +18,11 @@ namespace VkTunes.Api.Throttle
         {
             var tcs = new TaskCompletionSource<TResult>();
 
-            queue.Enqueue(() =>
+            var unused = queue.Enqueue(() =>
             {
                 tcs.Match(task());
-                return Task.Delay(TimeSpan.FromSeconds(1));
-            })
-            .FireAndForget();
+                return Task.Delay(TimeSpan.FromSeconds(1.1));
+            });
 
             return tcs.Task;
         }
