@@ -83,7 +83,7 @@ namespace VkTunes.AudioRecord
             set
             {
                 isInStorage = value;
-                NotifyOfPropertyChange(() => IsInStorage);
+                NotifyOfPropertyChange();
             }
         }
 

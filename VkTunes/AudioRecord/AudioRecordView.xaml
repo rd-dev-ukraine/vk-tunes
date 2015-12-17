@@ -16,6 +16,11 @@
                 <TextBlock Text="{Binding Title}"></TextBlock>
             </StackPanel>
         </DockPanel>
+        <StackPanel>
+            <Border Style="{StaticResource Badge}">
+                <TextBlock></TextBlock>
+            </Border>
+        </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Button x:Name="Download">Download</Button>
         </StackPanel>
