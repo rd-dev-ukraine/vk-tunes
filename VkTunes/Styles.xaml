@@ -105,7 +105,8 @@
 
     <Style x:Key="Badge" TargetType="{x:Type Border}">
         <Setter Property="CornerRadius" Value="3"/>
-        <Setter Property="Padding" Value="2px"/>
+        <Setter Property="Padding" Value="5px 2px"/>
+        <Setter Property="Margin" Value="0 0 5px 0"></Setter>
     </Style>
 
 </ResourceDictionary>

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:VkTunes.AudioList"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -16,9 +17,25 @@
                 <TextBlock Text="{Binding Title}"></TextBlock>
             </StackPanel>
         </DockPanel>
-        <StackPanel>
-            <Border Style="{StaticResource Badge}">
-                <TextBlock></TextBlock>
+        <StackPanel Orientation="Horizontal" Style="{StaticResource Row}">
+            <Border Style="{StaticResource Badge}"
+                    Background="#FA833E"
+                    Visibility="{Binding IsInStorage, Converter={StaticResource VisibilityConverter}}"
+                    ToolTip="{Binding LocalFilePath}">
+                <fa:FontAwesome Icon="CloudDownload"></fa:FontAwesome>
+            </Border>
+            <Border Style="{StaticResource Badge}"
+                    Background="#4CCC4C"
+                    Visibility="{Binding IsFileSizeKnown, Converter={StaticResource VisibilityConverter}}">
+                <TextBlock Foreground="White" Text="{Binding FileSizeText}"/>
+            </Border>
+            <Border Style="{StaticResource Badge}"
+                    Background="#CC5FFF"
+                    Visibility="{Binding IsFileSizeKnown, Converter={StaticResource VisibilityConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <fa:FontAwesome Foreground="White" Icon="Signal" />
+                    <TextBlock Foreground="White" Text="{Binding Bitrate}"/>
+                </StackPanel>
             </Border>
         </StackPanel>
         <StackPanel Orientation="Horizontal">

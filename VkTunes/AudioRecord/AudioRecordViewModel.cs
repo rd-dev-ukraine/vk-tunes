@@ -74,8 +74,17 @@ namespace VkTunes.AudioRecord
             {
                 fileSize = value;
                 NotifyOfPropertyChange();
+                NotifyOfPropertyChange(() => FileSizeText);
+                NotifyOfPropertyChange(() => IsFileSizeKnown);
+                NotifyOfPropertyChange(() => Bitrate);
             }
         }
+
+        public string FileSizeText => IsFileSizeKnown ? $"{FileSize / (1024M * 1024M):###.##}MB" : String.Empty;
+
+        public bool IsFileSizeKnown => FileSize != null && FileSize != 0;
+
+        public string Bitrate => IsFileSizeKnown ? $"{ 8 * (FileSize ?? 0) / 1024M / Math.Max(0.0000001M, (decimal)Duration.TotalSeconds): #####}Kbps" : String.Empty;
 
         public bool IsInStorage
         {
