@@ -89,7 +89,11 @@
       <DependentUpon>AudioShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AudioShell\AudioShellViewModel.cs" />
-    <Compile Include="CommandDispatcher\AudioCommon\AudioUpdatedEvent.cs" />
+    <Compile Include="CommandDispatcher\AddRemoveAudio\AddToMyAudioCommand.cs" />
+    <Compile Include="CommandDispatcher\AddRemoveAudio\CommandDispatcher.cs" />
+    <Compile Include="CommandDispatcher\AddRemoveAudio\MyAudioAddedEvent.cs" />
+    <Compile Include="CommandDispatcher\AudioCommon\LocalAudioUpdatedEvent.cs" />
+    <Compile Include="CommandDispatcher\AudioCommon\RemoteAudioUpdatedEvent.cs" />
     <Compile Include="CommandDispatcher\CommandBase.cs" />
     <Compile Include="CommandDispatcher\CommandDispatcher.cs" />
     <Compile Include="CommandDispatcher\AudioCommon\CommandDispatcher.AudioCommon.cs" />
@@ -98,6 +102,9 @@
     <Compile Include="CommandDispatcher\Downloads\CommandDispatcher.Downloads.cs" />
     <Compile Include="CommandDispatcher\Downloads\DownloadAudioCommand.cs" />
     <Compile Include="CommandDispatcher\Downloads\DownloadProgressEvent.cs" />
+    <Compile Include="CommandDispatcher\GetFileSize\CommandDispatcher.GetFileSize.cs" />
+    <Compile Include="CommandDispatcher\GetFileSize\RemoteFileSizeUpdatedEvent.cs" />
+    <Compile Include="CommandDispatcher\GetFileSize\UpdateRemoteFileSizeCommand.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\CommandDispatcher.SearchAudio.cs" />
     <Compile Include="CommandDispatcher\MyAudio\CommandDispatcher.MyAudio.cs" />
     <Compile Include="CommandDispatcher\EventBase.cs" />

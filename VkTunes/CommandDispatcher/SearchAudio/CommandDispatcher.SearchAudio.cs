@@ -16,7 +16,7 @@ namespace VkTunes.CommandDispatcher
             {
                 vk.CancelTasks(QueuePriorities.ApiCallSearchAudio);
                 var searchResults = await LoadAudioCollection(async () => (await vk.SearchAudio(m.Query)).Audio);
-                await PublishEvent(new SearchAudioResultReceivedEvent(searchResults.ToArray(), m.Query));
+                await Event(new SearchAudioResultReceivedEvent(searchResults.ToArray(), m.Query));
             });
         }
     }

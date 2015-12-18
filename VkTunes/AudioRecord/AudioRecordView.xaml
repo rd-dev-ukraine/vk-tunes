@@ -52,13 +52,11 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <StackPanel.Visibility>
-                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType=ListBoxItem}">
-                    <Binding.Converter>
-                        <BooleanToVisibilityConverter/>
-                    </Binding.Converter>
-                </Binding>
+                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType=ListBoxItem}" Converter="{StaticResource VisibilityConverter}" />
             </StackPanel.Visibility>
-            <Button x:Name="Download">Download</Button>
+            <Button x:Name="Download">
+                Download
+            </Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -4,7 +4,11 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
+using VkTunes.Api.Authorization;
+using VkTunes.Api.Models;
 using VkTunes.AudioRecord;
+using VkTunes.CommandDispatcher.AddRemoveAudio;
+using VkTunes.CommandDispatcher.AudioCommon;
 using VkTunes.CommandDispatcher.Downloads;
 using VkTunes.CommandDispatcher.MyAudio;
 using VkTunes.IoC;
@@ -13,7 +17,7 @@ using VkTunes.IoC;
 
 namespace VkTunes.MyAudio
 {
-    public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>
+    public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>, IHandle<MyAudioAddedEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IFactory<AudioRecordViewModel> audioRecordViewModelFactory;
@@ -43,6 +47,12 @@ namespace VkTunes.MyAudio
             eventAggregator.PublishOnBackgroundThread(new MyAudioLoadCommand());
         }
 
+        public void DownloadAll()
+        {
+            foreach (var audio in Audio.Where(a => !a.IsInStorage))
+                eventAggregator.PublishOnBackgroundThread(new DownloadAudioCommand(audio.Id, audio.OwnerId));
+        }
+
         public async Task Handle(MyAudioLoadedEvent message)
         {
             await Execute.OnUIThreadAsync(() =>
@@ -57,10 +67,19 @@ namespace VkTunes.MyAudio
             });
         }
 
-        public void DownloadAll()
+        public void Handle(MyAudioAddedEvent message)
         {
-            foreach (var audio in Audio.Where(a => !a.IsInStorage))
-                eventAggregator.PublishOnBackgroundThread(new DownloadAudioCommand(audio.Id, audio.OwnerId));
+            if (message.Audio != null)
+            {
+                var model = audioRecordViewModelFactory.CreateInstance();
+                model.Apply(new AudioInfo
+                {
+                    Id = message.Audio.Id,
+                    RemoteAudio = message.Audio
+                });
+
+                Audio.Insert(0, model);
+            }
         }
     }
 }

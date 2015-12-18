@@ -13,7 +13,6 @@ namespace VkTunes.CommandDispatcher
         private readonly IEventAggregator eventAggregator;
         private readonly Vk vk;
         private readonly IVkAudioFileStorage storage;
-        
 
         public CommandDispatcher(
             IEventAggregator eventAggregator,
@@ -34,7 +33,16 @@ namespace VkTunes.CommandDispatcher
             eventAggregator.Subscribe(this);
         }
 
-        private Task PublishEvent<TEvent>(TEvent @event)
+        private void Command<TCommand>(TCommand command)
+            where TCommand : CommandBase
+        {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+
+            eventAggregator.PublishOnBackgroundThread(command);
+        }
+
+        private Task Event<TEvent>(TEvent @event)
             where TEvent : EventBase
         {
             if (@event == null)

@@ -13,7 +13,7 @@ namespace VkTunes.CommandDispatcher
         public async Task Handle(MyAudioLoadCommand message)
         {
             var myAudio = await LoadAudioCollection(async () => (await vk.MyAudio()).Audio);
-            await PublishEvent(new MyAudioLoadedEvent(myAudio.ToArray()));
+            await Event(new MyAudioLoadedEvent(myAudio.ToArray()));
         }
     }
 }

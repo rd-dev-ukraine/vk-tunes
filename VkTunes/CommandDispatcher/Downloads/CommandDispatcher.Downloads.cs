@@ -7,8 +7,9 @@ using System.Threading;
 using Caliburn.Micro;
 
 using VkTunes.Api.Api;
-using VkTunes.Api.Models;
+using VkTunes.CommandDispatcher.AudioCommon;
 using VkTunes.CommandDispatcher.Downloads;
+using VkTunes.Utils;
 
 // ReSharper disable once CheckNamespace
 namespace VkTunes.CommandDispatcher
@@ -49,22 +50,13 @@ namespace VkTunes.CommandDispatcher
 
                     NotifyDownloadCompleted(item);
 
-                    PublishAudioUpdateEvent(new AudioInfo
-                    {
-                        Id = audio.Id,
-                        LocalAudio = localAudio,
-                        RemoteAudio = audio,
-                        RemoteFileSize = buffer.Length
-                    });
+                    Event(new LocalAudioUpdatedEvent(audio.Id, audio.Owner, localAudio));
                 }
             }
 
-            AudioDownloadQueueElement _;
-            while (completedDownloads.TryDequeue(out _))
-            {
-            }
+            completedDownloads.Clear();
 
-            eventAggregator.PublishOnBackgroundThread(new DownloadProgressEvent(0, 0, DownloadProgressEvent.State.Completed, 0, 0, 0, 0));
+            Event(new DownloadProgressEvent(0, 0, DownloadProgressEvent.State.Completed, 0, 0, 0, 0));
         }
 
         private void NotifyDownloadStarted(AudioDownloadQueueElement item) => NotifyDownloadChanged(item, DownloadProgressEvent.State.Started);
@@ -84,7 +76,7 @@ namespace VkTunes.CommandDispatcher
                 item.BytesCompleted,
                 item.BytesTotal);
 
-            eventAggregator.PublishOnBackgroundThread(evt);
+            Event(evt);
         }
 
         private class Progress : IProgress<AudioDownloadProgress>

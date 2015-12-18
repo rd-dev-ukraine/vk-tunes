@@ -8,7 +8,7 @@ using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Models;
 using VkTunes.Api.Queue;
 using VkTunes.Api.Utils;
-using VkTunes.CommandDispatcher.AudioCommon;
+using VkTunes.CommandDispatcher.GetFileSize;
 
 // ReSharper disable once CheckNamespace
 namespace VkTunes.CommandDispatcher
@@ -47,30 +47,10 @@ namespace VkTunes.CommandDispatcher
                 });
             }
 
-            foreach (var audio in result.Where(a => a.RemoteAudio != null && !String.IsNullOrWhiteSpace(a.RemoteAudio.FileUrl)))
-            {
-                var audioLocal = audio;
-                vk.GetFileSize(audio.RemoteAudio.FileUrl)
-                    .ContinueWith(a =>
-                    {
-                        if (a.IsCompleted)
-                        {
-                            audioLocal.RemoteFileSize = a.Result ?? 0;
-                            PublishAudioUpdateEvent(audioLocal);
-                        }
-                    })
-                    .FireAndForget();
-            }
+            foreach (var audio in result.Where(a => !String.IsNullOrWhiteSpace(a.RemoteAudio?.FileUrl)))
+                Command(new UpdateRemoteFileSizeCommand(audio.Id, audio.RemoteAudio.Owner, audio.RemoteAudio.FileUrl));
 
             return result;
-        }
-
-        private void PublishAudioUpdateEvent(AudioInfo audio)
-        {
-            if (audio == null)
-                throw new ArgumentNullException(nameof(audio));
-
-            PublishEvent(new AudioUpdatedEvent(audio));
         }
     }
 }
