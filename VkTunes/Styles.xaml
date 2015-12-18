@@ -4,6 +4,7 @@
 
     <SolidColorBrush x:Key="ForeColor" Color="#2B587A"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#6d8cb0"></SolidColorBrush>
+    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#CBDCF0"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonBackground" Color="#6383a8"></SolidColorBrush>
     <SolidColorBrush x:Key="ButtonForeColor" Color="White"></SolidColorBrush>
 
@@ -38,9 +39,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.Setters>
-                    <Setter Property="Background" Value="{StaticResource ButtonBackgroundHover}"></Setter>
-                </Trigger.Setters>
+                <Setter Property="Background" Value="{StaticResource ButtonBackgroundHover}"></Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource ButtonBackgroundDisabled}"></Setter>
             </Trigger>
         </Style.Triggers>
     </Style>

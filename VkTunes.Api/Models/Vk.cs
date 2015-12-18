@@ -34,9 +34,13 @@ namespace VkTunes.Api.Models
             return queue.EnqueueFirst(() => api.SearchAudio(query), QueuePriorities.ApiCallSearchAudio, "API::audio.search");
         }
 
-        public Task<long?> GetFileSize(string url)
+        public Task<long?> GetFileSize(string url, bool asap)
         {
-            return queue.EnqueueLast(() => api.GetFileSize(url), QueuePriorities.GetFileSize, $"Get file size for file {url}");
+            Func<Task<long?>> workload = () => api.GetFileSize(url);
+            var priority = QueuePriorities.GetFileSize;
+            var description = $"Get file size for file {url}";
+
+            return asap ? queue.EnqueueFirst(workload, priority, description) : queue.EnqueueLast(workload, priority, description);
         }
 
         public async Task<RemoteAudioRecord> DownloadAudioFileTo(Stream stream, int audioId, int owner, IProgress<AudioDownloadProgress> progress)
@@ -56,8 +60,8 @@ namespace VkTunes.Api.Models
 
             return await queue.EnqueueFirst(async () =>
             {
-                var existing = api.GetAudioByIdOrDefault(audioId, ownerId);
-                if (existing == null)
+                var existing = await api.GetAudioByIdOrDefault(audioId, ownerId);
+                if (existing != null)
                 {
                     var addedAudio = await api.AddAudio(audioId, ownerId);
                     return await api.GetAudioById(addedAudio, api.MyUserId);

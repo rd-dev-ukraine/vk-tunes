@@ -6,6 +6,7 @@ using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Authorization;
 using VkTunes.Api.Models;
+using VkTunes.CommandDispatcher.AddRemoveAudio;
 using VkTunes.CommandDispatcher.AudioCommon;
 using VkTunes.CommandDispatcher.Downloads;
 using VkTunes.CommandDispatcher.GetFileSize;
@@ -133,7 +134,7 @@ namespace VkTunes.AudioRecord
 
         public void AddToMyAudio()
         {
-            eventAggregator.PublishOnBackgroundThread(new AddAudioEvent(Id, OwnerId));
+            eventAggregator.PublishOnBackgroundThread(new AddToMyAudioCommand(Id, OwnerId));
         }
 
         public bool CanAddToMyAudio => !IsInMyAudio;

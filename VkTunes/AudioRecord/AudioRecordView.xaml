@@ -57,6 +57,7 @@
             <Button x:Name="Download">
                 Download
             </Button>
+            <Button x:Name="AddToMyAudio">Add to My Audio</Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

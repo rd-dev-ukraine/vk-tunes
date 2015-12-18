@@ -14,7 +14,7 @@ namespace VkTunes.CommandDispatcher
         {
             if (!String.IsNullOrWhiteSpace(message.FileUrl))
             {
-                var size = await vk.GetFileSize(message.FileUrl);
+                var size = await vk.GetFileSize(message.FileUrl, message.Asap);
 
                 if (size != null)
                     await Event(new RemoteFileSizeUpdatedEvent(message.AudioId, message.OwnerId, size.Value));
