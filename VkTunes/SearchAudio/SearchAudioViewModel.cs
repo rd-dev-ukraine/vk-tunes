@@ -47,7 +47,6 @@ namespace VkTunes.SearchAudio
         {
             await Execute.OnUIThreadAsync(() =>
             {
-                Search = message.Query;
                 Audio.Clear();
                 Audio.AddRange(message.Audio.Select(a => new AudioRecordViewModel(eventAggregator, a)));
             });

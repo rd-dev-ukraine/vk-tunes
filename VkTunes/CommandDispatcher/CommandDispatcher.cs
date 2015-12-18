@@ -13,6 +13,7 @@ namespace VkTunes.CommandDispatcher
         private readonly IEventAggregator eventAggregator;
         private readonly Vk vk;
         private readonly IVkAudioFileStorage storage;
+        
 
         public CommandDispatcher(
             IEventAggregator eventAggregator,

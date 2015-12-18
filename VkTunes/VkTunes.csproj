@@ -93,6 +93,7 @@
     <Compile Include="CommandDispatcher\CommandBase.cs" />
     <Compile Include="CommandDispatcher\CommandDispatcher.cs" />
     <Compile Include="CommandDispatcher\AudioCommon\CommandDispatcher.AudioCommon.cs" />
+    <Compile Include="CommandDispatcher\CommandDispatcher.Throttling.cs" />
     <Compile Include="CommandDispatcher\Downloads\AudioDownloadQueueElement.cs" />
     <Compile Include="CommandDispatcher\Downloads\CommandDispatcher.Downloads.cs" />
     <Compile Include="CommandDispatcher\Downloads\DownloadAudioCommand.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Infrastructure\Navigation\GoToViewModelEvent.cs" />
     <Compile Include="Infrastructure\Navigation\INavigator.cs" />
     <Compile Include="Infrastructure\Navigation\Navigator.cs" />
+    <Compile Include="Utils\ConcurrentExtensions.cs" />
     <Compile Include="Utils\NinjectUtils.cs" />
   </ItemGroup>
   <ItemGroup>
