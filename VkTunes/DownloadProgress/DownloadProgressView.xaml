@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
              xmlns:local="clr-namespace:VkTunes.DownloadProgress"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -16,9 +17,9 @@
     </UserControl.Visibility>
 
     <StackPanel Orientation="Vertical">
-        <!--<TextBlock Text="{Binding Info.DownloadingCountStatus, Mode=OneWay}"></TextBlock>-->
+        <TextBlock Text="{Binding QueueStatus}" />
         <ProgressBar Value="{Binding QueueProgress, Mode=OneWay}" Style="{StaticResource Row}" Height="5"/>
-        <!--<TextBlock Text="{Binding Info.CurrentDownloadingBytesStatus, Mode=OneWay}"></TextBlock>-->
+        <TextBlock Text="{Binding CurrentDownloadStatus}"/>
         <ProgressBar Value="{Binding CurrentDownloadProgress, Mode=OneWay}" Height="5" Style="{StaticResource Row}"/>
         <StackPanel Orientation="Horizontal">
             <Button x:Name="Cancel">Cancel downloads</Button>

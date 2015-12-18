@@ -30,6 +30,7 @@ namespace VkTunes.DownloadProgress
                 downloadQueueLength = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => QueueProgress);
+                NotifyOfPropertyChange(() => QueueStatus);
             }
         }
 
@@ -41,6 +42,7 @@ namespace VkTunes.DownloadProgress
                 completedDownloads = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => QueueProgress);
+                NotifyOfPropertyChange(() => QueueStatus);
             }
         }
 
@@ -52,6 +54,7 @@ namespace VkTunes.DownloadProgress
                 currentDownloadBytes = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => CurrentDownloadProgress);
+                NotifyOfPropertyChange(() => CurrentDownloadStatus);
             }
         }
 
@@ -63,6 +66,7 @@ namespace VkTunes.DownloadProgress
                 currentDownloadSize = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => CurrentDownloadProgress);
+                NotifyOfPropertyChange(() => CurrentDownloadStatus);
             }
         }
 
@@ -71,7 +75,7 @@ namespace VkTunes.DownloadProgress
             get { return isDisplayed; }
             set
             {
-                isDisplayed = value; 
+                isDisplayed = value;
                 NotifyOfPropertyChange();
             }
         }
@@ -79,6 +83,32 @@ namespace VkTunes.DownloadProgress
         public int QueueProgress => Progress(CompletedDownloads, DownloadQueueLength);
 
         public int CurrentDownloadProgress => Progress(CurrentDownloadBytes, CurrentDownloadSize);
+
+        public string QueueStatus
+        {
+            get
+            {
+                if (CompletedDownloads == 0)
+                    return "Starting downloads...";
+
+                if (completedDownloads == DownloadQueueLength)
+                    return $"Downloaded {DownloadQueueLength} audio";
+
+                return $"Downloading {CompletedDownloads} from {DownloadQueueLength} audio";
+            }
+        }
+
+        public string CurrentDownloadStatus
+        {
+            get
+            {
+                if (CurrentDownloadSize == 0)
+                    return "Preparing...";
+                var completedKb = CurrentDownloadBytes / 1024.0;
+                var totalKb = CurrentDownloadSize/1024.0;
+                return $"Downloading {completedKb:######.##}KB from {totalKb:#########.##}KB";
+            }
+        }
 
         private int Progress(int currentValue, int totalValue)
         {
@@ -91,11 +121,14 @@ namespace VkTunes.DownloadProgress
 
         public void Handle(DownloadProgressEvent message)
         {
-            IsDisplayed = message.QueueLength != 0;
-            DownloadQueueLength = message.QueueLength;
-            CompletedDownloads = message.CompletedDownloads;
-            CurrentDownloadBytes = message.CompletedBytes;
-            CurrentDownloadSize = message.AudioSize;
+            Execute.OnUIThread(() =>
+            {
+                IsDisplayed = message.QueueLength != 0;
+                DownloadQueueLength = message.QueueLength;
+                CompletedDownloads = message.CompletedDownloads;
+                CurrentDownloadSize = message.AudioSize;
+                CurrentDownloadBytes = message.CompletedBytes;
+            });
         }
     }
 }

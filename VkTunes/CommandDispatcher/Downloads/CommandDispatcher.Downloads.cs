@@ -63,6 +63,8 @@ namespace VkTunes.CommandDispatcher
             while (completedDownloads.TryDequeue(out _))
             {
             }
+
+            eventAggregator.PublishOnBackgroundThread(new DownloadProgressEvent(0, 0, DownloadProgressEvent.State.Completed, 0, 0, 0, 0));
         }
 
         private void NotifyDownloadStarted(AudioDownloadQueueElement item) => NotifyDownloadChanged(item, DownloadProgressEvent.State.Started);
@@ -77,12 +79,12 @@ namespace VkTunes.CommandDispatcher
                 item.AudioId,
                 item.OwnerId,
                 state,
-                downloads.Count(),
+                downloads.Count() + completedDownloads.Count(),
                 completedDownloads.Count(),
                 item.BytesCompleted,
                 item.BytesTotal);
 
-            PublishEvent(evt);
+            eventAggregator.PublishOnBackgroundThread(evt);
         }
 
         private class Progress : IProgress<AudioDownloadProgress>
