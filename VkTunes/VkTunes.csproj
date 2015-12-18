@@ -105,6 +105,9 @@
     <Compile Include="CommandDispatcher\MyAudio\MyAudioLoadedEvent.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioCommand.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioResultReceivedEvent.cs" />
+    <Compile Include="IoC\IFactory.cs" />
+    <Compile Include="IoC\NinjectExtension.cs" />
+    <Compile Include="IoC\NinjectFactory.cs" />
     <Compile Include="MyAudio\MyAudioView.xaml.cs">
       <DependentUpon>MyAudioView.xaml</DependentUpon>
     </Compile>

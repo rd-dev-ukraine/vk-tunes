@@ -19,9 +19,21 @@
         </DockPanel>
         <StackPanel Orientation="Horizontal" Style="{StaticResource Row}">
             <Border Style="{StaticResource Badge}"
+                    Background="#399BCE"
+                    Visibility="{Binding IsInMyAudio, Converter={StaticResource VisibilityConverter}}"
+                    ToolTip="In my audio">
+                <fa:FontAwesome Foreground="White" Icon="StarOutlined"></fa:FontAwesome>
+            </Border>
+            <Border Style="{StaticResource Badge}"
                     Background="#FCA573"
-                    Visibility="{Binding IsInStorage, Converter={StaticResource VisibilityConverter}}"
-                    ToolTip="{Binding LocalFilePath}">
+                    Visibility="{Binding IsInStorage, Converter={StaticResource VisibilityConverter}}">
+                <Border.ToolTip>
+                    <Binding Path="LocalFilePath" Mode="OneWay">
+                        <Binding.StringFormat>
+                            Stored My Computer at {0}
+                        </Binding.StringFormat>
+                    </Binding>
+                </Border.ToolTip>
                 <fa:FontAwesome Foreground="White" Icon="CloudDownload"></fa:FontAwesome>
             </Border>
             <Border Style="{StaticResource Badge}"

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
+using VkTunes.Api.Authorization;
 using VkTunes.Api.Models;
 using VkTunes.CommandDispatcher.AudioCommon;
 
@@ -11,6 +12,7 @@ namespace VkTunes.AudioRecord
     public class AudioRecordViewModel : PropertyChangedBase, IHandleWithTask<AudioUpdatedEvent>
     {
         private readonly IEventAggregator eventAggregator;
+        private readonly IAuthorizationInfo authorizationInfo;
 
         private string title;
         private string artist;
@@ -21,15 +23,18 @@ namespace VkTunes.AudioRecord
         private string localFilePath;
         private bool isInMyAudio;
 
-        public AudioRecordViewModel(IEventAggregator eventAggregator, AudioInfo audio)
+        public AudioRecordViewModel(
+            IEventAggregator eventAggregator,
+            IAuthorizationInfo authorizationInfo)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
+            if (authorizationInfo == null)
+                throw new ArgumentNullException(nameof(authorizationInfo));
 
             this.eventAggregator = eventAggregator;
+            this.authorizationInfo = authorizationInfo;
             eventAggregator.Subscribe(this);
-
-            Apply(audio);
         }
 
         public int Id { get; set; }
@@ -140,7 +145,7 @@ namespace VkTunes.AudioRecord
         //    eventAggregator.PublishOnBackgroundThread(new DeleteAudioEvent(Id, OwnerId));
         //}
 
-        private void Apply(AudioInfo audio)
+        public void Apply(AudioInfo audio)
         {
             Id = audio.Id;
 
@@ -152,6 +157,7 @@ namespace VkTunes.AudioRecord
             LocalFilePath = audio.LocalAudio?.FilePath;
             FileSize = audio.RemoteFileSize;
             OwnerId = audio.RemoteAudio?.Owner ?? 0;
+            IsInMyAudio = audio.RemoteAudio?.Owner == authorizationInfo.UserId;
         }
 
         public Task Handle(AudioUpdatedEvent message)

@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using VkTunes.AudioRecord;
 using VkTunes.CommandDispatcher.Downloads;
 using VkTunes.CommandDispatcher.MyAudio;
+using VkTunes.IoC;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -15,13 +16,19 @@ namespace VkTunes.MyAudio
     public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>
     {
         private readonly IEventAggregator eventAggregator;
+        private readonly IFactory<AudioRecordViewModel> audioRecordViewModelFactory;
 
-        public MyAudioViewModel(IEventAggregator eventAggregator)
+        public MyAudioViewModel(
+            IEventAggregator eventAggregator,
+            IFactory<AudioRecordViewModel> audioRecordViewModelFactory)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
+            if (audioRecordViewModelFactory == null)
+                throw new ArgumentNullException(nameof(audioRecordViewModelFactory));
 
             this.eventAggregator = eventAggregator;
+            this.audioRecordViewModelFactory = audioRecordViewModelFactory;
             DisplayName = "My audio";
 
             eventAggregator.Subscribe(this);
@@ -41,7 +48,12 @@ namespace VkTunes.MyAudio
             await Execute.OnUIThreadAsync(() =>
             {
                 Audio.Clear();
-                Audio.AddRange(message.Audio.Select(a => new AudioRecordViewModel(eventAggregator, a)));
+                Audio.AddRange(message.Audio.Select(a =>
+                {
+                    var model = audioRecordViewModelFactory.CreateInstance();
+                    model.Apply(a);
+                    return model;
+                }));
             });
         }
 

@@ -7,9 +7,11 @@ using Caliburn.Micro;
 using Ninject;
 
 using VkTunes.Api;
+using VkTunes.AudioRecord;
 using VkTunes.Configuration;
 using VkTunes.Infrastructure.Async;
 using VkTunes.Infrastructure.Navigation;
+using VkTunes.IoC;
 using VkTunes.Shell;
 using VkTunes.Utils;
 
@@ -37,6 +39,7 @@ namespace VkTunes
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
+            kernel.BindFactory<AudioRecordViewModel>();
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

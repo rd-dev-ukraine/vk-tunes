@@ -6,6 +6,7 @@ using Caliburn.Micro;
 
 using VkTunes.AudioRecord;
 using VkTunes.CommandDispatcher.SearchAudio;
+using VkTunes.IoC;
 
 // ReSharper disable DoNotCallOverridableMethodsInConstructor
 
@@ -14,14 +15,20 @@ namespace VkTunes.SearchAudio
     public class SearchAudioViewModel : Screen, IHandleWithTask<SearchAudioResultReceivedEvent>
     {
         private readonly IEventAggregator eventAggregator;
+        private readonly IFactory<AudioRecordViewModel> audioRecordViewModelFactory; 
         private string search;
 
-        public SearchAudioViewModel(IEventAggregator eventAggregator)
+        public SearchAudioViewModel(
+            IEventAggregator eventAggregator, 
+            IFactory<AudioRecordViewModel> audioRecordViewModelFactory)
         {
             if (eventAggregator == null)
                 throw new ArgumentNullException(nameof(eventAggregator));
+            if (audioRecordViewModelFactory == null)
+                throw new ArgumentNullException(nameof(audioRecordViewModelFactory));
 
             this.eventAggregator = eventAggregator;
+            this.audioRecordViewModelFactory = audioRecordViewModelFactory;
             DisplayName = "Search audio";
 
             eventAggregator.Subscribe(this);
@@ -48,7 +55,12 @@ namespace VkTunes.SearchAudio
             await Execute.OnUIThreadAsync(() =>
             {
                 Audio.Clear();
-                Audio.AddRange(message.Audio.Select(a => new AudioRecordViewModel(eventAggregator, a)));
+                Audio.AddRange(message.Audio.Select(a =>
+                {
+                    var model = audioRecordViewModelFactory.CreateInstance();
+                    model.Apply(a);
+                    return model;
+                }));
             });
         }
     }
