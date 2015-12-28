@@ -8,6 +8,13 @@ using Ninject;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 
 using VkTunes.Api;
+using VkTunes.Api.Api;
+using VkTunes.Api.AudioStorage;
+using VkTunes.Api.Authorization;
+using VkTunes.Api.LowLevel;
+using VkTunes.Api.Models;
+using VkTunes.Api.Queue;
+using VkTunes.Api.Throttle;
 using VkTunes.AudioRecord;
 using VkTunes.Configuration;
 using VkTunes.Infrastructure;
@@ -36,8 +43,16 @@ namespace VkTunes
                 .ToFactoryMethod((ApplicationConfiguration appConfig) => appConfig.VkApi)
                 .InSingletonScope();
 
-            kernel.Load(new ApiModule());
+            kernel.Bind<IAuthorization>().To<InAppBrowserAuthorization>();
+            kernel.Bind<IAuthorizationInfo>().To<InMemoryAuthorizationInfo>().InSingletonScope();
 
+            kernel.Bind<IVkHttpClient>().To<VkHttpClient>().InSingletonScope();
+            kernel.Bind<IVkApi>().To<VkApi>().InSingletonScope();
+            kernel.Bind<Vk>().ToSelf().InSingletonScope();
+            kernel.Bind<IVkAudioFileStorage>().To<FileSystemAudioStorage>().InSingletonScope();
+
+            kernel.Bind<IThrottler>().To<ParallelThrottlerSlim>().InSingletonScope();
+            kernel.Bind<IApiRequestQueue>().To<PriorityApiRequestQueue>().InSingletonScope();
             kernel.Bind<IAsync>().To<AsyncRunner>().InSingletonScope();
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
