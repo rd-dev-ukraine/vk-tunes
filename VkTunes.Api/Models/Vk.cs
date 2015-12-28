@@ -73,6 +73,17 @@ namespace VkTunes.Api.Models
             $"Add audio {ownerId}_{audioId}");
         }
 
+        public async Task RemoveAudio(int audioId, int ownerId)
+        {
+            await queue.EnqueueFirst(async () =>
+                {
+                    await api.DeleteAudio(audioId, ownerId);
+                    return Task.FromResult(0);
+                },
+                QueuePriorities.ApiCall,
+                $"Remove audio {ownerId}_{audioId}");
+        }
+
         public void CancelTasks(int priority)
         {
             queue.Clear(priority);

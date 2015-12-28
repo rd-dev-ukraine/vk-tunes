@@ -89,7 +89,9 @@
     <Compile Include="AudioShell\AudioShellViewModel.cs" />
     <Compile Include="CommandDispatcher\AddRemoveAudio\AddToMyAudioCommand.cs" />
     <Compile Include="CommandDispatcher\AddRemoveAudio\CommandDispatcher.cs" />
+    <Compile Include="CommandDispatcher\AddRemoveAudio\RemoveMyAudioCommand.cs" />
     <Compile Include="CommandDispatcher\AddRemoveAudio\MyAudioAddedEvent.cs" />
+    <Compile Include="CommandDispatcher\AddRemoveAudio\MyAudioRemovedEvent.cs" />
     <Compile Include="CommandDispatcher\AudioCommon\LocalAudioUpdatedEvent.cs" />
     <Compile Include="CommandDispatcher\AudioCommon\RemoteAudioUpdatedEvent.cs" />
     <Compile Include="CommandDispatcher\CommandBase.cs" />

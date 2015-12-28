@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using VkTunes.AudioRecord;
+using VkTunes.CommandDispatcher.AddRemoveAudio;
 using VkTunes.CommandDispatcher.SearchAudio;
 using VkTunes.IoC;
 

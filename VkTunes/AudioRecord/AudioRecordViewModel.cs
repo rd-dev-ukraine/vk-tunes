@@ -124,8 +124,13 @@ namespace VkTunes.AudioRecord
                 isInMyAudio = value;
                 NotifyOfPropertyChange();
                 NotifyOfPropertyChange(() => CanAddToMyAudio);
+                NotifyOfPropertyChange(() => CanRemoveFromMyAudio);
             }
         }
+
+        public bool CanAddToMyAudio => !IsInMyAudio;
+
+        public bool CanRemoveFromMyAudio => IsInMyAudio;
 
         public void Download()
         {
@@ -137,7 +142,12 @@ namespace VkTunes.AudioRecord
             eventAggregator.PublishOnBackgroundThread(new AddToMyAudioCommand(Id, OwnerId));
         }
 
-        public bool CanAddToMyAudio => !IsInMyAudio;
+        public void RemoveFromMyAudio()
+        {
+            eventAggregator.PublishOnBackgroundThread(new RemoveMyAudioCommand(Id, OwnerId));
+        }
+
+        
 
         //public void DeleteAudio()
         //{

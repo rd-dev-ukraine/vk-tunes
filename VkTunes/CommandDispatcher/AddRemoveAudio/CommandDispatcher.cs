@@ -9,7 +9,7 @@ using VkTunes.CommandDispatcher.GetFileSize;
 // ReSharper disable once CheckNamespace
 namespace VkTunes.CommandDispatcher
 {
-    public partial class CommandDispatcher : IHandleWithTask<AddToMyAudioCommand>
+    public partial class CommandDispatcher : IHandleWithTask<AddToMyAudioCommand>, IHandleWithTask<RemoveMyAudioCommand>
     {
         public async Task Handle(AddToMyAudioCommand message)
         {
@@ -21,6 +21,12 @@ namespace VkTunes.CommandDispatcher
                         Event(new MyAudioAddedEvent(record)));
                 Command(new UpdateRemoteFileSizeCommand(record.Id, record.Owner, record.FileUrl, true));
             }
+        }
+
+        public async Task Handle(RemoveMyAudioCommand message)
+        {
+            await vk.RemoveAudio(message.AudioId, message.OwnerId);
+            await Event(new MyAudioRemovedEvent(message.AudioId, message.OwnerId));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace VkTunes.Api.AudioStorage
         public FileSystemAudioStorage(Configuration configuration)
         {
             storageFolder = configuration.AudioFolder ?? Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-            extractAudioId = new Regex(@"\.(\d{1,})\.\w*$");
+            extractAudioId = new Regex(@"\.(\d{1,})_(\d{1,})\.\w*$");
         }
 
         public Task<Dictionary<int, LocalAudioRecord>> Load()
@@ -33,13 +33,15 @@ namespace VkTunes.Api.AudioStorage
                     var m = extractAudioId.Match(file);
                     if (m.Success)
                     {
-                        var audioId = Int32.Parse(m.Groups[1].Value);
+                        var ownerId = Int32.Parse(m.Groups[1].Value);
+                        var audioId = Int32.Parse(m.Groups[2].Value);
 
                         result[audioId] = new LocalAudioRecord
                         {
+                            Id = audioId,
+                            OwnerId = ownerId,
                             Name = fileName,
-                            FilePath = file,
-                            Id = audioId
+                            FilePath = file
                         };
                     }
                 }
@@ -53,7 +55,7 @@ namespace VkTunes.Api.AudioStorage
             if (audio == null)
                 throw new ArgumentNullException(nameof(audio));
 
-            var fileName = GenerateFileName(audio.Id, audio.Artist, audio.Title);
+            var fileName = GenerateFileName(audio);
             var path = Path.Combine(storageFolder, fileName);
 
             source.Position = 0;
@@ -71,11 +73,14 @@ namespace VkTunes.Api.AudioStorage
             };
         }
 
-        private string GenerateFileName(int audioId, string artist, string title)
+        private string GenerateFileName(RemoteAudioRecord audio)
         {
-            artist = SanitizeFileName(artist);
-            title = SanitizeFileName(title);
-            return $"{artist} - {title}.{audioId}.mp3";
+            if (audio == null)
+                throw new ArgumentNullException(nameof(audio));
+
+            var artist = SanitizeFileName(audio.Artist);
+            var title = SanitizeFileName(audio.Title);
+            return $"{artist} - {title}.{audio.Owner}_{audio.Id}.mp3";
         }
 
         private static string SanitizeFileName(string value)

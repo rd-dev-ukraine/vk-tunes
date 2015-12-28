@@ -6,7 +6,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:local="clr-namespace:VkTunes.AudioList"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignWidth="600"
              Style="{StaticResource TextDefault}">
     <StackPanel Orientation="Vertical">
         <DockPanel Style="{StaticResource Row}">
@@ -58,6 +58,7 @@
                 Download
             </Button>
             <Button x:Name="AddToMyAudio">Add to My Audio</Button>
+            <Button x:Name="RemoveFromMyAudio">Remove from My Audio</Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
-using VkTunes.Api.Authorization;
 using VkTunes.Api.Models;
 using VkTunes.AudioRecord;
 using VkTunes.CommandDispatcher.AddRemoveAudio;
-using VkTunes.CommandDispatcher.AudioCommon;
 using VkTunes.CommandDispatcher.Downloads;
 using VkTunes.CommandDispatcher.MyAudio;
 using VkTunes.IoC;
@@ -17,7 +15,7 @@ using VkTunes.IoC;
 
 namespace VkTunes.MyAudio
 {
-    public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>, IHandle<MyAudioAddedEvent>
+    public class MyAudioViewModel : Screen, IHandleWithTask<MyAudioLoadedEvent>, IHandle<MyAudioAddedEvent>, IHandle<MyAudioRemovedEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IFactory<AudioRecordViewModel> audioRecordViewModelFactory;
@@ -80,6 +78,13 @@ namespace VkTunes.MyAudio
 
                 Audio.Insert(0, model);
             }
+        }
+
+        public void Handle(MyAudioRemovedEvent message)
+        {
+            var audio = Audio.FirstOrDefault(a => a.Id == message.AudioId && a.OwnerId == message.OwnerId);
+            if (audio != null)
+                Audio.Remove(audio);
         }
     }
 }

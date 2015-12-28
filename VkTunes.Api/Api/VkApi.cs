@@ -82,9 +82,9 @@ namespace VkTunes.Api.Api
                 }));
         }
 
-        public async Task<int> DeleteAudio(int audioId, int ownerId)
+        public Task<int> DeleteAudio(int audioId, int ownerId)
         {
-            return await throttler.Throttle(() => client.CallApi<AudioAddDeleteRequest, int>(
+            return throttler.Throttle(() => client.CallApi<AudioAddDeleteRequest, int>(
                 "audio.delete",
                 new AudioAddDeleteRequest
                 {
