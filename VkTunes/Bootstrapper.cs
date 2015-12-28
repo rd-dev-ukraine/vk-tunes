@@ -5,11 +5,14 @@ using System.Windows;
 using Caliburn.Micro;
 
 using Ninject;
+using Ninject.Extensions.Interception.Infrastructure.Language;
 
 using VkTunes.Api;
 using VkTunes.AudioRecord;
 using VkTunes.Configuration;
+using VkTunes.Infrastructure;
 using VkTunes.Infrastructure.Async;
+using VkTunes.Infrastructure.AutoPropertyChange;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.IoC;
 using VkTunes.Shell;
@@ -40,6 +43,9 @@ namespace VkTunes
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             kernel.BindFactory<AudioRecordViewModel>();
+
+            kernel.Intercept(ctx => typeof(IRaiseNotifyPropertyChanged).IsAssignableFrom(ctx.Request.Service))
+                  .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

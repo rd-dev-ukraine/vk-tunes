@@ -11,10 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{EA74DAC9-E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkTunes.Api.Test", "test\VkTunes.Api.Test\VkTunes.Api.Test.csproj", "{51CD70B2-BBB2-4FEC-9AD6-5AC25573FB5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoNotifier", "AutoNotifier\AutoNotifier.csproj", "{67E6B17B-13BF-41B5-91A5-A2212E864D90}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoNotifier.Test", "test\AutoNotifier.Test\AutoNotifier.Test.csproj", "{824F37A8-4F25-4E5F-B6B3-A4192B4B6275}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,20 +29,11 @@ Global
 		{51CD70B2-BBB2-4FEC-9AD6-5AC25573FB5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51CD70B2-BBB2-4FEC-9AD6-5AC25573FB5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51CD70B2-BBB2-4FEC-9AD6-5AC25573FB5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67E6B17B-13BF-41B5-91A5-A2212E864D90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67E6B17B-13BF-41B5-91A5-A2212E864D90}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67E6B17B-13BF-41B5-91A5-A2212E864D90}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67E6B17B-13BF-41B5-91A5-A2212E864D90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{824F37A8-4F25-4E5F-B6B3-A4192B4B6275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{824F37A8-4F25-4E5F-B6B3-A4192B4B6275}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{824F37A8-4F25-4E5F-B6B3-A4192B4B6275}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{824F37A8-4F25-4E5F-B6B3-A4192B4B6275}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{51CD70B2-BBB2-4FEC-9AD6-5AC25573FB5D} = {EA74DAC9-ECB5-4373-814F-3FFECE899973}
-		{824F37A8-4F25-4E5F-B6B3-A4192B4B6275} = {EA74DAC9-ECB5-4373-814F-3FFECE899973}
 	EndGlobalSection
 EndGlobal

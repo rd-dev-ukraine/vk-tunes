@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace AutoNotifier
+namespace VkTunes.Infrastructure.AutoPropertyChange
 {
     /// <summary>
     /// Finds changed properties
@@ -23,7 +23,7 @@ namespace AutoNotifier
             return Accessor.ToDictionary(k => k.Key, k => k.Value(instance));
         }
 
-        public ISet<string> GetChanges(IDictionary<string, object> previousState, IDictionary<string, object> newState)
+        public ISet<string> GetChangedProperties(IDictionary<string, object> previousState, IDictionary<string, object> newState)
         {
             if (previousState == null)
                 throw new ArgumentNullException(nameof(previousState));
