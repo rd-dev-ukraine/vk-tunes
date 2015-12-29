@@ -10,6 +10,7 @@ using Castle.DynamicProxy;
 using Ninject;
 using Ninject.Activation.Strategies;
 using Ninject.Extensions.Interception.Infrastructure.Language;
+using Ninject.Extensions.Interception.ProxyFactory;
 using Ninject.Extensions.Interception.Wrapper;
 using Ninject.Infrastructure.Language;
 
@@ -41,6 +42,8 @@ namespace VkTunes
             Initialize();
 
             kernel.Components.Add<IActivationStrategy, EventAggregatorSubscribeActivationStrategy>();
+            kernel.Components.RemoveAll<IProxyFactory>();
+            kernel.Components.Add<IProxyFactory, CustomProxyFactory>();
 
             kernel.Bind<ConfigurationReader>().ToSelf().InSingletonScope();
             kernel.Bind<ApplicationConfiguration>()
@@ -72,25 +75,41 @@ namespace VkTunes
                   .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
 
 
-            var originalTransformName = ViewLocator.TransformName;
-            ViewLocator.TransformName = (name, context) =>
-            {
-                var result = originalTransformName(name, context);
+            //var originalTransformName = ViewLocator.TransformName;
+            //ViewLocator.TransformName = (name, context) =>
+            //{
+            //    var result = originalTransformName(name, context);
 
-                return result;
-            };
+            //    return result;
+            //};
 
-            var oldLocateForModel = ViewLocator.LocateForModel;
-            ViewLocator.LocateForModel = (o, dependencyObject, arg3) =>
+            //var oldLocateForModel = ViewLocator.LocateForModel;
+            //ViewLocator.LocateForModel = (o, dependencyObject, arg3) =>
+            //{
+            //    var proxy = o as IProxyTargetAccessor;
+            //    if (proxy == null)
+            //    {
+            //        if (proxy.GetType().Name.Contains("DynamicProxy"))
+            //            return 
+            //        return oldLocateForModel(o, dependencyObject, arg3);
+            //    }
+            //    else
+            //    {
+            //        var obj = (proxy.GetInterceptors()?[0] as DynamicProxyWrapper).Instance;
+            //        return oldLocateForModel(obj, dependencyObject, arg3);
+            //    }
+            //};
+
+            var oldLocate = ViewLocator.LocateTypeForModelType;
+            ViewLocator.LocateTypeForModelType = (type, o, arg3) =>
             {
-                var proxy = o as IProxyTargetAccessor;
-                if (proxy == null)
-                    return oldLocateForModel(o, dependencyObject, arg3);
-                else
+                if (type.FullName.StartsWith("NProxy"))
                 {
-                    var obj = (proxy.GetInterceptors()?[0] as DynamicProxyWrapper).Instance;
-                    return oldLocateForModel(obj, dependencyObject, arg3);
+                    var baseType = type.BaseType;
+                    return oldLocate(baseType, o, arg3);
                 }
+
+                return oldLocate(type, o, arg3);
             };
         }
 

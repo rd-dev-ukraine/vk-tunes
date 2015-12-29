@@ -30,23 +30,25 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
         public void BeginTrackingScope()
         {
             if (nest == 0)
+            {
+                nest++;
                 state = dirtyChecker.GetState(target);
-
-            nest++;
+            }
+            else
+                nest++;
         }
 
         public void EndTrackingScope(PropertyChangedEventHandler propertyChanged)
         {
-            nest--;
-
-            if (nest == 0)
+            if (nest == 1)
             {
                 var newState = dirtyChecker.GetState(target);
 
                 var changes = dirtyChecker.GetChangedProperties(state, newState);
-                foreach(var property in changes)
+                foreach (var property in changes)
                     propertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
             }
+            nest--;
         }
     }
 }
