@@ -10,13 +10,15 @@ using VkTunes.CommandDispatcher.AddRemoveAudio;
 using VkTunes.CommandDispatcher.AudioCommon;
 using VkTunes.CommandDispatcher.Downloads;
 using VkTunes.CommandDispatcher.GetFileSize;
+using VkTunes.Infrastructure.AutoPropertyChange;
 
 namespace VkTunes.AudioRecord
 {
     public class AudioRecordViewModel : PropertyChangedBase,
         IHandle<LocalAudioUpdatedEvent>,
         IHandle<RemoteAudioUpdatedEvent>,
-        IHandle<RemoteFileSizeUpdatedEvent>
+        IHandle<RemoteFileSizeUpdatedEvent>,
+        IRaiseNotifyPropertyChanged
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IAuthorizationInfo authorizationInfo;
@@ -28,6 +30,10 @@ namespace VkTunes.AudioRecord
         private bool isInStorage;
         private string localFilePath;
         private bool isInMyAudio;
+
+        protected AudioRecordViewModel()
+        {
+        }
 
         public AudioRecordViewModel(
             IEventAggregator eventAggregator,
@@ -202,6 +208,11 @@ namespace VkTunes.AudioRecord
         {
             if (message.AudioId == Id && message.OwnerId == OwnerId)
                 Execute.OnUIThread(() => FileSize = message.FileSize);
+        }
+
+        public void RaiseNotifyPropertyChanged(string propertyName)
+        {
+            NotifyOfPropertyChange(propertyName);
         }
     }
 }

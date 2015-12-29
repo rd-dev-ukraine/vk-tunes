@@ -150,10 +150,6 @@
       <DependentUpon>DownloadProgressView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DownloadProgress\DownloadProgressViewModel.cs" />
-    <Compile Include="Infrastructure\Async\AsyncOperationCompletedEvent.cs" />
-    <Compile Include="Infrastructure\Async\AsyncOperationStartedEvent.cs" />
-    <Compile Include="Infrastructure\Async\AsyncRunner.cs" />
-    <Compile Include="Infrastructure\Async\IAsync.cs" />
     <Compile Include="SearchAudio\SearchAudioView.xaml.cs">
       <DependentUpon>SearchAudioView.xaml</DependentUpon>
     </Compile>

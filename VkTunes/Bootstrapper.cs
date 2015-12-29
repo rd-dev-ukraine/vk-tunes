@@ -7,7 +7,6 @@ using Caliburn.Micro;
 using Ninject;
 using Ninject.Extensions.Interception.Infrastructure.Language;
 
-using VkTunes.Api;
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
 using VkTunes.Api.Authorization;
@@ -17,8 +16,6 @@ using VkTunes.Api.Queue;
 using VkTunes.Api.Throttle;
 using VkTunes.AudioRecord;
 using VkTunes.Configuration;
-using VkTunes.Infrastructure;
-using VkTunes.Infrastructure.Async;
 using VkTunes.Infrastructure.AutoPropertyChange;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.IoC;
@@ -53,7 +50,6 @@ namespace VkTunes
 
             kernel.Bind<IThrottler>().To<ParallelThrottlerSlim>().InSingletonScope();
             kernel.Bind<IApiRequestQueue>().To<PriorityApiRequestQueue>().InSingletonScope();
-            kernel.Bind<IAsync>().To<AsyncRunner>().InSingletonScope();
             kernel.Bind<INavigator>().To<Navigator>().InSingletonScope();
             kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
