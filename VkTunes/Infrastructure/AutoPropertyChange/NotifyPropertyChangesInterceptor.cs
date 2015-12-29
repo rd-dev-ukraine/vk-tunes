@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
+
+using Caliburn.Micro;
 
 using Ninject.Extensions.Interception;
 
@@ -6,28 +11,33 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
 {
     public class NotifyPropertyChangesInterceptor<T> : IInterceptor where T : class
     {
+        private static ChangesTrackerCollection tracker = new ChangesTrackerCollection();
+
+        private static HashSet<string> MethodsToSkip = new HashSet<string>(StringComparer.Ordinal)
+        {
+            nameof(PropertyChangedBase.NotifyOfPropertyChange)
+        };
+
         public void Intercept(IInvocation invocation)
         {
-            var checker = new DirtyChecker<T>();
-            var prevState = checker.GetState((T) invocation.Request.Target);
-            try
+            if (!MethodsToSkip.Contains(invocation.Request.Method.Name))
             {
+                tracker.BeginTrack(invocation.Request.Target);
+                try
+                {
+                    invocation.Proceed();
+                }
+                finally
+                {
+                    tracker.CompleteTrack(invocation.Request.Target, (sender, args) =>
+                    {
+                        var autoNotify = invocation.Request.Proxy as INotifyPropertyChangedEx;
+                        autoNotify?.NotifyOfPropertyChange(args.PropertyName);
+                    });
+                }
+            }
+            else
                 invocation.Proceed();
-            }
-            finally
-            {
-                var newState = checker.GetState((T) invocation.Request.Target);
-                var changes = checker.GetChangedProperties(prevState, newState);
-
-                foreach (var propertyName in changes)
-                    RaisePropertyChanged(invocation.Request.Proxy, propertyName);
-            }
-        }
-
-        private void RaisePropertyChanged(object proxy, string propertyName)
-        {
-            var autoNotify = proxy as IRaiseNotifyPropertyChanged;
-            autoNotify?.RaiseNotifyPropertyChanged(propertyName);
         }
     }
 
@@ -35,7 +45,7 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
     {
         public static IInterceptor CreateNotifyPropertyChangedInterceptor(Type type)
         {
-            var interceptorType = typeof (NotifyPropertyChangesInterceptor<>);
+            var interceptorType = typeof(NotifyPropertyChangesInterceptor<>);
             var generic = interceptorType.MakeGenericType(type);
 
             return (IInterceptor)Activator.CreateInstance(generic);

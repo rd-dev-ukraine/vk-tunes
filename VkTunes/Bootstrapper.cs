@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 
 using Caliburn.Micro;
 
+using Castle.DynamicProxy;
+
 using Ninject;
+using Ninject.Activation.Strategies;
 using Ninject.Extensions.Interception.Infrastructure.Language;
+using Ninject.Extensions.Interception.ProxyFactory;
+using Ninject.Extensions.Interception.Wrapper;
+using Ninject.Infrastructure.Language;
 
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
@@ -16,10 +23,12 @@ using VkTunes.Api.Queue;
 using VkTunes.Api.Throttle;
 using VkTunes.AudioRecord;
 using VkTunes.Configuration;
+using VkTunes.Infrastructure;
 using VkTunes.Infrastructure.AutoPropertyChange;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.IoC;
 using VkTunes.Shell;
+using VkTunes.Test;
 using VkTunes.Utils;
 
 namespace VkTunes
@@ -31,6 +40,10 @@ namespace VkTunes
         public Bootstrapper()
         {
             Initialize();
+
+            kernel.Components.Add<IActivationStrategy, EventAggregatorSubscribeActivationStrategy>();
+            kernel.Components.RemoveAll<IProxyFactory>();
+            kernel.Components.Add<IProxyFactory, CustomProxyFactory>();
 
             kernel.Bind<ConfigurationReader>().ToSelf().InSingletonScope();
             kernel.Bind<ApplicationConfiguration>()
@@ -55,8 +68,26 @@ namespace VkTunes
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             kernel.BindFactory<AudioRecordViewModel>();
 
-            kernel.Intercept(ctx => typeof(IRaiseNotifyPropertyChanged).IsAssignableFrom(ctx.Request.Service))
+            kernel.Intercept(ctx => ctx.Request.Service.HasAttribute(typeof(AutoNotifyOnPropertyChangeAttribute)))
                   .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
+
+
+            TuneViewLocatorForProxies();
+        }
+
+        private static void TuneViewLocatorForProxies()
+        {
+            var oldLocate = ViewLocator.LocateTypeForModelType;
+            ViewLocator.LocateTypeForModelType = (type, o, arg3) =>
+            {
+                if (type.FullName.StartsWith("NProxy"))
+                {
+                    var baseType = type.BaseType;
+                    return oldLocate(baseType, o, arg3);
+                }
+
+                return oldLocate(type, o, arg3);
+            };
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

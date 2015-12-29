@@ -71,6 +71,10 @@
       <HintPath>..\packages\Ninject.Extensions.Interception.DynamicProxy.3.2.0.0\lib\net45-full\Ninject.Extensions.Interception.DynamicProxy.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NProxy.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=75421c8750338fd2, processorArchitecture=MSIL">
+      <HintPath>..\packages\NProxy.Core.2.3.4\lib\net35\NProxy.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -124,10 +128,14 @@
     <Compile Include="CommandDispatcher\MyAudio\MyAudioLoadedEvent.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioCommand.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioResultReceivedEvent.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\AutoNotifyOnPropertyChangeAttribute.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\ChangesTracker.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\ChangesTrackerCollection.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\CustomProxyFactory.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\DirtyChecker.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\NotifyPropertyChangesInvokationHandler.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\NotifyPropertyChangesInterceptor.cs" />
-    <Compile Include="Infrastructure\AutoPropertyChange\IRaiseNotifyPropertyChanged.cs" />
+    <Compile Include="Infrastructure\EventAggregatorSubscribeActivationStrategy.cs" />
     <Compile Include="IoC\IFactory.cs" />
     <Compile Include="IoC\NinjectExtension.cs" />
     <Compile Include="IoC\NinjectFactory.cs" />
@@ -166,6 +174,10 @@
     <Compile Include="Infrastructure\Navigation\GoToViewModelEvent.cs" />
     <Compile Include="Infrastructure\Navigation\INavigator.cs" />
     <Compile Include="Infrastructure\Navigation\Navigator.cs" />
+    <Compile Include="Test\TestView.xaml.cs">
+      <DependentUpon>TestView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Test\TestViewModel.cs" />
     <Compile Include="Utils\ConcurrentExtensions.cs" />
     <Compile Include="Utils\NinjectUtils.cs" />
   </ItemGroup>
@@ -230,6 +242,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Test\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
