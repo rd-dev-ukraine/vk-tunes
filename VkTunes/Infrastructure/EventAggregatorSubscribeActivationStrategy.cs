@@ -15,14 +15,6 @@ namespace VkTunes.Infrastructure
 
         public void Activate(IContext context, InstanceReference reference)
         {
-            reference.IfInstanceIs<INotifyPropertyChanged>(x =>
-            {
-                x.PropertyChanged += (s, e) =>
-                {
-                    Debug.WriteLine($"Changed {e.PropertyName}");
-                };
-            });
-
             reference.IfInstanceIs<IHandle>(x =>
             {
                 var ea = context.Kernel.Get<IEventAggregator>();
