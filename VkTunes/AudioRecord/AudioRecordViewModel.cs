@@ -14,22 +14,14 @@ using VkTunes.Infrastructure.AutoPropertyChange;
 
 namespace VkTunes.AudioRecord
 {
+    [AutoNotifyOnPropertyChange]
     public class AudioRecordViewModel : PropertyChangedBase,
         IHandle<LocalAudioUpdatedEvent>,
         IHandle<RemoteAudioUpdatedEvent>,
-        IHandle<RemoteFileSizeUpdatedEvent>,
-        IRaiseNotifyPropertyChanged
+        IHandle<RemoteFileSizeUpdatedEvent>
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IAuthorizationInfo authorizationInfo;
-
-        private string title;
-        private string artist;
-        private TimeSpan duration;
-        private long? fileSize;
-        private bool isInStorage;
-        private string localFilePath;
-        private bool isInMyAudio;
 
         protected AudioRecordViewModel()
         {
@@ -46,121 +38,52 @@ namespace VkTunes.AudioRecord
 
             this.eventAggregator = eventAggregator;
             this.authorizationInfo = authorizationInfo;
-            eventAggregator.Subscribe(this);
         }
 
-        public int Id { get; set; }
+        public virtual int Id { get; set; }
 
-        public int OwnerId { get; set; }
+        public virtual int OwnerId { get; set; }
 
-        public string Artist
-        {
-            get { return artist; }
-            set
-            {
-                artist = value;
-                NotifyOfPropertyChange();
-            }
-        }
+        public virtual string Artist { get; set; }
 
-        public string Title
-        {
-            get { return title; }
-            set
-            {
-                title = value;
-                NotifyOfPropertyChange();
-            }
-        }
+        public virtual string Title { get; set; }
 
-        public TimeSpan Duration
-        {
-            get { return duration; }
-            set
-            {
-                duration = value;
-                NotifyOfPropertyChange(() => Duration);
-            }
-        }
+        public virtual TimeSpan Duration { get; set; }
 
-        public long? FileSize
-        {
-            get { return fileSize; }
-            set
-            {
-                fileSize = value;
-                NotifyOfPropertyChange();
-                NotifyOfPropertyChange(() => FileSizeText);
-                NotifyOfPropertyChange(() => IsFileSizeKnown);
-                NotifyOfPropertyChange(() => Bitrate);
-            }
-        }
+        public virtual long? FileSize { get; set; }
 
-        public string FileSizeText => IsFileSizeKnown ? $"{FileSize / (1024M * 1024M):###.##}MB" : String.Empty;
+        public virtual string FileSizeText => IsFileSizeKnown ? $"{FileSize / (1024M * 1024M):###.##}MB" : String.Empty;
 
-        public bool IsFileSizeKnown => FileSize != null && FileSize != 0;
+        public virtual bool IsFileSizeKnown => FileSize != null && FileSize != 0;
 
-        public string Bitrate => IsFileSizeKnown ? $"{ 8 * (FileSize ?? 0) / 1024M / Math.Max(0.0000001M, (decimal)Duration.TotalSeconds): #####}Kbps" : String.Empty;
+        public virtual string Bitrate => IsFileSizeKnown ? $"{ 8 * (FileSize ?? 0) / 1024M / Math.Max(0.0000001M, (decimal)Duration.TotalSeconds): #####}Kbps" : String.Empty;
 
-        public bool IsInStorage
-        {
-            get { return isInStorage; }
-            set
-            {
-                isInStorage = value;
-                NotifyOfPropertyChange();
-            }
-        }
+        public virtual bool IsInStorage => !String.IsNullOrWhiteSpace(LocalFilePath);
 
-        public string LocalFilePath
-        {
-            get { return localFilePath; }
-            set
-            {
-                localFilePath = value;
-                NotifyOfPropertyChange();
-            }
-        }
+        public virtual string LocalFilePath { get; set; }
 
-        public bool IsInMyAudio
-        {
-            get { return isInMyAudio; }
-            set
-            {
-                isInMyAudio = value;
-                NotifyOfPropertyChange();
-                NotifyOfPropertyChange(() => CanAddToMyAudio);
-                NotifyOfPropertyChange(() => CanRemoveFromMyAudio);
-            }
-        }
+        public virtual bool IsInMyAudio { get; set; }
 
-        public bool CanAddToMyAudio => !IsInMyAudio;
+        public virtual bool CanAddToMyAudio => !IsInMyAudio;
 
-        public bool CanRemoveFromMyAudio => IsInMyAudio;
+        public virtual bool CanRemoveFromMyAudio => IsInMyAudio;
 
-        public void Download()
+        public virtual void Download()
         {
             eventAggregator.PublishOnBackgroundThread(new DownloadAudioCommand(Id, OwnerId));
         }
 
-        public void AddToMyAudio()
+        public virtual void AddToMyAudio()
         {
             eventAggregator.PublishOnBackgroundThread(new AddToMyAudioCommand(Id, OwnerId));
         }
 
-        public void RemoveFromMyAudio()
+        public virtual void RemoveFromMyAudio()
         {
             eventAggregator.PublishOnBackgroundThread(new RemoveMyAudioCommand(Id, OwnerId));
         }
 
-        
-
-        //public void DeleteAudio()
-        //{
-        //    eventAggregator.PublishOnBackgroundThread(new DeleteAudioEvent(Id, OwnerId));
-        //}
-
-        public void Apply(AudioInfo audio)
+        public virtual void Apply(AudioInfo audio)
         {
             Id = audio.Id;
 
@@ -188,23 +111,22 @@ namespace VkTunes.AudioRecord
             if (audio == null)
                 throw new ArgumentNullException(nameof(audio));
 
-            IsInStorage = audio != null;
             LocalFilePath = audio.FilePath;
         }
 
-        public void Handle(RemoteAudioUpdatedEvent message)
+        public virtual void Handle(RemoteAudioUpdatedEvent message)
         {
             if (message.Audio.Id == Id && message.Audio.Owner == OwnerId)
                 Execute.OnUIThread(() => ApplyRemoteAudio(message.Audio));
         }
 
-        public void Handle(LocalAudioUpdatedEvent message)
+        public virtual void Handle(LocalAudioUpdatedEvent message)
         {
             if (message.AudioId == Id && message.OwnerId == OwnerId)
                 Execute.OnUIThread(() => ApplyLocalAudio(message.Audio));
         }
 
-        public void Handle(RemoteFileSizeUpdatedEvent message)
+        public virtual void Handle(RemoteFileSizeUpdatedEvent message)
         {
             if (message.AudioId == Id && message.OwnerId == OwnerId)
                 Execute.OnUIThread(() => FileSize = message.FileSize);

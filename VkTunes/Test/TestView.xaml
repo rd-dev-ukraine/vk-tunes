@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="VkTunes.Test.TestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VkTunes.Test"
+             mc:Ignorable="d" >
+    <StackPanel Orientation="Horizontal">
+        <TextBox x:Name="A" MinWidth="20"/>
+        <TextBlock>+</TextBlock>
+        <TextBox x:Name="B" MinWidth="20"/>
+        <TextBlock>=</TextBlock>
+        <TextBlock x:Name="Sum" /> 
+    </StackPanel>
+</UserControl>

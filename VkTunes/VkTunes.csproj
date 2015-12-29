@@ -124,10 +124,12 @@
     <Compile Include="CommandDispatcher\MyAudio\MyAudioLoadedEvent.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioCommand.cs" />
     <Compile Include="CommandDispatcher\SearchAudio\SearchAudioResultReceivedEvent.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\AutoNotifyOnPropertyChangeAttribute.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\ChangesTracker.cs" />
+    <Compile Include="Infrastructure\AutoPropertyChange\ChangesTrackerCollection.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\DirtyChecker.cs" />
     <Compile Include="Infrastructure\AutoPropertyChange\NotifyPropertyChangesInterceptor.cs" />
-    <Compile Include="Infrastructure\AutoPropertyChange\IRaiseNotifyPropertyChanged.cs" />
+    <Compile Include="Infrastructure\EventAggregatorSubscribeActivationStrategy.cs" />
     <Compile Include="IoC\IFactory.cs" />
     <Compile Include="IoC\NinjectExtension.cs" />
     <Compile Include="IoC\NinjectFactory.cs" />
@@ -166,6 +168,10 @@
     <Compile Include="Infrastructure\Navigation\GoToViewModelEvent.cs" />
     <Compile Include="Infrastructure\Navigation\INavigator.cs" />
     <Compile Include="Infrastructure\Navigation\Navigator.cs" />
+    <Compile Include="Test\TestView.xaml.cs">
+      <DependentUpon>TestView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Test\TestViewModel.cs" />
     <Compile Include="Utils\ConcurrentExtensions.cs" />
     <Compile Include="Utils\NinjectUtils.cs" />
   </ItemGroup>
@@ -230,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Test\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

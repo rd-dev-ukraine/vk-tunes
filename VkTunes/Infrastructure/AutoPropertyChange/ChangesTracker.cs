@@ -4,8 +4,14 @@ using System.ComponentModel;
 
 namespace VkTunes.Infrastructure.AutoPropertyChange
 {
-    public class ChangesTracker<T> : INotifyPropertyChanged
-        where T : class
+    public interface IChangesTracker
+    {
+        void BeginTrackingScope();
+
+        void EndTrackingScope(PropertyChangedEventHandler propertyChanged);
+    }
+
+    public class ChangesTracker<T> : IChangesTracker where T : class
     {
         private readonly T target;
         private readonly DirtyChecker<T> dirtyChecker = new DirtyChecker<T>();
@@ -29,7 +35,7 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
             nest++;
         }
 
-        public void EndTrackingScope()
+        public void EndTrackingScope(PropertyChangedEventHandler propertyChanged)
         {
             nest--;
 
@@ -39,10 +45,8 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
 
                 var changes = dirtyChecker.GetChangedProperties(state, newState);
                 foreach(var property in changes)
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+                    propertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

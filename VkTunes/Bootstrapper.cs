@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 
 using Caliburn.Micro;
 
+using Castle.DynamicProxy;
+
 using Ninject;
+using Ninject.Activation.Strategies;
 using Ninject.Extensions.Interception.Infrastructure.Language;
+using Ninject.Extensions.Interception.Wrapper;
+using Ninject.Infrastructure.Language;
 
 using VkTunes.Api.Api;
 using VkTunes.Api.AudioStorage;
@@ -16,10 +22,12 @@ using VkTunes.Api.Queue;
 using VkTunes.Api.Throttle;
 using VkTunes.AudioRecord;
 using VkTunes.Configuration;
+using VkTunes.Infrastructure;
 using VkTunes.Infrastructure.AutoPropertyChange;
 using VkTunes.Infrastructure.Navigation;
 using VkTunes.IoC;
 using VkTunes.Shell;
+using VkTunes.Test;
 using VkTunes.Utils;
 
 namespace VkTunes
@@ -31,6 +39,8 @@ namespace VkTunes
         public Bootstrapper()
         {
             Initialize();
+
+            kernel.Components.Add<IActivationStrategy, EventAggregatorSubscribeActivationStrategy>();
 
             kernel.Bind<ConfigurationReader>().ToSelf().InSingletonScope();
             kernel.Bind<ApplicationConfiguration>()
@@ -55,13 +65,38 @@ namespace VkTunes
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             kernel.BindFactory<AudioRecordViewModel>();
 
-            kernel.Intercept(ctx => typeof(IRaiseNotifyPropertyChanged).IsAssignableFrom(ctx.Request.Service))
+            kernel.Bind<TestViewModel>().ToSelf().Intercept(typeof(INotifyPropertyChanged), typeof(INotifyPropertyChangedEx))
+                .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
+
+            kernel.Intercept(ctx => ctx.Request.Service.HasAttribute(typeof(AutoNotifyOnPropertyChangeAttribute)))
                   .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
+
+
+            var originalTransformName = ViewLocator.TransformName;
+            ViewLocator.TransformName = (name, context) =>
+            {
+                var result = originalTransformName(name, context);
+
+                return result;
+            };
+
+            var oldLocateForModel = ViewLocator.LocateForModel;
+            ViewLocator.LocateForModel = (o, dependencyObject, arg3) =>
+            {
+                var proxy = o as IProxyTargetAccessor;
+                if (proxy == null)
+                    return oldLocateForModel(o, dependencyObject, arg3);
+                else
+                {
+                    var obj = (proxy.GetInterceptors()?[0] as DynamicProxyWrapper).Instance;
+                    return oldLocateForModel(obj, dependencyObject, arg3);
+                }
+            };
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewFor<ShellViewModel>();
+            DisplayRootViewFor<TestViewModel>();
         }
 
         protected override object GetInstance(Type service, string key)
