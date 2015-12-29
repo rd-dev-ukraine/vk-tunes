@@ -68,38 +68,15 @@ namespace VkTunes
             kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
             kernel.BindFactory<AudioRecordViewModel>();
 
-            kernel.Bind<TestViewModel>().ToSelf().Intercept(typeof(INotifyPropertyChanged), typeof(INotifyPropertyChangedEx))
-                .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
-
             kernel.Intercept(ctx => ctx.Request.Service.HasAttribute(typeof(AutoNotifyOnPropertyChangeAttribute)))
                   .With(request => InterceptorFactory.CreateNotifyPropertyChangedInterceptor(request.Context.Request.Service));
 
 
-            //var originalTransformName = ViewLocator.TransformName;
-            //ViewLocator.TransformName = (name, context) =>
-            //{
-            //    var result = originalTransformName(name, context);
+            TuneViewLocatorForProxies();
+        }
 
-            //    return result;
-            //};
-
-            //var oldLocateForModel = ViewLocator.LocateForModel;
-            //ViewLocator.LocateForModel = (o, dependencyObject, arg3) =>
-            //{
-            //    var proxy = o as IProxyTargetAccessor;
-            //    if (proxy == null)
-            //    {
-            //        if (proxy.GetType().Name.Contains("DynamicProxy"))
-            //            return 
-            //        return oldLocateForModel(o, dependencyObject, arg3);
-            //    }
-            //    else
-            //    {
-            //        var obj = (proxy.GetInterceptors()?[0] as DynamicProxyWrapper).Instance;
-            //        return oldLocateForModel(obj, dependencyObject, arg3);
-            //    }
-            //};
-
+        private static void TuneViewLocatorForProxies()
+        {
             var oldLocate = ViewLocator.LocateTypeForModelType;
             ViewLocator.LocateTypeForModelType = (type, o, arg3) =>
             {
@@ -115,7 +92,7 @@ namespace VkTunes
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewFor<TestViewModel>();
+            DisplayRootViewFor<ShellViewModel>();
         }
 
         protected override object GetInstance(Type service, string key)

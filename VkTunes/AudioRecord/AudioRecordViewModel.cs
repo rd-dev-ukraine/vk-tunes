@@ -23,10 +23,6 @@ namespace VkTunes.AudioRecord
         private readonly IEventAggregator eventAggregator;
         private readonly IAuthorizationInfo authorizationInfo;
 
-        protected AudioRecordViewModel()
-        {
-        }
-
         public AudioRecordViewModel(
             IEventAggregator eventAggregator,
             IAuthorizationInfo authorizationInfo)

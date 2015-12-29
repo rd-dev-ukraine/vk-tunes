@@ -21,8 +21,6 @@ namespace VkTunes.Infrastructure.AutoPropertyChange
 
         public object Invoke(object target, MethodInfo methodInfo, object[] parameters)
         {
-            Debug.WriteLine($"Invokation of {methodInfo.Name}");
-
             if (MethodsToSkip.Contains(methodInfo.Name))
                 return methodInfo.Invoke(target, parameters);
 
